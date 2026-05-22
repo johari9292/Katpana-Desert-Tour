@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { buildWhatsAppURL, displayPhone, WHATSAPP_CAR, WHATSAPP_HOTEL } from "@/constants/contact";
+import { buildWhatsAppURL, displayPhone, displayPhone2, WHATSAPP_CAR, WHATSAPP_HOTEL } from "@/constants/contact";
 
 export default function Footer() {
   const hotelUrl = buildWhatsAppURL(WHATSAPP_HOTEL, "Hi! I want to book a hotel in Skardu near Katpana Desert.");
@@ -16,14 +16,14 @@ export default function Footer() {
           <WhatsAppButton href={hotelUrl}>Book hotel</WhatsAppButton>
           <WhatsAppButton href={carUrl}>Rent a car</WhatsAppButton>
         </div>
-        <p className="mt-6 text-skardu-ash">WhatsApp: {displayPhone}</p>
-        <div className="mt-8 flex justify-center gap-4 text-skardu-ash">
+        <p className="mt-6 text-skardu-ash">WhatsApp: {displayPhone}, {displayPhone2}</p>
+        {/* <div className="mt-8 flex justify-center gap-4 text-skardu-ash">
           {["Instagram", "Facebook", "YouTube"].map((label) => (
             <motion.a key={label} href="#" aria-label={label} whileHover={{ color: "#C9A84C", y: -3 }} className="grid size-10 place-items-center rounded-full border border-skardu-mist">
               <SocialIcon />
             </motion.a>
           ))}
-        </div>
+        </div> */}
         <p className="mt-10 text-sm text-skardu-ash">(c) 2026 Skardu Tourism / Built with care in Pakistan</p>
       </div>
     </footer>
