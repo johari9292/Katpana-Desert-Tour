@@ -1,19 +1,19 @@
 import SkarduLanding from "@/components/SkarduLanding";
-import { KATPANA_VIDEO_URL } from "@/constants/media";
+import { KATPANA_VIDEO_URL, SKARDU_HERO_VIDEO_URL } from "@/constants/media";
 
 const travelAgencySchema = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
   name: "Skardu Tourism",
   url: "https://katpanadesert.com/",
-  telephone: "+923438160801",
+  telephone: "+923430249240",
   description:
     "Premium hotel booking, rent a car, and guided Skardu tourism services focused on Katpana Desert, Shangrila, Upper Kachura, Deosai, and Shigar.",
   areaServed: ["Katpana Desert", "Skardu", "Shigar", "Deosai National Park"],
   touristType: ["Families", "Adventure travelers", "Honeymoon travelers", "International tourists"],
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+923438160801",
+    telephone: "+923430249240",
     contactType: "booking",
     availableLanguage: ["English", "Urdu"]
   },
@@ -35,12 +35,18 @@ const websiteSchema = {
 const videoSchema = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  name: "Pakistan Katpana Desert Skardu travel video",
-  description: "A Skardu tourism video featuring Katpana Desert, mountain scenery, and the cold desert landscape.",
+  name: "Skardu destination travel video",
+  description: "A Skardu tourism video featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
   thumbnailUrl: "https://katpanadesert.com/images/katpana-skardu-hero.png",
   uploadDate: "2023-12-08",
-  contentUrl: KATPANA_VIDEO_URL,
-  embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
+  contentUrl: `https://katpanadesert.com${SKARDU_HERO_VIDEO_URL}`,
+  embedUrl: "https://www.pexels.com/video/pakistan-beautiful-view-lake-and-mountain-19150354/",
+  associatedMedia: {
+    "@type": "VideoObject",
+    name: "Katpana Desert Skardu travel video",
+    contentUrl: KATPANA_VIDEO_URL,
+    embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
+  }
 };
 
 const faqSchema = {

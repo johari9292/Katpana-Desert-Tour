@@ -7,10 +7,10 @@ import AnimatedSection from "./AnimatedSection";
 import DateField from "./DateField";
 
 const cars = [
-  { name: "4x4 Jeep", detail: "Karakoram routes", seats: "4 seats", price: "PKR 18k-28k/day" },
-  { name: "Corolla/Civic", detail: "City and lake drives", seats: "4 seats", price: "PKR 10k-16k/day" },
-  { name: "Hiace Van", detail: "Groups and families", seats: "12 seats", price: "PKR 22k-35k/day" },
-  { name: "Land Cruiser", detail: "Expeditions", seats: "5 seats", price: "PKR 35k-55k/day" }
+  { name: "4x4 Jeep", detail: "Karakoram routes", seats: "4 seats" },
+  { name: "Corolla/Civic", detail: "City and lake drives", seats: "4 seats" },
+  { name: "Hiace Van", detail: "Groups and families", seats: "12 seats" },
+  { name: "Land Cruiser", detail: "Expeditions", seats: "5 seats" }
 ];
 
 export default function CarRental() {
@@ -48,7 +48,6 @@ export default function CarRental() {
                       <span className="block font-black text-skardu-snow">{car.name}</span>
                       <span className="block text-sm text-skardu-ash">{car.detail} / {car.seats}</span>
                     </span>
-                    <span className="text-right text-xs font-bold text-skardu-gold">{car.price}</span>
                     <AnimatePresence>
                       {active ? (
                         <motion.span

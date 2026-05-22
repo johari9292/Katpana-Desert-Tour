@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Nav from "./Nav";
 import Marquee from "./Marquee";
+import VideoShowcase from "./VideoShowcase";
 import HotelBooking from "./HotelBooking";
 import CarRental from "./CarRental";
 import Stats from "./Stats";
@@ -24,6 +25,7 @@ export default function SkarduLanding() {
       <Nav />
       <Hero />
       <Marquee />
+      <VideoShowcase />
       <HotelBooking />
       <CarRental />
       <Stats />

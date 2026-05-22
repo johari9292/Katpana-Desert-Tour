@@ -6,7 +6,8 @@ Next.js tourism website for Skardu services focused on:
 - Skardu rent a car services
 - Skardu attraction point tours
 - Suggested routes for Shangrila, Upper Kachura, Deosai, Shigar Fort, and Manthokha Waterfall
-- Autoplaying Katpana Desert hero video with Skardu attraction-point routing
+- Downloaded local Skardu hero video with animated destination-point routing
+- Clean lower-page Katpana Desert video preview
 
 ## Local Development
 
