@@ -15,6 +15,7 @@
     <meta name="author" content="Katpana Desert Tours">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Katpana Desert Hotels, Car Rentals & Skardu Tours">
+    <meta property="og:site_name" content="Katpana Desert Tours">
     <meta
       property="og:description"
       content="Plan a Skardu trip around Katpana Desert with hotel stays, reliable cars, local drivers, and routes to the region's best attraction points."
@@ -32,14 +33,30 @@
         "@type": "TravelAgency",
         "name": "Katpana Desert Tours",
         "url": "https://katpanadesert.com/",
+        "telephone": "+923438160801",
         "description": "Hotel booking, rent a car, and guided Skardu tourism services focused on Katpana Desert and nearby attraction points.",
         "areaServed": ["Katpana Desert", "Skardu", "Shigar", "Deosai National Park"],
         "touristType": ["Families", "Adventure travelers", "Honeymoon travelers", "International tourists"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+923438160801",
+          "contactType": "booking",
+          "availableLanguage": ["English", "Urdu"]
+        },
         "makesOffer": [
           {"@type": "Offer", "name": "Katpana Desert hotel booking"},
           {"@type": "Offer", "name": "Skardu rent a car with local driver"},
           {"@type": "Offer", "name": "Skardu attraction point tours"}
         ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Katpana Desert Tours",
+        "alternateName": ["Katpana Desert", "katpanadesert.com"],
+        "url": "https://katpanadesert.com/"
       }
     </script>
   </head>
@@ -221,14 +238,17 @@
           <p class="eyebrow">Booking request</p>
           <h2 id="booking-title">Start a Katpana Desert and Skardu travel quote</h2>
           <p>
-            Replace the contact details with your WhatsApp number, email, and real hotel
-            partners before publishing. The layout is ready for leads and SEO traffic.
+            Send your hotel, car rental, or Skardu tour request directly on WhatsApp.
+            We will receive your answers with the booking questions included.
           </p>
+          <a class="whatsapp-link" href="https://wa.me/923438160801" target="_blank" rel="noopener">
+            WhatsApp: 0343 8160801
+          </a>
         </div>
-        <form class="booking-form">
+        <form id="booking-form" class="booking-form">
           <label>
             Travel service
-            <select aria-label="Select travel service">
+            <select name="service" aria-label="Select travel service" required>
               <option>Hotel booking near Katpana Desert</option>
               <option>Skardu rent a car</option>
               <option>Full Skardu tour package</option>
@@ -236,24 +256,58 @@
           </label>
           <label>
             Travel date
-            <input type="date" aria-label="Travel date">
+            <input name="date" type="date" aria-label="Travel date">
           </label>
           <label>
             Travelers
-            <input type="number" min="1" value="2" aria-label="Number of travelers">
+            <input name="travelers" type="number" min="1" value="2" aria-label="Number of travelers" required>
           </label>
           <label>
             Message
-            <textarea rows="4" placeholder="Tell us your hotel type, car preference, and attractions you want to visit."></textarea>
+            <textarea name="message" rows="4" placeholder="Tell us your hotel type, car preference, and attractions you want to visit."></textarea>
           </label>
-          <button type="button">Request booking quote</button>
+          <button type="submit">Request booking quote on WhatsApp</button>
         </form>
       </section>
     </main>
 
     <footer class="footer">
-      <p>Katpana Desert Tours - Skardu hotels, rent a car, and attraction point planning.</p>
+      <p>Katpana Desert Tours - Skardu hotels, rent a car, and attraction point planning. WhatsApp: 0343 8160801</p>
       <a href="#top">Back to top</a>
     </footer>
+    <script>
+      const bookingForm = document.querySelector("#booking-form");
+      const whatsappNumber = "923438160801";
+
+      bookingForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(bookingForm);
+        const service = formData.get("service") || "Not selected";
+        const date = formData.get("date") || "Flexible / not selected";
+        const travelers = formData.get("travelers") || "Not selected";
+        const message = formData.get("message") || "No extra message";
+
+        const whatsappMessage = [
+          "Katpana Desert Tours booking request",
+          "",
+          "Question: Which travel service do you need?",
+          `Answer: ${service}`,
+          "",
+          "Question: What is your travel date?",
+          `Answer: ${date}`,
+          "",
+          "Question: How many travelers?",
+          `Answer: ${travelers}`,
+          "",
+          "Question: Any hotel, car, or attraction details?",
+          `Answer: ${message}`,
+          "",
+          "Source: Katpana Desert Skardu tourism website"
+        ].join("\n");
+
+        window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+      });
+    </script>
   </body>
 </html>
