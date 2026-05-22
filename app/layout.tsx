@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const siteUrl = "https://katpanadesert.com";
-const title = "Katpana Desert Hotels, Car Rentals & Skardu Tours | Skardu Tourism";
+const title = "Skardu Tourism | Book Hotels & Cars via WhatsApp";
 const description =
-  "Book Katpana Desert hotels, Skardu rent a car services, and guided tours to Shangrila, Deosai, Upper Kachura, Shigar Fort, Manthokha Waterfall, and top Skardu attractions.";
+  "Plan a cinematic Skardu journey with Katpana Desert hotels, Skardu rent a car, Shangrila Lake, Upper Kachura, Deosai, Shigar Fort, and WhatsApp booking.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -59,7 +59,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-skardu-void font-body text-skardu-snow">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-0 opacity-[0.04] animate-grain"
+        >
+          <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+            <filter id="grain-noise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#grain-noise)" />
+          </svg>
+        </div>
+        {children}
+      </body>
     </html>
   );
 }

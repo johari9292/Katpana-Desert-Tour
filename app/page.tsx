@@ -1,13 +1,14 @@
-import HomePage from "@/components/HomePage";
+import SkarduLanding from "@/components/SkarduLanding";
+import { KATPANA_VIDEO_URL } from "@/constants/media";
 
 const travelAgencySchema = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
-  name: "Katpana Desert Tours",
+  name: "Skardu Tourism",
   url: "https://katpanadesert.com/",
   telephone: "+923438160801",
   description:
-    "Hotel booking, rent a car, and guided Skardu tourism services focused on Katpana Desert and nearby attraction points.",
+    "Premium hotel booking, rent a car, and guided Skardu tourism services focused on Katpana Desert, Shangrila, Upper Kachura, Deosai, and Shigar.",
   areaServed: ["Katpana Desert", "Skardu", "Shigar", "Deosai National Park"],
   touristType: ["Families", "Adventure travelers", "Honeymoon travelers", "International tourists"],
   contactPoint: {
@@ -26,9 +27,20 @@ const travelAgencySchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Katpana Desert Tours",
-  alternateName: ["Katpana Desert", "katpanadesert.com"],
+  name: "Skardu Tourism",
+  alternateName: ["Katpana Desert Tours", "Katpana Desert", "katpanadesert.com"],
   url: "https://katpanadesert.com/"
+};
+
+const videoSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: "Pakistan Katpana Desert Skardu travel video",
+  description: "A Skardu tourism video featuring Katpana Desert, mountain scenery, and the cold desert landscape.",
+  thumbnailUrl: "https://katpanadesert.com/images/katpana-skardu-hero.png",
+  uploadDate: "2023-12-08",
+  contentUrl: KATPANA_VIDEO_URL,
+  embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
 };
 
 const faqSchema = {
@@ -91,7 +103,13 @@ export default function Page() {
           __html: JSON.stringify(faqSchema)
         }}
       />
-      <HomePage />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(videoSchema)
+        }}
+      />
+      <SkarduLanding />
     </>
   );
 }
