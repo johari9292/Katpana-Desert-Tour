@@ -1,20 +1,31 @@
 # Katpana Desert Tours
 
-Static SEO landing page for Skardu tourism services focused on:
+Next.js tourism website for Skardu services focused on:
 
 - Katpana Desert hotel booking
 - Skardu rent a car services
 - Skardu attraction point tours
 - Suggested routes for Shangrila, Upper Kachura, Deosai, Shigar Fort, and Manthokha Waterfall
 
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
 ## Publish
 
-This project can be published with GitHub Pages because it is plain HTML and CSS.
+The project is configured for static export with Next.js, so it can be deployed to Vercel, Netlify, Cloudflare Pages, or GitHub Pages.
 
-1. Update `https://katpanadesert.com/` in `index.html`, `robots.txt`, and `sitemap.xml` if the final domain is different.
-2. Replace the placeholder booking details and connect the form to WhatsApp, email, or a backend.
-3. Push the project to GitHub and enable GitHub Pages from the repository settings.
+```bash
+npm run build
+```
+
+The static output is generated in `out/`.
 
 ## SEO Notes
 
-The homepage includes title tags, meta description, Open Graph tags, canonical URL, schema markup, descriptive headings, and internal sections targeting Skardu tourism search intent.
+The homepage includes Next.js metadata, canonical URL, Open Graph tags, generated `robots.txt`, generated `sitemap.xml`, TravelAgency schema, WebSite schema, FAQ schema, descriptive headings, route content, and long-tail Skardu tourism search intent.
