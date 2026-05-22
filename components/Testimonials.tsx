@@ -6,19 +6,15 @@ import AnimatedSection from "./AnimatedSection";
 
 const testimonials = [
   {
-    quote: "The WhatsApp booking was fast, the Prado arrived on time, and Katpana sunset felt unreal.",
+    quote: "The WhatsApp booking was fast, the TZ arrived on time, and Katpana sunset felt unreal.",
     name: "Ayesha Khan",
     place: "🇵🇰 Lahore"
   },
-  {
-    quote: "Our family wanted hotels, lakes, and Shigar Fort in three days. The route was smooth and calm.",
-    name: "Hamza Malik",
-    place: "🇦🇪 Dubai"
-  },
+
   {
     quote: "Upper Kachura and Deosai were handled perfectly. The driver knew every photo stop.",
     name: "Sarah Ahmed",
-    place: "🇬🇧 London"
+    place: "🇵🇰 Lahore"
   },
   {
     quote: "Skardu felt premium without losing its raw mountain soul. We booked everything from one chat.",
