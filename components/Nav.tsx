@@ -10,7 +10,8 @@ const quickLinks = [
   ["Hotels", "#hotels"],
   ["Cars", "#cars"],
   ["Articles", "/articles/"],
-  ["Reviews", "/testimonials/"]
+  ["Reviews", "/testimonials/"],
+    ["Trending", "/trending/"],
 ];
 
 export default function Nav() {
@@ -192,4 +193,3 @@ function MobileGroup({ title, href, items, onSelect }: { title: string; href: st
     </div>
   );
 }
-

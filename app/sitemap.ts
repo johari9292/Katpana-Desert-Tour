@@ -33,6 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9
     },
     {
+      url: `${SITE_URL}/trending/`,
+      lastModified: new Date("2026-05-23"),
+      changeFrequency: "daily",
+      priority: 0.88
+    },
+    {
       url: `${SITE_URL}/skardu-videos/`,
       lastModified: new Date("2026-05-22"),
       changeFrequency: "monthly",

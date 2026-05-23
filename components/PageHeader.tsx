@@ -8,7 +8,8 @@ const pageLinks = [
   ["Cars", "/#cars"],
   ["Why Skardu", "/why-skardu/"],
   ["Articles", "/articles/"],
-  ["Reviews", "/testimonials/"]
+  ["Reviews", "/testimonials/"],
+  ["Trending", "/trending/"]  
 ];
 
 export default function PageHeader() {

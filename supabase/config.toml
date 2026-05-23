@@ -1,0 +1,2 @@
+[functions.generate-trending-article]
+verify_jwt = false
