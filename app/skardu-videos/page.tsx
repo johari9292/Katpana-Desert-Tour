@@ -2,17 +2,16 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import VideoShowcase from "@/components/VideoShowcase";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { KATPANA_VIDEO_URL, SKARDU_HERO_VIDEO_URL } from "@/constants/media";
 
-const siteUrl = "https://katpanadesert.com";
-
 export const metadata: Metadata = {
-  title: "Skardu Videos | Katpana Desert and Gilgit Baltistan Travel Preview",
+  title: `Skardu Videos | ${BRAND_NAME} Travel Preview`,
   description:
-    "Watch Skardu travel videos for Katpana Desert, mountains, lakes, cold desert routes, hotels, car booking, and Gilgit Baltistan tour planning.",
+    "Watch Skardu travel videos for Katapana Desert, mountains, lakes, cold desert routes, hotels, car booking, and Gilgit Baltistan tour planning.",
   keywords: [
     "Skardu videos",
-    "Katpana Desert video",
+    "Katapana Desert video",
     "Skardu tourism video",
     "Gilgit Baltistan travel video",
     "Skardu travel preview",
@@ -22,18 +21,18 @@ export const metadata: Metadata = {
     canonical: "/skardu-videos/"
   },
   openGraph: {
-    title: "Skardu Videos and Katpana Desert Travel Preview",
+    title: "Skardu Videos and Katapana Desert Travel Preview",
     description:
-      "Watch Skardu and Katpana Desert travel videos before planning hotels, rent a car, and Gilgit Baltistan tours.",
-    url: `${siteUrl}/skardu-videos/`,
-    siteName: "Katpana Desert Tours",
+      "Watch Skardu and Katapana Desert travel videos before planning hotels, rent a car, and Gilgit Baltistan tours.",
+    url: `${SITE_URL}/skardu-videos/`,
+    siteName: BRAND_NAME,
     type: "website",
     images: [
       {
         url: "/images/katpana-skardu-hero.png",
         width: 1536,
         height: 1024,
-        alt: "Skardu and Katpana Desert travel video preview"
+        alt: "Skardu and Katapana Desert travel video preview"
       }
     ]
   }
@@ -42,15 +41,15 @@ export const metadata: Metadata = {
 const videoSchema = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  name: "Skardu and Katpana Desert travel videos",
+  name: "Skardu and Katapana Desert travel videos",
   description:
-    "Skardu tourism videos featuring Katpana Desert, mountain valleys, lakes, cold desert scenery, and Gilgit Baltistan travel planning.",
-  thumbnailUrl: `${siteUrl}/images/katpana-skardu-hero.png`,
+    "Skardu tourism videos featuring Katapana Desert, mountain valleys, lakes, cold desert scenery, and Gilgit Baltistan travel planning.",
+  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.png`,
   uploadDate: "2026-05-22",
-  contentUrl: `${siteUrl}${SKARDU_HERO_VIDEO_URL}`,
+  contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
   associatedMedia: {
     "@type": "VideoObject",
-    name: "Katpana Desert Skardu video",
+    name: "Katapana Desert Skardu video",
     contentUrl: KATPANA_VIDEO_URL
   }
 };
@@ -69,10 +68,10 @@ export default function SkarduVideosPage() {
         <div className="mx-auto max-w-7xl">
           <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Skardu videos</p>
           <h1 className="max-w-5xl font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-            Katpana Desert and Gilgit Baltistan travel video guide
+            Katapana Desert and Gilgit Baltistan travel video guide
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Watch the Skardu scenery before booking hotels, rent a car service, airport pickup, Katpana Desert sunset
+            Watch the Skardu scenery before booking hotels, rent a car service, airport pickup, Katapana Desert sunset
             plans, Kachura lake routes, Deosai day trips, and wider Gilgit Baltistan tours.
           </p>
         </div>

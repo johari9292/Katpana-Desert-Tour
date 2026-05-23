@@ -1,15 +1,18 @@
 import SkarduLanding from "@/components/SkarduLanding";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { KATPANA_VIDEO_URL, SKARDU_HERO_VIDEO_URL } from "@/constants/media";
+import { destinations } from "@/data/destinations";
+import { tourPackages } from "@/data/tours";
 
 const travelAgencySchema = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
-  name: "Skardu Tourism",
-  url: "https://katpanadesert.com/",
+  name: BRAND_NAME,
+  url: `${SITE_URL}/`,
   telephone: "+923430249240",
   description:
-    "Premium hotel booking, rent a car, and guided Skardu tourism services focused on Katpana Desert, Shangrila, Upper Kachura, Deosai, and Shigar.",
-  areaServed: ["Katpana Desert", "Skardu", "Shigar", "Deosai National Park"],
+    "Guided Skardu, Katapana Desert, Hunza, Deosai, Shigar, Khaplu, Astore, and K2-side tour planning with hotels, private cars, 4x4 routes, and WhatsApp booking.",
+  areaServed: destinations.map((destination) => destination.name),
   touristType: ["Families", "Adventure travelers", "Honeymoon travelers", "International tourists"],
   contactPoint: {
     "@type": "ContactPoint",
@@ -17,33 +20,29 @@ const travelAgencySchema = {
     contactType: "booking",
     availableLanguage: ["English", "Urdu"]
   },
-  makesOffer: [
-    { "@type": "Offer", name: "Katpana Desert hotel booking" },
-    { "@type": "Offer", name: "Skardu rent a car with local driver" },
-    { "@type": "Offer", name: "Skardu attraction point tours" }
-  ]
+  makesOffer: tourPackages.map((tour) => ({ "@type": "Offer", name: tour.title }))
 };
 
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Skardu Tourism",
-  alternateName: ["Katpana Desert Tours", "Katpana Desert", "katpanadesert.com"],
-  url: "https://katpanadesert.com/"
+  name: BRAND_NAME,
+  alternateName: ["Katapana Desert Tour", "Katapana Desert", "Skardu tour packages"],
+  url: `${SITE_URL}/`
 };
 
 const videoSchema = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
   name: "Skardu destination travel video",
-  description: "A Skardu tourism video featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
-  thumbnailUrl: "https://katpanadesert.com/images/katpana-skardu-hero.png",
+  description: "A Skardu tourism video featuring valleys, mountains, rivers, Katapana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
+  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.png`,
   uploadDate: "2023-12-08",
-  contentUrl: `https://katpanadesert.com${SKARDU_HERO_VIDEO_URL}`,
+  contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
   embedUrl: "https://www.pexels.com/video/pakistan-beautiful-view-lake-and-mountain-19150354/",
   associatedMedia: {
     "@type": "VideoObject",
-    name: "Katpana Desert Skardu travel video",
+    name: "Katapana Desert Skardu travel video",
     contentUrl: KATPANA_VIDEO_URL,
     embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
   }
@@ -55,10 +54,10 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Can I book a hotel near Katpana Desert?",
+      name: "Can I book a hotel near Katapana Desert?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. You can request hotels, guest houses, or desert-view stays near Katpana Desert and central Skardu through the WhatsApp booking form."
+        text: "Yes. You can request hotels, guest houses, or desert-view stays near Katapana Desert and central Skardu through the WhatsApp booking form."
       }
     },
     {
@@ -71,18 +70,18 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Which Skardu attraction points are best from Katpana Desert?",
+      name: "Which Skardu attraction points are best from Katapana Desert?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Popular routes include Katpana Desert, Shangrila Resort, Upper Kachura Lake, Deosai National Park, Shigar Fort, and Manthokha Waterfall."
+        text: "Popular routes include Katapana Desert, Kachura Lakes, Deosai National Park, Shigar Fort, Khaplu Palace, Hunza Valley, and K2 Base Camp trekking support."
       }
     },
     {
       "@type": "Question",
-      name: "Is Katpana Desert good for families and first-time tourists?",
+      name: "Is Katapana Desert good for families and first-time tourists?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Katpana Desert is close to Skardu city and airport, so it works well for families, honeymoon trips, groups, and first-time visitors."
+        text: "Yes. Katapana Desert is close to Skardu city and airport, so it works well for families, honeymoon trips, groups, and first-time visitors."
       }
     }
   ]

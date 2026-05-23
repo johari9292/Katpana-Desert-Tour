@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { SKARDU_HERO_VIDEO_URL, SKARDU_TOURIST_POINTS } from "@/constants/media";
 import { useParallax } from "@/hooks/useParallax";
 
-const subheadline = "Book your journey through the roof of the world";
+const subheadline = "Private Skardu, Hunza, Deosai, and Karakoram journeys";
 
 const stars = Array.from({ length: 76 }, (_, index) => ({
   id: index,
@@ -28,7 +28,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <Image
           src="/images/katpana-skardu-hero.png"
-          alt="Katpana Desert near Skardu with sand dunes, mountains, and a tour vehicle"
+          alt="Katapana Desert near Skardu with sand dunes, mountains, and a tour vehicle"
           fill
           priority
           sizes="100vw"
@@ -78,7 +78,7 @@ export default function Hero() {
             transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="mb-5 text-xs font-black uppercase tracking-[0.22em] text-skardu-gold"
           >
-            Skardu, Gilgit-Baltistan, Pakistan
+            Skardu and Gilgit-Baltistan, Pakistan
           </motion.p>
           <motion.h1
             initial={reduceMotion ? false : { opacity: 0, y: 60 }}
@@ -86,11 +86,11 @@ export default function Hero() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="font-display text-display font-bold text-skardu-snow"
           >
-            Where Earth
+            Katapana
             <br />
-            Touches Sky
+            Desert
             <br />
-            <span className="text-shimmer animate-shimmer">SKARDU</span>
+            <span className="text-shimmer animate-shimmer">Tour</span>
           </motion.h1>
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 28 }}
@@ -130,20 +130,20 @@ export default function Hero() {
             className="mt-9 flex flex-col gap-4 sm:flex-row"
           >
             <motion.a
-              href="#hotels"
+              href="#tours"
               whileHover={{ scale: 1.04, boxShadow: "0 0 34px rgba(201,168,76,0.34)" }}
               whileTap={{ scale: 0.97 }}
               className="rounded-full bg-skardu-gold px-8 py-3 text-center font-black text-skardu-void"
             >
-              Book a Hotel -&gt;
+              View Tours -&gt;
             </motion.a>
             <motion.a
-              href="#cars"
+              href="#destinations"
               whileHover={{ scale: 1.04, boxShadow: "0 0 34px rgba(62,173,167,0.3)" }}
               whileTap={{ scale: 0.97 }}
               className="rounded-full border border-skardu-teal px-8 py-3 text-center font-black text-skardu-teal"
             >
-              Rent a Car -&gt;
+              Explore Destinations -&gt;
             </motion.a>
           </motion.div>
         </div>

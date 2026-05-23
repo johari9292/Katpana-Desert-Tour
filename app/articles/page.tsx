@@ -2,19 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { articleCategories, articles } from "@/data/articles";
-
-const siteUrl = "https://katpanadesert.com";
 
 export const metadata: Metadata = {
   title: "Skardu Travel Articles | Gilgit Baltistan Tourism Guides",
   description:
-    "Read 40 Skardu and Gilgit Baltistan travel articles about Katpana Desert, hotels, rent a car routes, Deosai, Shigar, Kachura, Khaplu, seasons, culture, and itineraries.",
+    "Read 40 Skardu and Gilgit Baltistan travel articles about Katapana Desert, hotels, rent a car routes, Deosai, Shigar, Kachura, Khaplu, seasons, culture, and itineraries.",
   keywords: [
     "Skardu travel articles",
     "Skardu tourism blog",
     "Gilgit Baltistan travel guide",
-    "Katpana Desert guide",
+    "Katapana Desert guide",
     "Skardu rent a car",
     "Skardu hotels"
   ],
@@ -25,8 +24,8 @@ export const metadata: Metadata = {
     title: "Skardu Travel Articles",
     description:
       "Detailed Skardu and Gilgit Baltistan guides for places to visit, hotels, transport, itineraries, culture, and adventure travel.",
-    url: `${siteUrl}/articles/`,
-    siteName: "Katpana Desert Tours",
+    url: `${SITE_URL}/articles/`,
+    siteName: BRAND_NAME,
     type: "website",
     images: [
       {
@@ -47,7 +46,7 @@ const itemListSchema = {
   itemListElement: articles.map((article, index) => ({
     "@type": "ListItem",
     position: index + 1,
-    url: `${siteUrl}/articles/${article.slug}/`,
+    url: `${SITE_URL}/articles/${article.slug}/`,
     name: article.title,
     description: article.excerpt
   }))
@@ -73,7 +72,7 @@ export default function ArticlesPage() {
               Skardu and Gilgit Baltistan travel guides
             </h1>
             <p className="mt-6 text-lg leading-8 text-skardu-ash">
-              Explore 40 practical guides for Skardu tourism, Katpana Desert hotel booking, Skardu rent a car planning,
+              Explore 40 practical guides for Skardu tourism, Katapana Desert hotel booking, Skardu rent a car planning,
               Kachura lakes, Deosai, Shigar, Khaplu, culture, food, family trips, and seasonal routes.
             </p>
           </div>

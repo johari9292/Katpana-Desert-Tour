@@ -6,7 +6,7 @@ import AnimatedSection from "./AnimatedSection";
 
 const testimonials = [
   {
-    quote: "The WhatsApp booking was fast, the TZ arrived on time, and Katpana sunset felt unreal.",
+    quote: "The WhatsApp booking was fast, the TZ arrived on time, and Katapana sunset felt unreal.",
     name: "Ayesha Khan",
     place: "🇵🇰 Lahore"
   },

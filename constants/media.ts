@@ -4,10 +4,11 @@ export const KATPANA_VIDEO_URL =
 export const SKARDU_HERO_VIDEO_URL = "/videos/skardu-destinations.mp4";
 
 export const SKARDU_TOURIST_POINTS = [
-  "Katpana Desert",
-  "Shangrila Lake",
-  "Upper Kachura",
+  "Katapana Desert",
+  "Kachura Lakes",
   "Deosai Plains",
   "Shigar Fort",
-  "Satpara Lake"
+  "Khaplu Palace",
+  "Hunza Valley",
+  "K2 Base Camp"
 ];

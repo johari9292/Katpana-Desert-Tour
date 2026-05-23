@@ -1,13 +1,13 @@
-# Katpana Desert Tours
+# Katapana Desert Tour
 
-Next.js tourism website for Skardu services focused on:
+Next.js tourism website for northern Pakistan travel services focused on:
 
-- Katpana Desert hotel booking
-- Skardu rent a car services
-- Skardu attraction point tours
-- Suggested routes for Shangrila, Upper Kachura, Deosai, Shigar Fort, and Manthokha Waterfall
+- Tour package pages for Skardu, Hunza, Deosai, Khaplu, Shigar, Astore, and K2-side trekking
+- Destination pages with local images, overviews, activities, and route notes
+- Skardu hotel and rent a car services
+- Suggested routes for Katapana Desert, Kachura Lakes, Deosai, Shigar Fort, Khaplu Palace, Hunza, and Astore
 - Downloaded local Skardu hero video with animated destination-point routing
-- Clean lower-page Katpana Desert video preview
+- Clean lower-page Katapana Desert video preview
 
 ## Local Development
 

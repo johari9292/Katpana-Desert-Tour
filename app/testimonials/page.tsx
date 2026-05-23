@@ -2,16 +2,15 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import Testimonials from "@/components/Testimonials";
-
-const siteUrl = "https://katpanadesert.com";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 
 export const metadata: Metadata = {
-  title: "Skardu Travel Reviews | Katpana Desert Tours Testimonials",
+  title: `Skardu Travel Reviews | ${BRAND_NAME} Testimonials`,
   description:
-    "Read traveler reviews for Skardu hotel booking, Katpana Desert tours, Skardu rent a car, Upper Kachura, Deosai, Shigar, and Gilgit Baltistan trips.",
+    "Read traveler reviews for Skardu hotel booking, Katapana Desert tours, Skardu rent a car, Upper Kachura, Deosai, Shigar, and Gilgit Baltistan trips.",
   keywords: [
     "Skardu travel reviews",
-    "Katpana Desert tours reviews",
+    "Katapana Desert tours reviews",
     "Skardu tourism testimonials",
     "Skardu rent a car reviews",
     "Skardu hotel booking reviews",
@@ -23,9 +22,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Skardu Travel Reviews",
     description:
-      "Traveler testimonials for Skardu tourism, Katpana Desert stays, rent a car routes, and Gilgit Baltistan tours.",
-    url: `${siteUrl}/testimonials/`,
-    siteName: "Katpana Desert Tours",
+      "Traveler testimonials for Skardu tourism, Katapana Desert stays, rent a car routes, and Gilgit Baltistan tours.",
+    url: `${SITE_URL}/testimonials/`,
+    siteName: BRAND_NAME,
     type: "website",
     images: [
       {
@@ -41,8 +40,8 @@ export const metadata: Metadata = {
 const reviewSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  name: "Katpana Desert Tours",
-  url: `${siteUrl}/testimonials/`,
+  name: BRAND_NAME,
+  url: `${SITE_URL}/testimonials/`,
   telephone: "+923430249240",
   address: {
     "@type": "PostalAddress",
@@ -54,7 +53,7 @@ const reviewSchema = {
     {
       "@type": "Review",
       author: { "@type": "Person", name: "Ayesha Khan" },
-      reviewBody: "The WhatsApp booking was fast, the car arrived on time, and Katpana sunset felt unreal.",
+      reviewBody: "The WhatsApp booking was fast, the car arrived on time, and Katapana sunset felt unreal.",
       reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" }
     },
     {
@@ -83,7 +82,7 @@ export default function TestimonialsPage() {
             Skardu travel reviews from real routes
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Read feedback from travelers booking Skardu hotels, Katpana Desert visits, car rentals, Kachura lake days,
+            Read feedback from travelers booking Skardu hotels, Katapana Desert visits, car rentals, Kachura lake days,
             Deosai routes, Shigar tours, and wider Gilgit Baltistan travel plans.
           </p>
         </div>

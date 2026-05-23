@@ -1,27 +1,29 @@
 import type { Metadata } from "next";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import "./globals.css";
 
-const siteUrl = "https://katpanadesert.com";
-const title = "Skardu Tourism, Katpana Desert Hotels & Rent a Car | Gilgit Baltistan Guide";
+const title = `${BRAND_NAME} | Skardu, Hunza, Deosai and K2 Tour Packages`;
 const description =
-  "Plan Skardu tourism with Katpana Desert hotels, Skardu rent a car, WhatsApp booking, travel articles, Deosai, Shangrila Lake, Upper Kachura, Shigar, Khaplu, and Gilgit Baltistan guides.";
+  "Plan Skardu, Katapana Desert, Hunza, Deosai, Khaplu, Shigar, Astore, and K2 Base Camp travel with tour packages, destination guides, hotels, cars, and WhatsApp booking.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  applicationName: "Katpana Desert Tours",
+  metadataBase: new URL(SITE_URL),
+  applicationName: BRAND_NAME,
   title,
   description,
   keywords: [
     "Skardu tourism",
     "Skardu travel guide",
     "Gilgit Baltistan travel guide",
-    "Katpana Desert hotels",
-    "hotels near Katpana Desert",
+    "Katapana Desert hotels",
+    "hotels near Katapana Desert",
     "Skardu hotel booking",
     "Skardu rent a car",
     "rent a car in Skardu",
     "Skardu tour packages",
-    "Katpana Desert tour",
+    "Katapana Desert Tour",
+    "Hunza Skardu tour",
+    "K2 Base Camp trek",
     "places to visit in Skardu",
     "Deosai National Park from Skardu",
     "Shangrila Lake Skardu",
@@ -32,9 +34,9 @@ export const metadata: Metadata = {
     "Skardu family tour",
     "Skardu honeymoon trip"
   ],
-  authors: [{ name: "Katpana Desert Tours" }],
-  creator: "Katpana Desert Tours",
-  publisher: "Katpana Desert Tours",
+  authors: [{ name: BRAND_NAME }],
+  creator: BRAND_NAME,
+  publisher: BRAND_NAME,
   category: "Travel",
   formatDetection: {
     telephone: true,
@@ -47,9 +49,9 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description:
-      "Plan a Skardu trip around Katpana Desert with hotel stays, reliable cars, local drivers, and routes to the region's best attraction points.",
-    url: siteUrl,
-    siteName: "Katpana Desert Tours",
+      "Plan a Skardu trip around Katapana Desert with hotel stays, reliable cars, local drivers, and routes to the region's best attraction points.",
+    url: SITE_URL,
+    siteName: BRAND_NAME,
     locale: "en_PK",
     type: "website",
     images: [
@@ -57,7 +59,7 @@ export const metadata: Metadata = {
         url: "/images/katpana-skardu-hero.png",
         width: 1536,
         height: 1024,
-        alt: "Katpana Desert near Skardu with sand dunes, mountains, and tour vehicle"
+        alt: "Katapana Desert near Skardu with sand dunes, mountains, and tour vehicle"
       }
     ]
   },

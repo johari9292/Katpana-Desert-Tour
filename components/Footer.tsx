@@ -1,20 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { BRAND_NAME } from "@/constants/brand";
 import { buildWhatsAppURL, displayPhone, displayPhone2, WHATSAPP_CAR, WHATSAPP_HOTEL } from "@/constants/contact";
 
 export default function Footer() {
-  const hotelUrl = buildWhatsAppURL(WHATSAPP_HOTEL, "Hi! I want to book a hotel in Skardu near Katpana Desert.");
-  const carUrl = buildWhatsAppURL(WHATSAPP_CAR, "Hi! I want to rent a car in Skardu for my tour.");
+  const hotelUrl = buildWhatsAppURL(WHATSAPP_HOTEL, `Hi! I want to book a hotel for my ${BRAND_NAME} trip near Katapana Desert or Skardu.`);
+  const carUrl = buildWhatsAppURL(WHATSAPP_CAR, `Hi! I want to rent a car for my ${BRAND_NAME} route.`);
 
   return (
     <footer className="relative border-t border-skardu-mist/60 bg-gradient-to-r from-skardu-void via-skardu-stone to-skardu-void px-5 py-16 lg:px-8">
       <div className="mx-auto max-w-7xl text-center">
         <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Start the journey</p>
-        <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">Ready to Explore Skardu?</h2>
+        <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">Ready to Plan Northern Pakistan?</h2>
         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <WhatsAppButton href={hotelUrl}>Book hotel</WhatsAppButton>
-          <WhatsAppButton href={carUrl}>Rent a car</WhatsAppButton>
+          <WhatsAppButton href={hotelUrl}>Book stay</WhatsAppButton>
+          <WhatsAppButton href={carUrl}>Plan transport</WhatsAppButton>
         </div>
         <p className="mt-6 text-skardu-ash">WhatsApp: {displayPhone}, {displayPhone2}</p>
         {/* <div className="mt-8 flex justify-center gap-4 text-skardu-ash">
@@ -24,7 +25,7 @@ export default function Footer() {
             </motion.a>
           ))}
         </div> */}
-        <p className="mt-10 text-sm text-skardu-ash">(c) 2026 Skardu Tourism / Built with care in Pakistan</p>
+        <p className="mt-10 text-sm text-skardu-ash">(c) 2026 {BRAND_NAME} / Built with care in Pakistan</p>
       </div>
     </footer>
   );

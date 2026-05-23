@@ -3,7 +3,16 @@
 import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 
-const destinations = ["K2 Base Camp", "Shangrila Resort", "Deosai Plains", "Satpara Lake", "Shigar Fort", "Mantokha Waterfall", "Upper Kachura"];
+const destinations = [
+  "Katapana Desert",
+  "K2 Base Camp",
+  "Hunza Valley",
+  "Deosai Plains",
+  "Khaplu Palace",
+  "Shigar Fort",
+  "Astore Valley",
+  "Kachura Lakes"
+];
 
 export default function Marquee() {
   const items = [...destinations, ...destinations, ...destinations];
@@ -19,7 +28,7 @@ export default function Marquee() {
   }, [controls, reduceMotion]);
 
   return (
-    <section role="marquee" aria-label="Popular Skardu destinations" className="overflow-hidden border-y border-skardu-mist/60 bg-skardu-stone/30 py-6">
+    <section role="marquee" aria-label="Popular northern Pakistan destinations" className="overflow-hidden border-y border-skardu-mist/60 bg-skardu-stone/30 py-6">
       <motion.div
         animate={controls}
         onHoverStart={() => controls.stop()}
@@ -36,7 +45,7 @@ export default function Marquee() {
       >
         {items.map((destination, index) => (
           <span key={`${destination}-${index}`} className="inline-flex items-center gap-4">
-            <span className="text-skardu-gold">◆</span>
+            <span className="text-skardu-gold">*</span>
             {destination}
           </span>
         ))}
@@ -44,3 +53,4 @@ export default function Marquee() {
     </section>
   );
 }
+

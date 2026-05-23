@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import Stats from "@/components/Stats";
-
-const siteUrl = "https://katpanadesert.com";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 
 export const metadata: Metadata = {
   title: "Why Visit Skardu | Gilgit Baltistan Tourism, Hotels and Car Routes",
   description:
-    "Learn why Skardu is one of Gilgit Baltistan's best tourism bases for Katpana Desert, Deosai, Shangrila Lake, Upper Kachura, Shigar Fort, hotels, and rent a car routes.",
+    "Learn why Skardu is one of Gilgit Baltistan's best tourism bases for Katapana Desert, Deosai, Shangrila Lake, Upper Kachura, Shigar Fort, hotels, and rent a car routes.",
   keywords: [
     "why visit Skardu",
     "Skardu tourism",
@@ -24,9 +23,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Why Visit Skardu",
     description:
-      "Skardu travel reasons, route stats, hotel context, and tourism highlights for Katpana Desert and Gilgit Baltistan.",
-    url: `${siteUrl}/why-skardu/`,
-    siteName: "Katpana Desert Tours",
+      "Skardu travel reasons, route stats, hotel context, and tourism highlights for Katapana Desert and Gilgit Baltistan.",
+    url: `${SITE_URL}/why-skardu/`,
+    siteName: BRAND_NAME,
     type: "website",
     images: [
       {
@@ -44,11 +43,11 @@ const destinationSchema = {
   "@type": "TouristDestination",
   name: "Skardu, Gilgit-Baltistan",
   description:
-    "Skardu is a high-altitude tourism base for Katpana Desert, Deosai National Park, Shangrila Lake, Upper Kachura, Shigar Fort, Khaplu, and mountain routes.",
-  url: `${siteUrl}/why-skardu/`,
+    "Skardu is a high-altitude tourism base for Katapana Desert, Deosai National Park, Shangrila Lake, Upper Kachura, Shigar Fort, Khaplu, and mountain routes.",
+  url: `${SITE_URL}/why-skardu/`,
   touristType: ["Families", "Adventure travelers", "Honeymoon travelers", "Photographers"],
   includesAttraction: [
-    "Katpana Desert",
+    "Katapana Desert",
     "Deosai National Park",
     "Shangrila Lake",
     "Upper Kachura Lake",

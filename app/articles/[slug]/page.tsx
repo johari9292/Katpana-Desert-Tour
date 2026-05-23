@@ -3,9 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
+import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { articles, getArticleBySlug, getRelatedArticles } from "@/data/articles";
-
-const siteUrl = "https://katpanadesert.com";
 
 interface ArticlePageProps {
   params: {
@@ -39,12 +38,12 @@ export function generateMetadata({ params }: ArticlePageProps): Metadata {
     openGraph: {
       title: article.title,
       description: article.excerpt,
-      url: `${siteUrl}/articles/${article.slug}/`,
-      siteName: "Katpana Desert Tours",
+      url: `${SITE_URL}/articles/${article.slug}/`,
+      siteName: BRAND_NAME,
       type: "article",
       publishedTime: "2026-05-22",
       modifiedTime: article.updatedAt,
-      authors: ["Katpana Desert Tours"],
+      authors: [BRAND_NAME],
       images: [
         {
           url: "/images/katpana-skardu-hero.png",
@@ -71,26 +70,26 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   }
 
   const relatedArticles = getRelatedArticles(article, 3);
-  const articleUrl = `${siteUrl}/articles/${article.slug}/`;
+  const articleUrl = `${SITE_URL}/articles/${article.slug}/`;
 
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.excerpt,
-    image: `${siteUrl}/images/katpana-skardu-hero.png`,
+    image: `${SITE_URL}/images/katpana-skardu-hero.png`,
     datePublished: "2026-05-22",
     dateModified: article.updatedAt,
     author: {
       "@type": "Organization",
-      name: "Katpana Desert Tours"
+      name: BRAND_NAME
     },
     publisher: {
       "@type": "Organization",
-      name: "Katpana Desert Tours",
+      name: BRAND_NAME,
       logo: {
         "@type": "ImageObject",
-        url: `${siteUrl}/images/katpana-skardu-hero.png`
+        url: `${SITE_URL}/images/katpana-skardu-hero.png`
       }
     },
     mainEntityOfPage: articleUrl,
@@ -106,13 +105,13 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: `${siteUrl}/`
+        item: `${SITE_URL}/`
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Articles",
-        item: `${siteUrl}/articles/`
+        item: `${SITE_URL}/articles/`
       },
       {
         "@type": "ListItem",

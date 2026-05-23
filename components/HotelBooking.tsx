@@ -32,7 +32,7 @@ export default function HotelBooking() {
             Find Your Perfect Mountain Retreat
           </h2>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-skardu-ash">
-            From Serena-style comfort and Shangrila lake stays to boutique guesthouses near Katpana Desert, we shape
+            From Serena-style comfort and Shangrila lake stays to boutique guesthouses near Katapana Desert, we shape
             accommodation around your route, season, and group style.
           </p>
           <div className="mt-8 grid gap-3 text-sm text-skardu-ash sm:grid-cols-3">

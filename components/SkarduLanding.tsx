@@ -7,6 +7,9 @@ import HotelBooking from "./HotelBooking";
 import CarRental from "./CarRental";
 import Footer from "./Footer";
 import VideoShowcase from "./VideoShowcase";
+import TourPackages from "./TourPackages";
+import DestinationShowcase from "./DestinationShowcase";
+import AboutTour from "./AboutTour";
 
 const Hero = dynamic(() => import("./Hero"), {
   ssr: false,
@@ -19,9 +22,12 @@ export default function SkarduLanding() {
       <Nav />
       <Hero />
       <Marquee />
-            <VideoShowcase/>
+      <TourPackages />
+      <DestinationShowcase />
+      <AboutTour />
       <HotelBooking />
       <CarRental />
+      <VideoShowcase />
       <Footer />
     </main>
   );
