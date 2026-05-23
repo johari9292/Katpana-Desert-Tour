@@ -134,16 +134,7 @@ export default function TrendingArticles() {
                 ))}
               </div>
 
-              {activeArticle.trend_source_url ? (
-                <a
-                  href={activeArticle.trend_source_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-8 inline-flex rounded-full border border-skardu-teal px-6 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-teal"
-                >
-                  View source trend
-                </a>
-              ) : null}
+            
             </motion.article>
 
             <aside className="lg:sticky lg:top-28 lg:self-start">
