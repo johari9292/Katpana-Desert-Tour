@@ -2,24 +2,45 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const siteUrl = "https://katpanadesert.com";
-const title = "Skardu Tourism | Book Hotels & Cars via WhatsApp";
+const title = "Skardu Tourism, Katpana Desert Hotels & Rent a Car | Gilgit Baltistan Guide";
 const description =
-  "Plan a cinematic Skardu journey with Katpana Desert hotels, Skardu rent a car, Shangrila Lake, Upper Kachura, Deosai, Shigar Fort, and WhatsApp booking.";
+  "Plan Skardu tourism with Katpana Desert hotels, Skardu rent a car, WhatsApp booking, travel articles, Deosai, Shangrila Lake, Upper Kachura, Shigar, Khaplu, and Gilgit Baltistan guides.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: "Katpana Desert Tours",
   title,
   description,
   keywords: [
+    "Skardu tourism",
+    "Skardu travel guide",
+    "Gilgit Baltistan travel guide",
     "Katpana Desert hotels",
+    "hotels near Katpana Desert",
     "Skardu hotel booking",
     "Skardu rent a car",
-    "Skardu tourism",
+    "rent a car in Skardu",
     "Skardu tour packages",
     "Katpana Desert tour",
-    "places to visit in Skardu"
+    "places to visit in Skardu",
+    "Deosai National Park from Skardu",
+    "Shangrila Lake Skardu",
+    "Upper Kachura Lake",
+    "Shigar Fort Skardu",
+    "Khaplu Palace Gilgit Baltistan",
+    "Skardu itinerary",
+    "Skardu family tour",
+    "Skardu honeymoon trip"
   ],
   authors: [{ name: "Katpana Desert Tours" }],
+  creator: "Katpana Desert Tours",
+  publisher: "Katpana Desert Tours",
+  category: "Travel",
+  formatDetection: {
+    telephone: true,
+    address: false,
+    email: false
+  },
   alternates: {
     canonical: "/"
   },
@@ -48,7 +69,14 @@ export const metadata: Metadata = {
   },
   robots: {
     index: true,
-    follow: true
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    }
   }
 };
 

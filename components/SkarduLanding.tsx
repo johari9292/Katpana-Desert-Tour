@@ -3,20 +3,14 @@
 import dynamic from "next/dynamic";
 import Nav from "./Nav";
 import Marquee from "./Marquee";
-import VideoShowcase from "./VideoShowcase";
 import HotelBooking from "./HotelBooking";
 import CarRental from "./CarRental";
-import Stats from "./Stats";
 import Footer from "./Footer";
+import VideoShowcase from "./VideoShowcase";
 
 const Hero = dynamic(() => import("./Hero"), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-skardu-void" aria-label="Loading Skardu hero" />
-});
-
-const Testimonials = dynamic(() => import("./Testimonials"), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-skardu-void" aria-label="Loading traveler testimonials" />
 });
 
 export default function SkarduLanding() {
@@ -25,11 +19,9 @@ export default function SkarduLanding() {
       <Nav />
       <Hero />
       <Marquee />
-      <VideoShowcase />
+            <VideoShowcase/>
       <HotelBooking />
       <CarRental />
-      <Stats />
-      <Testimonials />
       <Footer />
     </main>
   );

@@ -6,8 +6,9 @@ import { useState } from "react";
 const navLinks = [
   ["Hotels", "#hotels"],
   ["Cars", "#cars"],
-  ["Why Skardu", "#why-skardu"],
-  ["Reviews", "#testimonials"]
+  ["Why Skardu", "/why-skardu/"],
+  ["Articles", "/articles/"],
+  ["Reviews", "/testimonials/"]
 ];
 
 export default function Nav() {
@@ -52,7 +53,7 @@ export default function Nav() {
         </motion.div>
         <div className="hidden lg:block">
           <motion.a
-            href="#booking"
+            href="#hotels"
             whileHover={{ scale: 1.04, boxShadow: "0 0 28px rgba(201,168,76,0.32)" }}
             whileTap={{ scale: 0.96 }}
             className="rounded-full bg-skardu-gold px-5 py-3 text-sm font-black text-skardu-void"
@@ -89,7 +90,7 @@ export default function Nav() {
                   {label}
                 </a>
               ))}
-              <a className="text-skardu-gold" href="#booking" onClick={() => setOpen(false)}>
+              <a className="text-skardu-gold" href="#hotels" onClick={() => setOpen(false)}>
                 Book now
               </a>
             </div>

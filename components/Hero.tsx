@@ -32,10 +32,10 @@ export default function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-35"
+          className="object-cover opacity-45"
         />
         <video
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover opacity-90 brightness-110 contrast-105 saturate-110"
           src={SKARDU_HERO_VIDEO_URL}
           poster="/images/katpana-skardu-hero.png"
           autoPlay
@@ -45,7 +45,8 @@ export default function Hero() {
           preload="auto"
           aria-label="Autoplaying Skardu destination video with mountains, valleys, and rivers"
         />
-<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(62,173,167,.32),transparent_32%),linear-gradient(90deg,rgba(8,12,16,.78),rgba(8,12,16,.42)_48%,rgba(8,12,16,.08)),linear-gradient(180deg,rgba(8,12,16,.22),#080C10_88%)]" />      </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(62,173,167,.24),transparent_32%),linear-gradient(90deg,rgba(8,12,16,.58),rgba(8,12,16,.28)_48%,rgba(8,12,16,.04)),linear-gradient(180deg,rgba(8,12,16,.12),#080C10_92%)]" />
+      </div>
 
       <div aria-hidden="true" className="absolute inset-0">
         {stars.map((star) => (

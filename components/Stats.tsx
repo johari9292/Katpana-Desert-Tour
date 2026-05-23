@@ -11,7 +11,7 @@ const stats = [
   { value: 4500, suffix: "m", label: "Deosai Plateau height" }
 ];
 
-const features = ["Halal Food", "Local Guides", "Satellite WiFi", "Medical Support", "24/7 Booking"];
+const features = ["Halal Food", "Local Guides", "WiFi", "Medical Support", "24/7 Booking"];
 
 export default function Stats() {
   return (
