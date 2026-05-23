@@ -6,6 +6,11 @@ export interface TourItineraryDay {
   body: string;
 }
 
+export interface TourFaq {
+  question: string;
+  answer: string;
+}
+
 export interface TourPackage {
   slug: string;
   title: string;
@@ -25,6 +30,17 @@ export interface TourPackage {
   included: string[];
   excluded: string[];
   keywords: string[];
+  primaryKeyword?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  canonicalPath?: string;
+  schemaType?: string;
+  faqs?: TourFaq[];
+  author?: string;
+  lastUpdated?: string;
+  relatedLinks?: { label: string; href: string }[];
+  imageAlt?: string;
+  imageTitle?: string;
 }
 
 export const tourPackages: TourPackage[] = [
@@ -370,6 +386,189 @@ export const tourPackages: TourPackage[] = [
     included: ["Private transport planning", "Driver support", "Route condition checks", "Hotel coordination", "Flexible day order"],
     excluded: ["Flights", "Meals", "Permits where required", "Specialist trekking guide", "Personal gear"],
     keywords: ["Astore Valley tour", "Rama Meadows", "Nanga Parbat viewpoint", "Deosai to Astore", "Skardu side trip"]
+  },
+  {
+    slug: "k2-trek-packages",
+    title: "K2 Base Camp Trek Packages from Skardu",
+    duration: "18 to 21 days",
+    category: "Trekking expedition",
+    region: "Skardu, Askole, Baltoro Glacier, Concordia and K2 Base Camp",
+    difficulty: "Challenging",
+    bestSeason: "June to August",
+    priceFrom: "Custom expedition quote",
+    image: "/images/places/k2-base-camp.jpg",
+    badge: "K2 trek",
+    primaryKeyword: "K2 base camp trek packages",
+    metaTitle: "K2 Base Camp Trek Packages | Katpana Desert Tour",
+    metaDescription: "K2 base camp trek packages from Skardu with permits, porters, Askole jeeps, camps and buffers. Plan now.",
+    canonicalPath: "/tours/k2-trek-packages",
+    schemaType: "TouristTrip",
+    imageAlt: "K2 base camp trek packages on Baltoro Glacier Karakoram Pakistan",
+    imageTitle: "K2 base camp trek packages from Skardu to Concordia",
+    overview:
+      "K2 base camp trek packages need careful Skardu logistics, restricted-area permit guidance, Askole jeep timing, porter systems, glacier camps, food planning, and realistic weather buffers across the Karakoram.",
+    destinationOverview:
+      "The K2 route starts in Skardu, moves through Shigar and Askole, then follows the Baltoro Glacier to Concordia and K2 Base Camp at about 5,150m. It is a serious expedition trek, not a casual sightseeing tour.",
+    activities: ["Glacier trekking", "Camping", "Porter coordination", "Permit guidance", "Altitude acclimatization"],
+    highlights: [
+      "18 to 21 day K2 base camp trek package planning from Islamabad or Skardu",
+      "Askole jeep route, Baltoro Glacier camps, Concordia and K2 Base Camp objective",
+      "Porter, cook, guide, camping, food, and permit coordination guidance",
+      "Weather buffer planning for Skardu flights, road access, and high camps"
+    ],
+    itinerary: [
+      {
+        day: "Days 1-2",
+        title: "Islamabad or Skardu arrival and trek briefing",
+        body: "Confirm flights, hotels, guide team, permit documents, personal gear, porter loads, and altitude planning before leaving Skardu."
+      },
+      {
+        day: "Day 3",
+        title: "Skardu to Askole by jeep",
+        body: "Drive through Shigar and Braldu Valley to Askole or the safest available roadhead, based on current track and bridge conditions."
+      },
+      {
+        day: "Days 4-9",
+        title: "Askole to Urdukas and Goro camps",
+        body: "Walk through Paiju, Khoburtse, Urdukas, and glacier camps with steady altitude gain, camp routines, and porter-supported trekking."
+      },
+      {
+        day: "Days 10-13",
+        title: "Concordia and K2 Base Camp",
+        body: "Reach Concordia, assess weather and fitness, then attempt the K2 Base Camp day if conditions remain safe."
+      },
+      {
+        day: "Days 14-21",
+        title: "Return trek, Skardu buffer, and departure",
+        body: "Retrace the route to Askole and Skardu, keeping buffer days for weather, road delays, rest, and onward flights."
+      }
+    ],
+    included: ["Local trek planning", "Guide and porter coordination guidance", "Askole jeep planning", "Permit guidance", "Pre-trek Skardu hotel support"],
+    excluded: ["Flights", "Personal gear", "Rescue insurance", "Visa fees", "Tips", "Unlisted meals"],
+    keywords: ["K2 base camp trek packages", "K2 base camp trek", "Baltoro Glacier", "Concordia Pakistan", "Skardu trekking"],
+    faqs: [
+      {
+        question: "Is a permit required for K2 base camp?",
+        answer:
+          "Yes, foreign trekkers normally need restricted-area trekking permits for K2 base camp. A local operator helps prepare documents, guide lists, porter details, and route paperwork. Requirements can change, so confirm permits before flights, hotel deposits, or expedition dates are locked."
+      },
+      {
+        question: "How many days are needed for K2 base camp trek packages?",
+        answer:
+          "Most K2 base camp trek packages need 18 to 21 days from Islamabad, including Skardu preparation, Askole jeep travel, Baltoro Glacier camps, Concordia, K2 Base Camp, return days, and weather buffers. Strong teams should still avoid removing buffer days."
+      },
+      {
+        question: "What is included in K2 base camp trek packages?",
+        answer:
+          "A well-planned package can include guide coordination, porter systems, cook team, tents, meals on trek, Askole jeeps, permit guidance, and Skardu hotel support. Always compare the exact inclusion list because cheaper quotes may remove food quality, staff strength, or safety buffers."
+      },
+      {
+        question: "How difficult is the K2 base camp trek?",
+        answer:
+          "The K2 base camp trek is challenging because it is long, remote, high, and mostly camping-based. Trekkers should train with loaded hikes, prepare for glacier walking, and understand altitude symptoms. It is not technical climbing, but it needs serious endurance."
+      },
+      {
+        question: "What is the best month for the K2 base camp trek?",
+        answer:
+          "June to August is the main K2 base camp trek window. July often gives the most active trekking season, while late June and August can be quieter. Weather still changes fast in the Karakoram, so keep flexible Skardu flight and road buffers."
+      }
+    ],
+    author: "Katpana Desert Tour Local Planning Team",
+    lastUpdated: "May 2026",
+    relatedLinks: [
+      { label: "K2 base camp trek", href: "/treks/k2-base-camp/" },
+      { label: "Baltoro Glacier expedition", href: "/treks/baltoro-glacier/" },
+      { label: "best trekking in Pakistan", href: "/pakistan-trekking-guide/" }
+    ]
+  },
+  {
+    slug: "jeep-safari-skardu",
+    title: "Skardu Jeep Safari Guide and 4x4 Tour",
+    duration: "3 to 6 days",
+    category: "Jeep safari",
+    region: "Skardu, Deosai, Basho, Shigar, Sarfaranga and Satpara",
+    difficulty: "Moderate",
+    bestSeason: "June to September for high routes, April to October for lower valleys",
+    priceFrom: "Custom 4x4 quote",
+    image: "/images/places/deosai-plains.jpg",
+    badge: "4x4 safari",
+    primaryKeyword: "Skardu jeep safari guide",
+    metaTitle: "Skardu Jeep Safari Guide | Katpana Desert Tour",
+    metaDescription: "Skardu jeep safari guide for Deosai, Basho, Shigar, Satpara and cold desert 4x4 routes. Book now.",
+    canonicalPath: "/tours/jeep-safari-skardu",
+    schemaType: "TouristTrip",
+    imageAlt: "Skardu jeep safari guide across Deosai National Park plateau Pakistan",
+    imageTitle: "Skardu jeep safari guide for Deosai Basho and cold desert routes",
+    overview:
+      "This Skardu jeep safari guide covers 4x4 routes for Deosai, Basho Valley, Sarfaranga Cold Desert, Satpara Lake, Shigar, and seasonal high tracks where regular cars are not the right choice.",
+    destinationOverview:
+      "Skardu jeep routes combine alpine lakes, cold desert, high plateau roads, river valleys, and mountain village tracks. Route safety depends on weather, driver experience, vehicle condition, and realistic daily timing.",
+    activities: ["4x4 safari", "High plateau photography", "Cold desert drive", "Mountain village stops", "Lake viewpoints"],
+    highlights: [
+      "Deosai National Park safari with Satpara, Bara Pani, Kala Pani and Sheosar Lake",
+      "Basho Valley and rough meadow tracks when local conditions are favorable",
+      "Shigar, Sarfaranga Cold Desert, and cultural valley add-ons",
+      "Driver, fuel, timing, road condition, and backup-route planning"
+    ],
+    itinerary: [
+      {
+        day: "Day 1",
+        title: "Skardu arrival and Katpana Desert",
+        body: "Start with an easy airport pickup, hotel check-in, vehicle briefing, and Katpana Desert sunset route."
+      },
+      {
+        day: "Day 2",
+        title: "Deosai National Park 4x4 safari",
+        body: "Drive through Satpara toward Deosai, Bara Pani, Kala Pani, and Sheosar Lake if the road and weather allow."
+      },
+      {
+        day: "Day 3",
+        title: "Shigar and Sarfaranga Cold Desert",
+        body: "Use a lower-altitude 4x4 day for Shigar Fort, valley stops, and Sarfaranga sand views."
+      },
+      {
+        day: "Days 4-6",
+        title: "Basho Valley or custom extension",
+        body: "Add Basho, Khaplu, or Astore-side routes depending on season, group comfort, and current track reports."
+      }
+    ],
+    included: ["4x4 route planning", "Local driver coordination", "Airport and hotel pickup planning", "Road condition checks", "Backup route advice"],
+    excluded: ["Flights", "Meals", "Park fees", "Personal gear", "Travel insurance"],
+    keywords: ["Skardu jeep safari guide", "Skardu 4x4 tour", "Deosai safari", "Basho Valley jeep", "Sarfaranga Cold Desert"],
+    faqs: [
+      {
+        question: "Do I need a jeep for Deosai National Park?",
+        answer:
+          "Yes, a jeep or strong 4x4 is recommended for Deosai National Park because the road includes rough sections, water crossings, and fast weather changes. A local driver understands safe timing, plateau conditions, and when to turn back."
+      },
+      {
+        question: "What is the best time for a Skardu jeep safari?",
+        answer:
+          "June to September is best for Deosai, Basho, and higher jeep routes. April to October works for lower routes like Katpana, Shigar, Sarfaranga, Satpara, and Kachura. Always confirm road status close to departure."
+      },
+      {
+        question: "Can families do a Skardu jeep safari?",
+        answer:
+          "Families can enjoy Skardu jeep safaris when the route is chosen carefully. Kachura, Shigar, Katpana, and Satpara are easier. Deosai and Basho need longer rough-road tolerance, warm layers, snacks, and flexible timing."
+      },
+      {
+        question: "How long should a Skardu 4x4 tour be?",
+        answer:
+          "A short Skardu 4x4 tour can take 3 days for Katpana, Deosai, and Shigar. A better plan uses 5 to 6 days, adding recovery time, weather buffers, Kachura Lakes, Sarfaranga, Basho, or Khaplu without rushing every route."
+      },
+      {
+        question: "What should I carry on a Skardu jeep safari?",
+        answer:
+          "Carry warm layers, water, snacks, sunglasses, sunscreen, cash, camera protection, personal medicine, and a power bank. High routes can feel cold even in summer, and phone coverage may drop outside Skardu city."
+      }
+    ],
+    author: "Katpana Desert Tour Local Planning Team",
+    lastUpdated: "May 2026",
+    relatedLinks: [
+      { label: "Deosai National Park safari", href: "/destinations/deosai-national-park/" },
+      { label: "Skardu travel guide", href: "/skardu-travel-guide/" },
+      { label: "things to do in Skardu in summer", href: "/blog/things-to-do-skardu-summer/" }
+    ]
   }
 ];
 

@@ -37,9 +37,11 @@ export default function DestinationShowcase() {
               <div className="relative">
                 <Image
                   src={destination.image}
-                  alt={`${destination.name} destination view`}
+                  alt={destination.imageAlt ?? `${destination.name} destination view in Gilgit-Baltistan Pakistan`}
+                  title={destination.imageTitle ?? `${destination.name} Skardu destination guide`}
                   width={640}
                   height={420}
+                  sizes="(max-width: 768px) 100vw, 25vw"
                   className="aspect-[4/3] w-full object-cover opacity-75"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-skardu-void/85 via-skardu-void/20 to-transparent" />

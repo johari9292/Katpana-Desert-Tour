@@ -1,6 +1,3 @@
-"use client";
-
-import dynamic from "next/dynamic";
 import Nav from "./Nav";
 import Marquee from "./Marquee";
 import HotelBooking from "./HotelBooking";
@@ -10,11 +7,8 @@ import VideoShowcase from "./VideoShowcase";
 import TourPackages from "./TourPackages";
 import DestinationShowcase from "./DestinationShowcase";
 import AboutTour from "./AboutTour";
-
-const Hero = dynamic(() => import("./Hero"), {
-  ssr: false,
-  loading: () => <div className="min-h-screen bg-skardu-void" aria-label="Loading Skardu hero" />
-});
+import Testimonials from "./Testimonials";
+import Hero from "./Hero";
 
 export default function SkarduLanding() {
   return (
@@ -25,9 +19,12 @@ export default function SkarduLanding() {
       <TourPackages />
       <DestinationShowcase />
       <AboutTour />
+      <VideoShowcase />
       <HotelBooking />
       <CarRental />
-      <VideoShowcase />
+      
+      
+      <Testimonials/>
       <Footer />
     </main>
   );

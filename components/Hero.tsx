@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { SKARDU_HERO_VIDEO_URL, SKARDU_TOURIST_POINTS } from "@/constants/media";
-import { useParallax } from "@/hooks/useParallax";
 
 const subheadline = "Private Skardu, Hunza, Deosai, and Karakoram journeys";
 
-const stars = Array.from({ length: 76 }, (_, index) => ({
+const stars = Array.from({ length: 28 }, (_, index) => ({
   id: index,
   left: `${(index * 37) % 100}%`,
   top: `${(index * 61) % 84}%`,
@@ -18,31 +18,43 @@ const stars = Array.from({ length: 76 }, (_, index) => ({
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
-  const rearPeaks = useParallax([0, 500], [0, 80]);
-  const midPeaks = useParallax([0, 500], [0, 40]);
-  const { scrollY } = useScroll();
-  const mouseOpacity = useTransform(scrollY, [0, 220], [1, 0]);
+  const [loadVideo, setLoadVideo] = useState(false);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    const load = () => setLoadVideo(true);
+    const idleCallback = window.requestIdleCallback?.(load, { timeout: 2500 });
+    const timeout = window.setTimeout(load, 3500);
+
+    return () => {
+      if (idleCallback) window.cancelIdleCallback(idleCallback);
+      window.clearTimeout(timeout);
+    };
+  }, [reduceMotion]);
 
   return (
     <section id="top" className="relative isolate min-h-screen overflow-hidden bg-skardu-void">
       <div className="absolute inset-0">
         <Image
-          src="/images/katpana-skardu-hero.png"
+          src="/images/katpana-skardu-hero.jpg"
           alt="Katapana Desert near Skardu with sand dunes, mountains, and a tour vehicle"
+          title="Katpana Desert Tour hero image with Skardu sand dunes and Karakoram mountains"
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
           className="object-cover opacity-45"
         />
         <video
           className="absolute inset-0 h-full w-full object-cover opacity-90 brightness-110 contrast-105 saturate-110"
-          src={SKARDU_HERO_VIDEO_URL}
-          poster="/images/katpana-skardu-hero.png"
+          src={loadVideo ? SKARDU_HERO_VIDEO_URL : undefined}
+          poster="/images/katpana-skardu-hero.jpg"
           autoPlay
           loop
           muted
           playsInline
-          preload="auto"
+          preload="none"
           aria-label="Autoplaying Skardu destination video with mountains, valleys, and rivers"
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(62,173,167,.24),transparent_32%),linear-gradient(90deg,rgba(8,12,16,.58),rgba(8,12,16,.28)_48%,rgba(8,12,16,.04)),linear-gradient(180deg,rgba(8,12,16,.12),#080C10_92%)]" />
@@ -111,18 +123,14 @@ export default function Hero() {
               ))}
             </div>
           </motion.div>
-          <p className="mt-7 flex flex-wrap text-lg text-skardu-ash sm:text-xl">
-            {subheadline.split("").map((char, index) => (
-              <motion.span
-                key={`${char}-${index}`}
-                initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + index * 0.018, duration: 0.35 }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-          </p>
+          <motion.p
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.75, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-7 text-lg text-skardu-ash sm:text-xl"
+          >
+            {subheadline}
+          </motion.p>
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}

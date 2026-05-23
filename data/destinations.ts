@@ -11,6 +11,17 @@ export interface Destination {
   idealFor: string[];
   travelNote: string;
   keywords: string[];
+  primaryKeyword?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  canonicalPath?: string;
+  schemaType?: string;
+  faqs?: { question: string; answer: string }[];
+  author?: string;
+  lastUpdated?: string;
+  relatedLinks?: { label: string; href: string }[];
+  imageAlt?: string;
+  imageTitle?: string;
 }
 
 export const destinations: Destination[] = [
@@ -42,7 +53,13 @@ export const destinations: Destination[] = [
     activities: ["4x4 safari", "Wildlife-aware viewing", "Landscape photography", "Picnic stops"],
     idealFor: ["Adventure travelers", "Photographers", "Groups", "Nature lovers"],
     travelNote: "Use a local 4x4 driver, start early, and keep the day flexible because weather can shift quickly on the plains.",
-    keywords: ["Deosai National Park", "Sheosar Lake", "Skardu 4x4 tour", "Deosai Plains"]
+    keywords: ["Deosai National Park safari", "Sheosar Lake", "Skardu 4x4 tour", "Deosai Plains"],
+    primaryKeyword: "Deosai National Park safari",
+    metaTitle: "Deosai National Park Safari | Katpana Desert Tour",
+    metaDescription: "Deosai National Park safari guide with Sheosar Lake, 4x4 routes, weather, wildlife and Skardu timing. Book now.",
+    canonicalPath: "/destinations/deosai-national-park",
+    imageAlt: "Deosai National Park safari across high plateau and Sheosar Lake Pakistan",
+    imageTitle: "Deosai National Park safari from Skardu by 4x4"
   },
   {
     slug: "kachura-lakes",
@@ -72,7 +89,13 @@ export const destinations: Destination[] = [
     activities: ["Heritage tours", "Desert photography", "Cafe stops", "Cultural sightseeing"],
     idealFor: ["Culture travelers", "Photographers", "Families", "Trekking teams"],
     travelNote: "Pair Shigar Fort with Sarfaranga for a full day that still returns comfortably to Skardu.",
-    keywords: ["Shigar Fort", "Shigar Valley", "Sarfaranga Cold Desert", "Skardu heritage tour"]
+    keywords: ["Shigar Valley Skardu", "Shigar Fort", "Sarfaranga Cold Desert", "Skardu heritage tour"],
+    primaryKeyword: "Shigar Valley Skardu",
+    metaTitle: "Shigar Valley Skardu Guide | Katpana Desert Tour",
+    metaDescription: "Shigar Valley Skardu guide to Shigar Fort, Sarfaranga, Balti culture, route timing and day trips. Explore.",
+    canonicalPath: "/destinations/shigar-valley",
+    imageAlt: "Shigar Valley Skardu heritage fort and Karakoram village route Pakistan",
+    imageTitle: "Shigar Valley Skardu guide for forts culture and cold desert"
   },
   {
     slug: "khaplu-ghanche-valley",
@@ -133,6 +156,118 @@ export const destinations: Destination[] = [
     idealFor: ["Repeat visitors", "Photographers", "Adventure road trippers", "Small groups"],
     travelNote: "Confirm local access, permits where relevant, and road status before treating this as a fixed route.",
     keywords: ["Astore Valley", "Rama Meadows", "Nanga Parbat viewpoint", "Deosai to Astore"]
+  },
+  {
+    slug: "upper-kachura-lake",
+    name: "Upper Kachura Lake",
+    region: "Skardu",
+    type: "Alpine lake",
+    bestSeason: "May to October, with autumn color strongest in September and October",
+    image: "/images/places/kachura-lakes.jpg",
+    overview:
+      "Upper Kachura Lake Skardu is a clear alpine lake above the Kachura village route, known for short walks, boating, trout meals, family photography, and calm mountain views.",
+    highlights: ["Upper Kachura village walk", "Boat rides", "Trout lunch stops", "Autumn lake reflections"],
+    activities: ["Boating", "Short walking trail", "Family photography", "Lake-view meals"],
+    idealFor: ["Families", "Couples", "Nature lovers", "First-time Skardu visitors"],
+    travelNote:
+      "Wear comfortable shoes because the final access often includes a short walk from the parking area to the lake edge.",
+    keywords: ["Upper Kachura Lake Skardu", "Kachura Lake", "Skardu boating", "Skardu lake guide"],
+    primaryKeyword: "Upper Kachura Lake Skardu",
+    metaTitle: "Upper Kachura Lake Skardu | Katpana Desert Tour",
+    metaDescription: "Upper Kachura Lake Skardu guide with boating, village walk, trout lunch, best season and route tips. Visit now.",
+    canonicalPath: "/destinations/upper-kachura-lake",
+    imageAlt: "Upper Kachura Lake Skardu alpine water and mountain village Pakistan",
+    imageTitle: "Upper Kachura Lake Skardu boating and village travel guide",
+    faqs: [
+      {
+        question: "What is Upper Kachura Lake Skardu famous for?",
+        answer:
+          "Upper Kachura Lake Skardu is famous for clear water, mountain reflections, short village walks, boating, and trout meals. It feels calmer than many busy lake stops and works well for families, couples, photographers, and first-time Skardu travelers."
+      },
+      {
+        question: "How far is Upper Kachura Lake from Skardu city?",
+        answer:
+          "Upper Kachura Lake is usually around 45 to 60 minutes from Skardu city by car, depending on traffic, hotel location, and road conditions. The final access may include a short walk, so comfortable shoes help."
+      },
+      {
+        question: "What is the best time to visit Upper Kachura Lake?",
+        answer:
+          "May to October is the best time to visit Upper Kachura Lake. Summer gives easier movement and boating, while September and October bring crisp air and autumn colors. Morning often gives calmer water and better reflections."
+      },
+      {
+        question: "Can families visit Upper Kachura Lake Skardu?",
+        answer:
+          "Yes, families can visit Upper Kachura Lake Skardu comfortably with a private car and flexible timing. Keep children close near the water, carry warm layers, and allow time for the short walk, photos, and a relaxed meal."
+      },
+      {
+        question: "Can Upper Kachura Lake be combined with Shangrila Lake?",
+        answer:
+          "Yes, Upper Kachura Lake and Shangrila Lake fit well in one Skardu day trip. Many travelers visit Lower Kachura first, then continue to Upper Kachura for boating, village scenery, and trout lunch before returning to Skardu."
+      }
+    ],
+    author: "Katpana Desert Tour Local Planning Team",
+    lastUpdated: "May 2026",
+    relatedLinks: [
+      { label: "Skardu travel guide", href: "/skardu-travel-guide/" },
+      { label: "things to do in Skardu in summer", href: "/blog/things-to-do-skardu-summer/" },
+      { label: "Satpara Lake Skardu", href: "/destinations/satpara-lake-skardu/" }
+    ]
+  },
+  {
+    slug: "satpara-lake-skardu",
+    name: "Satpara Lake Skardu",
+    region: "Skardu",
+    type: "Lake and Deosai gateway",
+    bestSeason: "April to October, with June to September best for Deosai combinations",
+    image: "/images/places/deosai-plains.jpg",
+    overview:
+      "Satpara Lake Skardu is a blue mountain lake above the city and a natural gateway toward Deosai National Park, making it ideal for short visits, photos, and high-route warmups.",
+    highlights: ["Satpara Lake viewpoint", "Deosai road gateway", "Short family stop", "Mountain water scenery"],
+    activities: ["Photography", "Short sightseeing", "Deosai route stop", "Family travel"],
+    idealFor: ["Families", "Deosai travelers", "Short-stay visitors", "Photographers"],
+    travelNote:
+      "Use Satpara Lake as a short morning or afternoon stop, or pair it with the Deosai route when the high plateau road is open.",
+    keywords: ["Satpara Lake Skardu", "Sadpara Lake", "Skardu lake guide", "Deosai gateway"],
+    primaryKeyword: "Satpara Lake Skardu",
+    metaTitle: "Satpara Lake Skardu Guide | Katpana Desert Tour",
+    metaDescription: "Satpara Lake Skardu guide with Deosai route tips, best season, family stops and lake viewpoints. Explore.",
+    canonicalPath: "/destinations/satpara-lake-skardu",
+    imageAlt: "Satpara Lake Skardu blue mountain water on route to Deosai Pakistan",
+    imageTitle: "Satpara Lake Skardu guide for Deosai gateway and family stops",
+    faqs: [
+      {
+        question: "What is Satpara Lake Skardu known for?",
+        answer:
+          "Satpara Lake Skardu is known for blue mountain water, quick access from Skardu city, and its position on the route toward Deosai National Park. It works well as a short scenic stop or a warm-up before higher roads."
+      },
+      {
+        question: "How far is Satpara Lake from Skardu city?",
+        answer:
+          "Satpara Lake is close to Skardu city and often takes about 25 to 40 minutes by car, depending on hotel location and road traffic. It is one of the easier lake stops for families or travelers with limited time."
+      },
+      {
+        question: "Can Satpara Lake be visited with Deosai National Park?",
+        answer:
+          "Yes, Satpara Lake is commonly visited on the way to Deosai National Park. Travelers often stop for photos before continuing toward Deosai Top, Bara Pani, Kala Pani, and Sheosar Lake when the summer road is open."
+      },
+      {
+        question: "What is the best time to visit Satpara Lake Skardu?",
+        answer:
+          "April to October is the best time to visit Satpara Lake Skardu. June to September is ideal if you also want to continue toward Deosai. Early morning and late afternoon usually give softer light and calmer conditions."
+      },
+      {
+        question: "Is Satpara Lake safe for families?",
+        answer:
+          "Satpara Lake is family-friendly when travelers stay near safe viewpoints, keep children away from steep edges, and follow local driver advice. Wind can rise quickly near the water, so warm layers are useful even on clear days."
+      }
+    ],
+    author: "Katpana Desert Tour Local Planning Team",
+    lastUpdated: "May 2026",
+    relatedLinks: [
+      { label: "Deosai National Park safari", href: "/destinations/deosai-national-park/" },
+      { label: "Skardu travel guide", href: "/skardu-travel-guide/" },
+      { label: "Skardu jeep safari guide", href: "/tours/jeep-safari-skardu/" }
+    ]
   }
 ];
 

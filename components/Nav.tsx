@@ -7,11 +7,17 @@ import { destinations } from "@/data/destinations";
 import { tourPackages } from "@/data/tours";
 
 const quickLinks = [
-  ["Hotels", "#hotels"],
-  ["Cars", "#cars"],
   ["Articles", "/articles/"],
-  ["Reviews", "/testimonials/"],
     ["Trending", "/trending/"],
+
+
+];
+
+const guideLinks = [
+  ["Skardu Travel Guide", "/skardu-travel-guide/", "Skardu travel guide"],
+  ["Gilgit-Baltistan Tourism", "/gilgit-baltistan-tourism/", "Gilgit-Baltistan tourism"],
+  ["Pakistan Trekking Guide", "/pakistan-trekking-guide/", "Best trekking in Pakistan"],
+  ["Karakoram Highway", "/karakoram-highway-travel/", "Karakoram Highway travel"]
 ];
 
 export default function Nav() {
@@ -56,6 +62,7 @@ export default function Nav() {
             items={destinations.map((destination) => [destination.name, `/destinations/${destination.slug}/`, destination.type])}
             variants={item}
           />
+          <DesktopDropdown label="Guides" href="/skardu-travel-guide/" items={guideLinks} variants={item} />
           {quickLinks.map(([label, href]) => (
             <motion.a key={label} variants={item} href={href} whileHover={{ color: "#C9A84C", y: -2 }}>
               {label}
@@ -105,6 +112,7 @@ export default function Nav() {
               items={destinations.map((destination) => [destination.name, `/destinations/${destination.slug}/`])}
               onSelect={() => setOpen(false)}
             />
+            <MobileGroup title="Guides" href="/skardu-travel-guide/" items={guideLinks.map(([label, href]) => [label, href])} onSelect={() => setOpen(false)} />
             <div className="mt-5 grid gap-4 text-sm font-bold uppercase tracking-[0.18em] text-skardu-ash">
               {quickLinks.map(([label, href]) => (
                 <a key={label} href={href} onClick={() => setOpen(false)}>
@@ -126,7 +134,7 @@ function DesktopDropdown({
   label,
   href,
   items,
-  variants,
+  variants
 }: {
   label: string;
   href: string;
@@ -138,16 +146,9 @@ function DesktopDropdown({
 }) {
   return (
     <motion.div variants={variants} className="group relative">
-      <a
-        href={href}
-        className="inline-flex items-center gap-1.5 py-3 hover:text-skardu-gold"
-      >
+      <a href={href} className="inline-flex items-center gap-1.5 py-3 hover:text-skardu-gold">
         {label}
-
-        <span
-          aria-hidden="true"
-          className="mt-[1px] text-[10px] text-skardu-gold transition-transform duration-200 group-hover:rotate-180"
-        >
+        <span aria-hidden="true" className="mt-[1px] text-[10px] text-skardu-gold transition-transform duration-200 group-hover:rotate-180">
           ▼
         </span>
       </a>
@@ -161,13 +162,8 @@ function DesktopDropdown({
                 href={itemHref}
                 className="rounded-xl border border-transparent p-3 normal-case tracking-normal hover:border-skardu-gold hover:bg-skardu-stone"
               >
-                <span className="block font-display text-xl font-bold leading-tight text-skardu-snow">
-                  {title}
-                </span>
-
-                <span className="mt-1 block text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">
-                  {meta}
-                </span>
+                <span className="block font-display text-xl font-bold leading-tight text-skardu-snow">{title}</span>
+                <span className="mt-1 block text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">{meta}</span>
               </a>
             ))}
           </div>

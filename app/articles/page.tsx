@@ -4,11 +4,13 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { articleCategories, articles } from "@/data/articles";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Skardu Travel Articles | Gilgit Baltistan Tourism Guides",
-  description:
-    "Read 40 Skardu and Gilgit Baltistan travel articles about Katapana Desert, hotels, rent a car routes, Deosai, Shigar, Kachura, Khaplu, seasons, culture, and itineraries.",
+export const metadata: Metadata = createMetadata({
+  title: "Skardu Travel Articles | Katpana Desert Tour",
+  description: "Skardu travel articles for 2026 covering routes, hotels, cars, Deosai, Kachura and culture. Read now.",
+  path: "/articles",
+  imageAlt: "Skardu travel articles and Gilgit-Baltistan tourism guides",
   keywords: [
     "Skardu travel articles",
     "Skardu tourism blog",
@@ -16,27 +18,8 @@ export const metadata: Metadata = {
     "Katapana Desert guide",
     "Skardu rent a car",
     "Skardu hotels"
-  ],
-  alternates: {
-    canonical: "/articles/"
-  },
-  openGraph: {
-    title: "Skardu Travel Articles",
-    description:
-      "Detailed Skardu and Gilgit Baltistan guides for places to visit, hotels, transport, itineraries, culture, and adventure travel.",
-    url: `${SITE_URL}/articles/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/katpana-skardu-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Skardu travel articles and Gilgit Baltistan tourism guides"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const itemListSchema = {
   "@context": "https://schema.org",
@@ -59,9 +42,7 @@ export default function ArticlesPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(itemListSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(itemListSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">

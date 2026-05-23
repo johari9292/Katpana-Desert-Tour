@@ -78,9 +78,11 @@ export default function TourPackages() {
             <div className="relative overflow-hidden rounded-xl border border-skardu-mist bg-skardu-void/60">
               <Image
                 src={activeTour.image}
-                alt={`${activeTour.title} package view`}
+                alt={activeTour.imageAlt ?? `${activeTour.title} package view in Skardu Gilgit-Baltistan Pakistan`}
+                title={activeTour.imageTitle ?? `${activeTour.title} Skardu tour package route`}
                 width={960}
                 height={540}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="aspect-video w-full object-cover opacity-80"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-skardu-void/80 via-transparent to-transparent" />

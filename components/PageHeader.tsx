@@ -4,12 +4,18 @@ import { destinations } from "@/data/destinations";
 import { tourPackages } from "@/data/tours";
 
 const pageLinks = [
-  ["Hotels", "/#hotels"],
-  ["Cars", "/#cars"],
-  ["Why Skardu", "/why-skardu/"],
+
+ 
   ["Articles", "/articles/"],
-  ["Reviews", "/testimonials/"],
-  ["Trending", "/trending/"]  
+    ["Trending", "/trending/"],
+
+];
+
+const guideLinks = [
+  ["Skardu Travel Guide", "/skardu-travel-guide/", "Skardu travel guide"],
+  ["Gilgit-Baltistan Tourism", "/gilgit-baltistan-tourism/", "Gilgit-Baltistan tourism"],
+  ["Pakistan Trekking Guide", "/pakistan-trekking-guide/", "Best trekking in Pakistan"],
+  ["Karakoram Highway", "/karakoram-highway-travel/", "Karakoram Highway travel"]
 ];
 
 export default function PageHeader() {
@@ -26,6 +32,7 @@ export default function PageHeader() {
             href="/destinations/"
             items={destinations.map((destination) => [destination.name, `/destinations/${destination.slug}/`, destination.type])}
           />
+          <HeaderDropdown label="Guides" href="/skardu-travel-guide/" items={guideLinks} />
           {pageLinks.map(([label, href]) => (
             <Link key={label} href={href} className="hover:text-skardu-gold">
               {label}
@@ -43,7 +50,7 @@ export default function PageHeader() {
 function HeaderDropdown({
   label,
   href,
-  items,
+  items
 }: {
   label: string;
   href: string;
@@ -51,16 +58,9 @@ function HeaderDropdown({
 }) {
   return (
     <div className="group relative">
-      <Link
-        href={href}
-        className="inline-flex items-center gap-1.5 py-3 hover:text-skardu-gold"
-      >
+      <Link href={href} className="inline-flex items-center gap-1.5 py-3 hover:text-skardu-gold">
         {label}
-
-        <span
-          aria-hidden="true"
-          className="mt-[1px] text-[10px] text-skardu-gold transition-transform duration-200 group-hover:rotate-180"
-        >
+        <span aria-hidden="true" className="mt-[1px] text-[10px] text-skardu-gold transition-transform duration-200 group-hover:rotate-180">
           ▼
         </span>
       </Link>
@@ -74,13 +74,8 @@ function HeaderDropdown({
                 href={itemHref}
                 className="rounded-xl border border-transparent p-3 normal-case tracking-normal hover:border-skardu-gold hover:bg-skardu-stone"
               >
-                <span className="block font-display text-xl font-bold leading-tight text-skardu-snow">
-                  {title}
-                </span>
-
-                <span className="mt-1 block text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">
-                  {meta}
-                </span>
+                <span className="block font-display text-xl font-bold leading-tight text-skardu-snow">{title}</span>
+                <span className="mt-1 block text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">{meta}</span>
               </Link>
             ))}
           </div>

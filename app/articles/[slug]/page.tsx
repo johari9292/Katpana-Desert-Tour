@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { articles, getArticleBySlug, getRelatedArticles } from "@/data/articles";
+import { absoluteUrl, breadcrumbSchema, createMetadata, faqSchema, jsonLdScript, organizationSchema } from "@/lib/seo";
 
 interface ArticlePageProps {
   params: {
@@ -28,38 +30,14 @@ export function generateMetadata({ params }: ArticlePageProps): Metadata {
     };
   }
 
-  return {
-    title: `${article.title} | Skardu Gilgit Baltistan Guide`,
-    description: article.excerpt,
+  return createMetadata({
+    title: `${article.primaryKeyword} | ${BRAND_NAME}`,
+    description: article.excerpt.slice(0, 152),
+    path: `/articles/${article.slug}`,
+    imageAlt: `${article.title} in Skardu and Gilgit-Baltistan Pakistan`,
     keywords: article.keywords,
-    alternates: {
-      canonical: `/articles/${article.slug}/`
-    },
-    openGraph: {
-      title: article.title,
-      description: article.excerpt,
-      url: `${SITE_URL}/articles/${article.slug}/`,
-      siteName: BRAND_NAME,
-      type: "article",
-      publishedTime: "2026-05-22",
-      modifiedTime: article.updatedAt,
-      authors: [BRAND_NAME],
-      images: [
-        {
-          url: "/images/katpana-skardu-hero.png",
-          width: 1536,
-          height: 1024,
-          alt: `${article.title} in Skardu and Gilgit Baltistan`
-        }
-      ]
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.excerpt,
-      images: ["/images/katpana-skardu-hero.png"]
-    }
-  };
+    type: "article"
+  });
 }
 
 export default function ArticlePage({ params }: ArticlePageProps) {
@@ -70,7 +48,12 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   }
 
   const relatedArticles = getRelatedArticles(article, 3);
-  const articleUrl = `${SITE_URL}/articles/${article.slug}/`;
+  const articleUrl = absoluteUrl(`/articles/${article.slug}`);
+  const breadcrumbs = [
+    { label: "Home", href: "/" },
+    { label: "Articles", href: "/articles/" },
+    { label: article.primaryKeyword, href: `/articles/${article.slug}/` }
+  ];
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -82,92 +65,39 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     dateModified: article.updatedAt,
     author: {
       "@type": "Organization",
-      name: BRAND_NAME
+      name: "Katpana Desert Tour Local Planning Team",
+      url: SITE_URL
     },
-    publisher: {
-      "@type": "Organization",
-      name: BRAND_NAME,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/images/katpana-skardu-hero.png`
-      }
-    },
+    publisher: organizationSchema(),
     mainEntityOfPage: articleUrl,
     articleSection: article.category,
-    keywords: article.keywords.join(", ")
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: `${SITE_URL}/`
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Articles",
-        item: `${SITE_URL}/articles/`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: article.title,
-        item: articleUrl
-      }
-    ]
-  };
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: article.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer
-      }
-    }))
+    keywords: article.keywords.join(", "),
+    wordCount: [article.excerpt, ...article.sections.map((section) => section.body)].join(" ").split(/\s+/).length,
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "article p:first-of-type"]
+    }
   };
 
   return (
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleSchema)
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema)
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema)
-        }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(articleSchema)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumbSchema(breadcrumbs))} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(article.faqs))} />
       <PageHeader />
       <article className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.28fr)]">
           <div>
-            <Link href="/articles/" className="text-sm font-black uppercase tracking-[0.16em] text-skardu-teal">
-              Back to articles
-            </Link>
+            <Breadcrumbs items={breadcrumbs} />
             <div className="mt-8 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em]">
               <span className="rounded-full bg-skardu-gold px-3 py-1 text-skardu-void">{article.category}</span>
               <span className="text-skardu-ash">{article.readTime}</span>
               <span className="text-skardu-ash">Updated May 22, 2026</span>
             </div>
             <h1 className="mt-5 font-display text-5xl font-bold leading-none text-skardu-snow md:text-7xl">{article.title}</h1>
+            <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
+              Written by Katpana Desert Tour Local Planning Team
+            </p>
             <p className="mt-6 text-xl leading-9 text-skardu-ash">{article.excerpt}</p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">

@@ -3,11 +3,13 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import Testimonials from "@/components/Testimonials";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
+import { createMetadata, jsonLdScript, organizationSchema } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: `Skardu Travel Reviews | ${BRAND_NAME} Testimonials`,
-  description:
-    "Read traveler reviews for Skardu hotel booking, Katapana Desert tours, Skardu rent a car, Upper Kachura, Deosai, Shigar, and Gilgit Baltistan trips.",
+export const metadata: Metadata = createMetadata({
+  title: `Skardu Travel Reviews | ${BRAND_NAME}`,
+  description: "Skardu travel reviews for hotels, cars, Katpana Desert, Deosai and Kachura routes in 2026. Read now.",
+  path: "/testimonials",
+  imageAlt: "Skardu travel reviews for Katpana Desert Tour and Gilgit-Baltistan routes",
   keywords: [
     "Skardu travel reviews",
     "Katapana Desert tours reviews",
@@ -15,54 +17,13 @@ export const metadata: Metadata = {
     "Skardu rent a car reviews",
     "Skardu hotel booking reviews",
     "Gilgit Baltistan travel reviews"
-  ],
-  alternates: {
-    canonical: "/testimonials/"
-  },
-  openGraph: {
-    title: "Skardu Travel Reviews",
-    description:
-      "Traveler testimonials for Skardu tourism, Katapana Desert stays, rent a car routes, and Gilgit Baltistan tours.",
-    url: `${SITE_URL}/testimonials/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/katpana-skardu-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Skardu travel reviews and testimonials"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const reviewSchema = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: BRAND_NAME,
-  url: `${SITE_URL}/testimonials/`,
-  telephone: "+923430249240",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Skardu",
-    addressRegion: "Gilgit-Baltistan",
-    addressCountry: "PK"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Ayesha Khan" },
-      reviewBody: "The WhatsApp booking was fast, the car arrived on time, and Katapana sunset felt unreal.",
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" }
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Bilal Noor" },
-      reviewBody: "Skardu felt premium without losing its raw mountain soul. We booked everything from one chat.",
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" }
-    }
-  ]
+  ...organizationSchema(),
+  "@type": "TravelAgency",
+  url: `${SITE_URL}/testimonials`
 };
 
 export default function TestimonialsPage() {
@@ -70,9 +31,7 @@ export default function TestimonialsPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(reviewSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(reviewSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-4 pt-32 lg:px-8">

@@ -4,11 +4,13 @@ import PageHeader from "@/components/PageHeader";
 import VideoShowcase from "@/components/VideoShowcase";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { KATPANA_VIDEO_URL, SKARDU_HERO_VIDEO_URL } from "@/constants/media";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: `Skardu Videos | ${BRAND_NAME} Travel Preview`,
-  description:
-    "Watch Skardu travel videos for Katapana Desert, mountains, lakes, cold desert routes, hotels, car booking, and Gilgit Baltistan tour planning.",
+export const metadata: Metadata = createMetadata({
+  title: `Skardu Videos | ${BRAND_NAME}`,
+  description: "Skardu videos for Katpana Desert, lakes, Deosai, hotels, cars and Gilgit-Baltistan routes in 2026. Watch.",
+  path: "/skardu-videos",
+  imageAlt: "Skardu videos for Katpana Desert lakes and Gilgit-Baltistan travel",
   keywords: [
     "Skardu videos",
     "Katapana Desert video",
@@ -16,27 +18,8 @@ export const metadata: Metadata = {
     "Gilgit Baltistan travel video",
     "Skardu travel preview",
     "Skardu tour packages"
-  ],
-  alternates: {
-    canonical: "/skardu-videos/"
-  },
-  openGraph: {
-    title: "Skardu Videos and Katapana Desert Travel Preview",
-    description:
-      "Watch Skardu and Katapana Desert travel videos before planning hotels, rent a car, and Gilgit Baltistan tours.",
-    url: `${SITE_URL}/skardu-videos/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/katpana-skardu-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Skardu and Katapana Desert travel video preview"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const videoSchema = {
   "@context": "https://schema.org",
@@ -59,9 +42,7 @@ export default function SkarduVideosPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(videoSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(videoSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-6 pt-32 lg:px-8">

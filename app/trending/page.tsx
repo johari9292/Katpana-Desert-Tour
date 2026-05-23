@@ -3,38 +3,22 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import TrendingArticles from "@/components/TrendingArticles";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: `Trending Travel Articles | ${BRAND_NAME}`,
-  description:
-    "Daily AI-assisted travel articles generated from Pakistan trends and shaped into Skardu, Gilgit Baltistan, northern areas, culture, and tourism planning insights.",
+  description: "Pakistan travel trends turned into daily Skardu and Gilgit-Baltistan articles for 2026. Read today.",
+  path: "/trending",
+  image: "/images/places/katapana-desert.jpg",
+  imageAlt: "Pakistan travel trends for Skardu and Gilgit-Baltistan tourism",
   keywords: [
     "Pakistan travel trends",
     "Skardu trending articles",
     "Gilgit Baltistan travel news",
     "AI travel articles",
     "Katapana Desert Tour trending"
-  ],
-  alternates: {
-    canonical: "/trending/"
-  },
-  openGraph: {
-    title: `Trending Travel Articles | ${BRAND_NAME}`,
-    description:
-      "Daily Pakistan trend-inspired travel articles for Skardu, northern Pakistan, cultural tourism, seasons, and adventure planning.",
-    url: `${SITE_URL}/trending/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/places/katapana-desert.jpg",
-        width: 1536,
-        height: 1024,
-        alt: "Trending travel articles for Skardu and northern Pakistan"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const trendingSchema = {
   "@context": "https://schema.org",
@@ -55,9 +39,7 @@ export default function TrendingPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(trendingSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(trendingSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-4 pt-32 lg:px-8">
@@ -66,7 +48,9 @@ export default function TrendingPage() {
           <h1 className="max-w-5xl font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
             Daily Pakistan trends
           </h1>
-         
+          <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
+            Daily AI-assisted travel articles connect Pakistan trend topics with Skardu, Gilgit-Baltistan, culture, seasons, road trips, and adventure planning.
+          </p>
         </div>
       </section>
       <TrendingArticles />
@@ -74,4 +58,3 @@ export default function TrendingPage() {
     </main>
   );
 }
-

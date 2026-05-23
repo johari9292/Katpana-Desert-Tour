@@ -14,11 +14,11 @@ const config: Config = {
         "skardu-ash": "#8C9198"
       },
       fontFamily: {
-        display: ["Cormorant Garamond", "serif"],
-        body: ["DM Sans", "sans-serif"]
+        display: ["var(--font-display)", "serif"],
+        body: ["var(--font-body)", "sans-serif"]
       },
       fontSize: {
-        display: ["clamp(3.5rem, 8vw, 7rem)", { lineHeight: "0.95", letterSpacing: "-0.02em" }]
+        display: ["clamp(3.5rem, 8vw, 7rem)", { lineHeight: "0.95", letterSpacing: "0" }]
       },
       keyframes: {
         shimmer: {

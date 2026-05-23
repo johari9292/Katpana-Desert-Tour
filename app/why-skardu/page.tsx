@@ -3,11 +3,13 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import Stats from "@/components/Stats";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Why Visit Skardu | Gilgit Baltistan Tourism, Hotels and Car Routes",
-  description:
-    "Learn why Skardu is one of Gilgit Baltistan's best tourism bases for Katapana Desert, Deosai, Shangrila Lake, Upper Kachura, Shigar Fort, hotels, and rent a car routes.",
+export const metadata: Metadata = createMetadata({
+  title: "Why Visit Skardu | Katpana Desert Tour",
+  description: "Why visit Skardu in 2026? Compare lakes, Deosai, cold desert, hotels, cars and culture. Explore now.",
+  path: "/why-skardu",
+  imageAlt: "Why visit Skardu Gilgit-Baltistan tourism lakes deserts and Karakoram routes",
   keywords: [
     "why visit Skardu",
     "Skardu tourism",
@@ -16,27 +18,8 @@ export const metadata: Metadata = {
     "Skardu hotels",
     "Skardu rent a car",
     "Skardu tour planning"
-  ],
-  alternates: {
-    canonical: "/why-skardu/"
-  },
-  openGraph: {
-    title: "Why Visit Skardu",
-    description:
-      "Skardu travel reasons, route stats, hotel context, and tourism highlights for Katapana Desert and Gilgit Baltistan.",
-    url: `${SITE_URL}/why-skardu/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/katpana-skardu-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Why visit Skardu in Gilgit Baltistan"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const destinationSchema = {
   "@context": "https://schema.org",
@@ -61,9 +44,7 @@ export default function WhySkarduPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(destinationSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(destinationSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-4 pt-32 lg:px-8">

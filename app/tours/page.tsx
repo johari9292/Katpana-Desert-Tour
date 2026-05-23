@@ -5,11 +5,13 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { tourPackages } from "@/data/tours";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: `Tour Packages | ${BRAND_NAME}`,
-  description:
-    "Browse Skardu, Katapana Desert, Deosai, Hunza, Khaplu, Shigar, Astore, and K2 Base Camp tour packages with itineraries, highlights, inclusions, and exclusions.",
+export const metadata: Metadata = createMetadata({
+  title: `Skardu Tour Packages | ${BRAND_NAME}`,
+  description: "Skardu tour packages 2026 for K2, Deosai, Hunza, Shigar, Khaplu and jeep routes. Check availability.",
+  path: "/tours",
+  imageAlt: "Skardu tour packages for K2 Deosai Hunza and Karakoram Pakistan",
   keywords: [
     "Katapana Desert Tour packages",
     "Skardu tour packages",
@@ -17,27 +19,8 @@ export const metadata: Metadata = {
     "Deosai 4x4 tour",
     "K2 Base Camp trek",
     "Gilgit Baltistan tours"
-  ],
-  alternates: {
-    canonical: "/tours/"
-  },
-  openGraph: {
-    title: `Tour Packages | ${BRAND_NAME}`,
-    description:
-      "Production-ready northern Pakistan tour packages for Skardu, Katapana Desert, Deosai, Hunza, Khaplu, Shigar, and K2-side trekking.",
-    url: `${SITE_URL}/tours/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/katpana-skardu-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Katapana Desert Tour packages in Skardu and Gilgit Baltistan"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const itemListSchema = {
   "@context": "https://schema.org",
@@ -58,9 +41,7 @@ export default function ToursPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(itemListSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(itemListSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
@@ -86,9 +67,11 @@ export default function ToursPage() {
                 <div className="relative">
                   <Image
                     src={tour.image}
-                    alt={`${tour.title} package view`}
+                    alt={tour.imageAlt ?? `${tour.title} package view in Skardu Gilgit-Baltistan Pakistan`}
+                    title={tour.imageTitle ?? `${tour.title} Skardu tour package route`}
                     width={720}
                     height={420}
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="aspect-video w-full object-cover opacity-75"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-skardu-void/80 via-transparent to-transparent" />

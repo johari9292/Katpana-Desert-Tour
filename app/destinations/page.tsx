@@ -5,11 +5,13 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { destinations } from "@/data/destinations";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: `Destinations | ${BRAND_NAME}`,
-  description:
-    "Explore Skardu, Katapana Desert, Deosai, Kachura lakes, Shigar, Khaplu, Hunza, Astore, and K2 Base Camp destination guides for northern Pakistan travel.",
+export const metadata: Metadata = createMetadata({
+  title: `Gilgit-Baltistan Destinations | ${BRAND_NAME}`,
+  description: "Gilgit-Baltistan destinations 2026 guide to Skardu, Deosai, Kachura, Shigar, Khaplu and K2. Explore.",
+  path: "/destinations",
+  imageAlt: "Gilgit-Baltistan destinations for Skardu Deosai Kachura and K2 travel",
   keywords: [
     "Skardu destinations",
     "Katapana Desert",
@@ -17,27 +19,8 @@ export const metadata: Metadata = {
     "Hunza Valley",
     "K2 Base Camp",
     "Gilgit Baltistan destinations"
-  ],
-  alternates: {
-    canonical: "/destinations/"
-  },
-  openGraph: {
-    title: `Destinations | ${BRAND_NAME}`,
-    description:
-      "Destination guides for cold deserts, lakes, forts, valleys, trekking routes, and cultural tourism across northern Pakistan.",
-    url: `${SITE_URL}/destinations/`,
-    siteName: BRAND_NAME,
-    type: "website",
-    images: [
-      {
-        url: "/images/katpana-skardu-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Northern Pakistan destinations for Katapana Desert Tour"
-      }
-    ]
-  }
-};
+  ]
+});
 
 const destinationListSchema = {
   "@context": "https://schema.org",
@@ -58,9 +41,7 @@ export default function DestinationsPage() {
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(destinationListSchema)
-        }}
+        dangerouslySetInnerHTML={jsonLdScript(destinationListSchema)}
       />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
@@ -86,9 +67,11 @@ export default function DestinationsPage() {
                 <div className="relative">
                   <Image
                     src={destination.image}
-                    alt={`${destination.name} destination view`}
+                    alt={destination.imageAlt ?? `${destination.name} destination view in Gilgit-Baltistan Pakistan`}
+                    title={destination.imageTitle ?? `${destination.name} Skardu destination guide`}
                     width={640}
                     height={420}
+                    sizes="(max-width: 768px) 100vw, 25vw"
                     className="aspect-[4/3] w-full object-cover opacity-75"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-skardu-void/85 via-transparent to-transparent" />
