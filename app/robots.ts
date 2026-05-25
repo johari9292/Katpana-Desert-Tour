@@ -8,8 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/_next/", "/studio/"],
-        crawlDelay: 10
+        disallow: ["/admin/", "/api/", "/studio/"]
       }
     ],
     sitemap: "https://www.katpanadesert.com/sitemap.xml"

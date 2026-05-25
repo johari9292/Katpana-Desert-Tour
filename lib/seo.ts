@@ -7,7 +7,8 @@ export const defaultOgImage = "/images/katpana-skardu-hero.jpg";
 
 export function canonicalPath(path: string) {
   if (!path || path === "/") return "/";
-  return `/${path.replace(/^\/+|\/+$/g, "")}`;
+  const cleanPath = `/${path.replace(/^\/+|\/+$/g, "")}`;
+  return /\.[a-z0-9]+$/i.test(cleanPath) ? cleanPath : `${cleanPath}/`;
 }
 
 export function absoluteUrl(path: string) {
