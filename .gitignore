@@ -5,3 +5,5 @@ out/
 *.log
 .env*
 !.env.example
+.supabase/
+.supabase-cli/
