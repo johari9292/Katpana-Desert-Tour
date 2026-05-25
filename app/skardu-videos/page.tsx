@@ -13,7 +13,7 @@ export const metadata: Metadata = createMetadata({
   imageAlt: "Skardu videos for Katpana Desert lakes and Gilgit-Baltistan travel",
   keywords: [
     "Skardu videos",
-    "Katapana Desert video",
+    "Katpana Desert video",
     "Skardu tourism video",
     "Gilgit Baltistan travel video",
     "Skardu travel preview",
@@ -24,15 +24,15 @@ export const metadata: Metadata = createMetadata({
 const videoSchema = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  name: "Skardu and Katapana Desert travel videos",
+  name: "Skardu and Katpana Desert travel videos",
   description:
-    "Skardu tourism videos featuring Katapana Desert, mountain valleys, lakes, cold desert scenery, and Gilgit Baltistan travel planning.",
+    "Skardu tourism videos featuring Katpana Desert, mountain valleys, lakes, cold desert scenery, and Gilgit Baltistan travel planning.",
   thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
   uploadDate: "2026-05-22",
   contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
   associatedMedia: {
     "@type": "VideoObject",
-    name: "Katapana Desert Skardu video",
+    name: "Katpana Desert Skardu video",
     contentUrl: KATPANA_VIDEO_URL
   }
 };
@@ -49,10 +49,10 @@ export default function SkarduVideosPage() {
         <div className="mx-auto max-w-7xl">
           <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Skardu videos</p>
           <h1 className="max-w-5xl font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-            Katapana Desert and Gilgit Baltistan travel video guide
+            Katpana Desert and Gilgit Baltistan travel video guide
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Watch the Skardu scenery before booking hotels, rent a car service, airport pickup, Katapana Desert sunset
+            Watch the Skardu scenery before booking hotels, rent a car service, airport pickup, Katpana Desert sunset
             plans, Kachura lake routes, Deosai day trips, and wider Gilgit Baltistan tours.
           </p>
         </div>

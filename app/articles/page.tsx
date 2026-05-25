@@ -15,7 +15,7 @@ export const metadata: Metadata = createMetadata({
     "Skardu travel articles",
     "Skardu tourism blog",
     "Gilgit Baltistan travel guide",
-    "Katapana Desert guide",
+    "Katpana Desert guide",
     "Skardu rent a car",
     "Skardu hotels"
   ]
@@ -53,7 +53,7 @@ export default function ArticlesPage() {
               Skardu and Gilgit Baltistan travel guides
             </h1>
             <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-              Explore 40 practical guides for Skardu tourism, Katapana Desert hotel booking, Skardu rent a car planning,
+              Explore 40 practical guides for Skardu tourism, Katpana Desert hotel booking, Skardu rent a car planning,
               Kachura lakes, Deosai, Shigar, Khaplu, culture, food, family trips, and seasonal routes.
             </p>
           </div>

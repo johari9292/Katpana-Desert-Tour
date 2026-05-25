@@ -12,6 +12,6 @@ export default function robots(): MetadataRoute.Robots {
         crawlDelay: 10
       }
     ],
-    sitemap: "https://katpanadesert.com/sitemap.xml"
+    sitemap: "https://www.katpanadesert.com/sitemap.xml"
   };
 }

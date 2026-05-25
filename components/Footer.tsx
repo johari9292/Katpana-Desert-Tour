@@ -5,7 +5,7 @@ import { BRAND_NAME } from "@/constants/brand";
 import { buildWhatsAppURL, displayPhone, displayPhone2, WHATSAPP_CAR, WHATSAPP_HOTEL } from "@/constants/contact";
 
 export default function Footer() {
-  const hotelUrl = buildWhatsAppURL(WHATSAPP_HOTEL, `Hi! I want to book a hotel for my ${BRAND_NAME} trip near Katapana Desert or Skardu.`);
+  const hotelUrl = buildWhatsAppURL(WHATSAPP_HOTEL, `Hi! I want to book a hotel for my ${BRAND_NAME} trip near Katpana Desert or Skardu.`);
   const carUrl = buildWhatsAppURL(WHATSAPP_CAR, `Hi! I want to rent a car for my ${BRAND_NAME} route.`);
 
   return (

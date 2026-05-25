@@ -4,7 +4,7 @@ import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 
 const destinations = [
-  "Katapana Desert",
+  "Katpana Desert",
   "K2 Base Camp",
   "Hunza Valley",
   "Deosai Plains",

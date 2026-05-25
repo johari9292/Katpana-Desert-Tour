@@ -26,11 +26,11 @@ const destinationSchema = {
   "@type": "TouristDestination",
   name: "Skardu, Gilgit-Baltistan",
   description:
-    "Skardu is a high-altitude tourism base for Katapana Desert, Deosai National Park, Shangrila Lake, Upper Kachura, Shigar Fort, Khaplu, and mountain routes.",
+    "Skardu is a high-altitude tourism base for Katpana Desert, Deosai National Park, Shangrila Lake, Upper Kachura, Shigar Fort, Khaplu, and mountain routes.",
   url: `${SITE_URL}/why-skardu/`,
   touristType: ["Families", "Adventure travelers", "Honeymoon travelers", "Photographers"],
   includesAttraction: [
-    "Katapana Desert",
+    "Katpana Desert",
     "Deosai National Park",
     "Shangrila Lake",
     "Upper Kachura Lake",

@@ -42,7 +42,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <Image
           src="/images/katpana-skardu-hero.jpg"
-          alt="Katapana Desert near Skardu with sand dunes, mountains, and a tour vehicle"
+          alt="Katpana Desert near Skardu with sand dunes, mountains, and a tour vehicle"
           title="Katpana Desert Tour hero image with Skardu sand dunes and Karakoram mountains"
           fill
           priority
@@ -102,7 +102,7 @@ export default function Hero() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="font-display text-[clamp(4rem,24vw,7rem)] font-bold leading-[0.78] text-skardu-snow sm:text-display"
           >
-            Katapana
+            Katpana
             <br />
             Desert
             <br />

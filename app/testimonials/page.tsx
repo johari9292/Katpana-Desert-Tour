@@ -12,7 +12,7 @@ export const metadata: Metadata = createMetadata({
   imageAlt: "Skardu travel reviews for Katpana Desert Tour and Gilgit-Baltistan routes",
   keywords: [
     "Skardu travel reviews",
-    "Katapana Desert tours reviews",
+    "Katpana Desert tours reviews",
     "Skardu tourism testimonials",
     "Skardu rent a car reviews",
     "Skardu hotel booking reviews",
@@ -41,7 +41,7 @@ export default function TestimonialsPage() {
             Skardu travel reviews from real routes
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Read feedback from travelers booking Skardu hotels, Katapana Desert visits, car rentals, Kachura lake days,
+            Read feedback from travelers booking Skardu hotels, Katpana Desert visits, car rentals, Kachura lake days,
             Deosai routes, Shigar tours, and wider Gilgit Baltistan travel plans.
           </p>
         </div>

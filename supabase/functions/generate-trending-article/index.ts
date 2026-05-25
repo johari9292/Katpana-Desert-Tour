@@ -205,7 +205,7 @@ async function fetchPakistanTrends(): Promise<{
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "Katapana Desert Tour trend generator",
+          "User-Agent": "Katpana Desert Tour trend generator",
         },
       });
 
@@ -329,7 +329,7 @@ function buildPrompt(
     : [];
 
   return `
-You write original SEO travel content for Katapana Desert Tour, a Skardu and northern Pakistan tourism website.
+You write original SEO travel content for Katpana Desert Tour, a Skardu and northern Pakistan tourism website.
 
 Generation date: ${generationDate}
 Trend source: Google Trends Pakistan RSS.
@@ -343,7 +343,7 @@ Task:
 - Do not write general news. Use the trend only as an angle for useful travel planning.
 - Avoid political persuasion, medical advice, financial advice, celebrity gossip, sensationalism, or unverified claims.
 - Make the content original. Do not copy from any website.
-- Keep copy practical for travelers considering Skardu, Hunza, Deosai, Shigar, Khaplu, Katapana Desert, Kachura Lakes, or K2-side adventure routes.
+- Keep copy practical for travelers considering Skardu, Hunza, Deosai, Shigar, Khaplu, Katpana Desert, Kachura Lakes, or K2-side adventure routes.
 
 Return only JSON with this exact shape:
 {
@@ -453,11 +453,7 @@ function normalizeFaqs(value: unknown): GeneratedFaq[] {
 
 function normalizeKeywords(value: unknown): string[] {
   if (!Array.isArray(value))
-    return [
-      "Skardu travel",
-      "northern Pakistan travel",
-      "Katapana Desert Tour",
-    ];
+    return ["Skardu travel", "northern Pakistan travel", "Katpana Desert Tour"];
 
   const keywords = value
     .map((item) => cleanText(item, 60))
@@ -466,7 +462,7 @@ function normalizeKeywords(value: unknown): string[] {
 
   return keywords.length
     ? keywords
-    : ["Skardu travel", "northern Pakistan travel", "Katapana Desert Tour"];
+    : ["Skardu travel", "northern Pakistan travel", "Katpana Desert Tour"];
 }
 
 async function uniqueSlug(

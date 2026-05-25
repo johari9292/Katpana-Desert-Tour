@@ -14,7 +14,7 @@ export const metadata: Metadata = createMetadata({
   imageAlt: "Gilgit-Baltistan destinations for Skardu Deosai Kachura and K2 travel",
   keywords: [
     "Skardu destinations",
-    "Katapana Desert",
+    "Katpana Desert",
     "Deosai National Park",
     "Hunza Valley",
     "K2 Base Camp",

@@ -21,7 +21,7 @@ values (
   [
     {
       "heading": "The Allure of Skardu for Karachi Travelers",
-      "body": "For residents of Karachi, Skardu offers a profound contrast and a refreshing escape. Swapping the coastal city's humid climate and fast pace for Skardu's crisp mountain air and majestic tranquility is an experience in itself. Imagine waking up to views of towering peaks and serene lakes instead of urban sprawl. Skardu presents a unique blend of adventure and peace, from exploring the surreal Katapana Cold Desert to boating on the turquoise waters of Kachura Lakes. It is an opportunity to reconnect with nature, engage in thrilling treks, or simply unwind amidst some of the world's most spectacular landscapes, a true antidote to city life."
+      "body": "For residents of Karachi, Skardu offers a profound contrast and a refreshing escape. Swapping the coastal city's humid climate and fast pace for Skardu's crisp mountain air and majestic tranquility is an experience in itself. Imagine waking up to views of towering peaks and serene lakes instead of urban sprawl. Skardu presents a unique blend of adventure and peace, from exploring the surreal Katpana Cold Desert to boating on the turquoise waters of Kachura Lakes. It is an opportunity to reconnect with nature, engage in thrilling treks, or simply unwind amidst some of the world's most spectacular landscapes, a true antidote to city life."
     },
     {
       "heading": "Navigating Your Journey: Karachi to Skardu Transport",
@@ -37,7 +37,7 @@ values (
     },
     {
       "heading": "Skardu's Gems: Must-Visit Spots for City Escapers",
-      "body": "Skardu is brimming with natural wonders and historical sites that offer a complete change of pace from city life. Begin with the tranquil beauty of Upper and Lower Kachura Lakes, perfect for boating or simply relaxing by the shore. Experience the unique landscape of the Katapana Cold Desert, where sand dunes meet snow-capped peaks. Explore the ancient Kharpocho Fort, offering panoramic views of Skardu Valley, and visit the historic Shigar Fort and Khaplu Palace for a glimpse into Balti heritage. For the truly adventurous, treks to view K2 from various points offer an unparalleled experience, making every moment an unforgettable memory."
+      "body": "Skardu is brimming with natural wonders and historical sites that offer a complete change of pace from city life. Begin with the tranquil beauty of Upper and Lower Kachura Lakes, perfect for boating or simply relaxing by the shore. Experience the unique landscape of the Katpana Cold Desert, where sand dunes meet snow-capped peaks. Explore the ancient Kharpocho Fort, offering panoramic views of Skardu Valley, and visit the historic Shigar Fort and Khaplu Palace for a glimpse into Balti heritage. For the truly adventurous, treks to view K2 from various points offer an unparalleled experience, making every moment an unforgettable memory."
     },
     {
       "heading": "Embracing Local Culture and Sustainable Travel",
@@ -66,7 +66,7 @@ values (
     'Karachi to Skardu',
     'Northern Pakistan tour',
     'Gilgit Baltistan adventure',
-    'Katapana Desert',
+    'Katpana Desert',
     'Kachura Lakes',
     'Pakistan road trip',
     'mountain escape',

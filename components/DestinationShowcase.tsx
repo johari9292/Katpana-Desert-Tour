@@ -18,7 +18,7 @@ export default function DestinationShowcase() {
             Deserts, mountains, lakes, valleys, and culture
           </h2>
           <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            Explore the northern areas through destination pages for Katapana Desert, Deosai, Kachura, Shigar, Khaplu,
+            Explore the northern areas through destination pages for Katpana Desert, Deosai, Kachura, Shigar, Khaplu,
             Hunza, Astore, and the K2 Base Camp trekking corridor.
           </p>
         </div>

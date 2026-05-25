@@ -71,7 +71,7 @@ async function fetchTrends() {
 
   for (const url of urls) {
     try {
-      const response = await fetch(url, { headers: { "User-Agent": "Katapana Desert Tour trend backfill" } });
+      const response = await fetch(url, { headers: { "User-Agent": "Katpana Desert Tour trend backfill" } });
       if (!response.ok) {
         fallbackReason = `Google Trends RSS request failed with ${response.status}.`;
         continue;

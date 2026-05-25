@@ -34,7 +34,7 @@ export default function Articles() {
             Read Skardu and Gilgit Baltistan guides
           </h2>
           <p className="mt-6 text-lg leading-8 text-skardu-ash">
-            Browse 40 practical articles covering Skardu tourism, Katapana Desert hotels, Skardu rent a car routes,
+            Browse 40 practical articles covering Skardu tourism, Katpana Desert hotels, Skardu rent a car routes,
             family trips, seasonal planning, culture, food, and adventure travel across Gilgit Baltistan.
           </p>
         </div>

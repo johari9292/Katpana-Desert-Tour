@@ -13,7 +13,7 @@ export const metadata: Metadata = createMetadata({
   path: "/tours",
   imageAlt: "Skardu tour packages for K2 Deosai Hunza and Karakoram Pakistan",
   keywords: [
-    "Katapana Desert Tour packages",
+    "Katpana Desert Tour packages",
     "Skardu tour packages",
     "Hunza Skardu tour",
     "Deosai 4x4 tour",

@@ -2,7 +2,7 @@
 
 Local travel images in this folder were downloaded from Wikimedia-hosted image files for use as destination and tour artwork.
 
-- `katapana-desert.jpg`: https://upload.wikimedia.org/wikipedia/commons/b/be/Skardu_Katpana_Desert.jpg
+- `Katpana-desert.jpg`: https://upload.wikimedia.org/wikipedia/commons/b/be/Skardu_Katpana_Desert.jpg
 - `deosai-plains.jpg`: https://upload.wikimedia.org/wikipedia/commons/5/57/Green_Deosai_Plains.jpg
 - `kachura-lakes.jpg`: https://upload.wikimedia.org/wikipedia/commons/9/9e/Upper_Kachura_Lake.jpg
 - `shigar-fort-valley.jpg`: https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Shigar_Fort_by_ZILL_NIAZI_22.jpg/1920px-Shigar_Fort_by_ZILL_NIAZI_22.jpg

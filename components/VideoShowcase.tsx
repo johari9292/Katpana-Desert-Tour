@@ -26,7 +26,7 @@ export default function VideoShowcase() {
               muted
               playsInline
               preload="metadata"
-              aria-label="Katapana Desert Skardu video"
+              aria-label="Katpana Desert Skardu video"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-skardu-void/35 via-transparent to-transparent" />
           </div>
@@ -37,17 +37,17 @@ export default function VideoShowcase() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Katapana Desert video guide</p>
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Katpana Desert video guide</p>
           <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
             Watch the cold desert before you book Skardu
           </h2>
           <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            See the sand, mountain light, and open Skardu landscape that make Katapana Desert one of the most searched
+            See the sand, mountain light, and open Skardu landscape that make Katpana Desert one of the most searched
             places to visit in Gilgit Baltistan. Use the video as a quick preview for hotel booking, rent a car planning,
             sunrise photography, and family-friendly Skardu tour packages.
           </p>
           <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            {["Katapana Desert Skardu", "Skardu rent a car", "Gilgit Baltistan tours", "Hotels near Katapana"].map((item) => (
+            {["Katpana Desert Skardu", "Skardu rent a car", "Gilgit Baltistan tours", "Hotels near Katpana"].map((item) => (
               <span key={item} className="rounded-full border border-skardu-mist bg-skardu-stone/75 px-4 py-3 text-sm font-bold text-skardu-ash">
                 {item}
               </span>

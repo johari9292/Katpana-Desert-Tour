@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/tours", 0.9, "weekly", "/images/katpana-skardu-hero.jpg"),
     entry("/destinations", 0.9, "weekly", "/images/katpana-skardu-hero.jpg"),
     entry("/articles", 0.7, "monthly", "/images/katpana-skardu-hero.jpg"),
-    entry("/trending", 0.82, "daily", "/images/places/katapana-desert.jpg"),
+    entry("/trending", 0.82, "daily", "/images/places/Katpana-desert.jpg"),
     entry("/search", 0.55, "monthly", "/images/katpana-skardu-hero.jpg"),
     ...seoPages.map((page) =>
       entry(
@@ -72,7 +72,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         `/trending/${article.slug}`,
         0.72,
         "weekly",
-        "/images/places/katapana-desert.jpg",
+        "/images/places/Katpana-desert.jpg",
       ),
       lastModified: new Date(article.published_at),
     })),
