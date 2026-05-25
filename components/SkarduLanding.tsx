@@ -1,14 +1,11 @@
 import Nav from "./Nav";
 import Marquee from "./Marquee";
-import HotelBooking from "./HotelBooking";
-import CarRental from "./CarRental";
 import Footer from "./Footer";
-import VideoShowcase from "./VideoShowcase";
 import TourPackages from "./TourPackages";
 import DestinationShowcase from "./DestinationShowcase";
 import AboutTour from "./AboutTour";
-import Testimonials from "./Testimonials";
 import Hero from "./Hero";
+import DeferredLandingSections from "./DeferredLandingSections";
 
 export default function SkarduLanding() {
   return (
@@ -19,12 +16,7 @@ export default function SkarduLanding() {
       <TourPackages />
       <DestinationShowcase />
       <AboutTour />
-      <VideoShowcase />
-      <HotelBooking />
-      <CarRental />
-      
-      
-      <Testimonials/>
+      <DeferredLandingSections />
       <Footer />
     </main>
   );

@@ -3,7 +3,7 @@ import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { displayPhone } from "@/constants/contact";
 import { SKARDU_GEO, type RelatedLink, type SEOFaq, type SEOPage } from "@/data/seo";
 
-export const defaultOgImage = "/images/katpana-skardu-hero.png";
+export const defaultOgImage = "/images/katpana-skardu-hero.jpg";
 
 export function canonicalPath(path: string) {
   if (!path || path === "/") return "/";

@@ -22,7 +22,7 @@ const touristDestinationSchema = {
     "Skardu is a Karakoram travel base for Katpana Desert, Deosai National Park, Upper Kachura Lake, Shigar Valley, Khaplu and K2 trekking routes.",
   url: SITE_URL,
   geo: SKARDU_GEO,
-  image: `${SITE_URL}/images/katpana-skardu-hero.png`,
+  image: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
   touristType: ["Adventure", "Cultural", "Eco"],
   includesAttraction: homepageAttractions.map((attraction) => ({
     "@type": "TouristAttraction",
@@ -38,7 +38,7 @@ const videoSchema = {
   name: "Skardu destination travel video",
   description:
     "Skardu tourism video featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
-  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.png`,
+  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
   uploadDate: "2026-05-22",
   contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
   embedUrl: "https://www.pexels.com/video/pakistan-beautiful-view-lake-and-mountain-19150354/",

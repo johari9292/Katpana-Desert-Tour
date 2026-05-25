@@ -27,7 +27,7 @@ const videoSchema = {
   name: "Skardu and Katapana Desert travel videos",
   description:
     "Skardu tourism videos featuring Katapana Desert, mountain valleys, lakes, cold desert scenery, and Gilgit Baltistan travel planning.",
-  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.png`,
+  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
   uploadDate: "2026-05-22",
   contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
   associatedMedia: {

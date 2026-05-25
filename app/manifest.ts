@@ -12,14 +12,14 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#C9A84C",
     icons: [
       {
-        src: "/images/katpana-skardu-hero.png",
+        src: "/images/katpana-skardu-hero.jpg",
         sizes: "192x192",
-        type: "image/png"
+        type: "image/jpeg"
       },
       {
-        src: "/images/katpana-skardu-hero.png",
+        src: "/images/katpana-skardu-hero.jpg",
         sizes: "512x512",
-        type: "image/png"
+        type: "image/jpeg"
       }
     ]
   };

@@ -60,7 +60,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     "@type": "Article",
     headline: article.title,
     description: article.excerpt,
-    image: `${SITE_URL}/images/katpana-skardu-hero.png`,
+    image: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
     datePublished: "2026-05-22",
     dateModified: article.updatedAt,
     author: {

@@ -102,7 +102,7 @@ export const pillarPages: SEOPage[] = [
     eyebrow: "Pillar guide",
     excerpt:
       "This Skardu travel guide gives a simple plan for lakes, cold desert sunsets, Balti culture, jeep tracks, weather, hotels, and day trips across the Karakoram.",
-    image: "/images/katpana-skardu-hero.png",
+    image: "/images/katpana-skardu-hero.jpg",
     imageAlt: "Skardu travel guide cold desert and Karakoram mountains Pakistan",
     imageTitle: "Skardu travel guide for cold desert lakes and mountain routes",
     category: "pillar",

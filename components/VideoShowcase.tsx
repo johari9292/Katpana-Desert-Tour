@@ -21,7 +21,7 @@ export default function VideoShowcase() {
             <video
               className="aspect-video w-full object-cover brightness-105 saturate-110"
               src={KATPANA_VIDEO_URL}
-              poster="/images/katpana-skardu-hero.png"
+              poster="/images/katpana-skardu-hero.jpg"
               controls
               muted
               playsInline

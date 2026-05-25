@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/constants/brand";
 import { articles } from "@/data/articles";
 import { destinations } from "@/data/destinations";
 import { seoPages } from "@/data/seo";
@@ -25,12 +24,12 @@ function entry(
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    entry("/", 1, "daily", "/images/katpana-skardu-hero.png"),
-    entry("/tours", 0.9, "weekly", "/images/katpana-skardu-hero.png"),
-    entry("/destinations", 0.9, "weekly", "/images/katpana-skardu-hero.png"),
-    entry("/articles", 0.7, "monthly", "/images/katpana-skardu-hero.png"),
+    entry("/", 1, "daily", "/images/katpana-skardu-hero.jpg"),
+    entry("/tours", 0.9, "weekly", "/images/katpana-skardu-hero.jpg"),
+    entry("/destinations", 0.9, "weekly", "/images/katpana-skardu-hero.jpg"),
+    entry("/articles", 0.7, "monthly", "/images/katpana-skardu-hero.jpg"),
     entry("/trending", 0.82, "daily", "/images/places/katapana-desert.jpg"),
-    entry("/search", 0.55, "monthly", "/images/katpana-skardu-hero.png"),
+    entry("/search", 0.55, "monthly", "/images/katpana-skardu-hero.jpg"),
     ...seoPages.map((page) =>
       entry(
         page.path,
@@ -63,7 +62,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           ? 0.72
           : 0.68,
         "monthly",
-        "/images/katpana-skardu-hero.png",
+        "/images/katpana-skardu-hero.jpg",
       ),
       lastModified: new Date(article.updatedAt),
     })),

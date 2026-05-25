@@ -24,11 +24,15 @@ export default function Hero() {
     if (reduceMotion) return;
 
     const load = () => setLoadVideo(true);
-    const idleCallback = window.requestIdleCallback?.(load, { timeout: 2500 });
+    const win = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    const idleCallback = win.requestIdleCallback?.(load, { timeout: 2500 });
     const timeout = window.setTimeout(load, 3500);
 
     return () => {
-      if (idleCallback) window.cancelIdleCallback(idleCallback);
+      if (idleCallback) win.cancelIdleCallback?.(idleCallback);
       window.clearTimeout(timeout);
     };
   }, [reduceMotion]);
