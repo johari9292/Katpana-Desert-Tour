@@ -49,9 +49,13 @@ supabase secrets set GEMINI_API_KEY=your-gemini-key
 supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-jwt-or-sb_secret-key
 supabase secrets set CRON_SECRET=your-long-random-secret
 supabase secrets set GEMINI_MODEL=gemini-2.5-flash
+supabase secrets set MAKE_FACEBOOK_WEBHOOK_URL=your-make-facebook-webhook-url
+supabase secrets set SITE_URL=https://www.katpanadesert.com
 ```
 
 Do not reuse the publishable or anon key for `SUPABASE_SERVICE_ROLE_KEY`; the function needs an admin-capable key to insert daily articles.
+When `MAKE_FACEBOOK_WEBHOOK_URL` is configured, each newly published trending article is also sent to Make.com for Facebook publishing. The webhook receives the article title, excerpt, canonical URL, trend metadata, keywords, and a ready-to-post Facebook message.
+If your Make webhook requires authentication, set either `MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN` or `MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER` such as `X-Webhook-Token: your-token`.
 
 The cron migration schedules the function at `04:00 UTC` daily, which is `09:00 Asia/Karachi`. Before relying on the schedule, set these database settings in Supabase SQL editor:
 
@@ -68,5 +72,13 @@ curl -X POST "https://<project-ref>.functions.supabase.co/generate-trending-arti
   -H "Content-Type: application/json" \
   -d '{"source":"manual-test"}'
 ```
+
+Replay the latest saved trending posts to Make.com for Facebook testing:
+
+```bash
+MAKE_FACEBOOK_WEBHOOK_URL="https://hook.example" node scripts/publish-trending-to-facebook.cjs --limit 3
+```
+
+Use `--dry-run` to preview payloads without sending them, or `--include-posted` to resend posts already marked as sent.
 
 Note: the requested stack uses Next.js 14. npm audit currently flags known advisories across the Next.js 14 line. This project is configured as a static export, but a production server-rendered deployment should upgrade to a patched Next.js release when possible.

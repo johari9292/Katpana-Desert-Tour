@@ -33,6 +33,20 @@ type GeneratedArticle = {
   fallbackReason: string | null;
 };
 
+type PublishedTrendingArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  keywords: string[];
+  trend_topic: string;
+  trend_rank: number | null;
+  trend_source_url: string | null;
+  trend_geo: string;
+  published_at: string;
+  generation_date: string;
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -103,7 +117,7 @@ Deno.serve(async (request) => {
 
     const { data: existingArticle, error: existingError } = await supabase
       .from("trending_articles")
-      .select("id, slug, title, generation_date")
+      .select("id, slug, title, excerpt, keywords, trend_topic, trend_rank, trend_source_url, trend_geo, published_at, generation_date, facebook_posted_at")
       .eq("generation_date", generationDate)
       .maybeSingle();
 
@@ -118,10 +132,15 @@ Deno.serve(async (request) => {
     }
 
     if (existingArticle) {
+      const facebookPublish = existingArticle.facebook_posted_at
+        ? { status: "skipped", reason: "already_posted" }
+        : await publishTrendingArticleToFacebook(supabase, existingArticle);
+
       return jsonResponse({
         status: "skipped",
         reason: "already_generated",
         article: existingArticle,
+        facebookPublish,
       });
     }
 
@@ -158,7 +177,7 @@ Deno.serve(async (request) => {
         published_at: new Date().toISOString(),
         generation_date: generationDate,
       })
-      .select("id, slug, title, generation_date")
+      .select("id, slug, title, excerpt, keywords, trend_topic, trend_rank, trend_source_url, trend_geo, published_at, generation_date")
       .single();
 
     if (insertError) {
@@ -176,12 +195,18 @@ Deno.serve(async (request) => {
       );
     }
 
+    const facebookPublish = await publishTrendingArticleToFacebook(
+      supabase,
+      insertedArticle,
+    );
+
     return jsonResponse({
       status: "published",
       article: insertedArticle,
       selectedTrend: generated.trendTopic,
       usedFallback: generated.usedFallback,
       fallbackReason: generated.fallbackReason,
+      facebookPublish,
     });
   } catch (error) {
     console.error("Trending article generation failed:", error);
@@ -194,6 +219,137 @@ Deno.serve(async (request) => {
     );
   }
 });
+
+async function publishTrendingArticleToFacebook(
+  supabase: ReturnType<typeof createClient>,
+  article: PublishedTrendingArticle,
+) {
+  const webhookUrl = Deno.env.get("MAKE_FACEBOOK_WEBHOOK_URL");
+
+  if (!webhookUrl) {
+    return { status: "skipped", reason: "missing_make_webhook_url" };
+  }
+
+  const payload = facebookWebhookPayload(article);
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: makeWebhookHeaders(),
+      body: JSON.stringify(payload),
+    });
+    const responseText = await response.text();
+    const responseBody = parseJsonMaybe(responseText);
+    const update = {
+      facebook_webhook_status: String(response.status),
+      facebook_webhook_response: responseBody,
+      facebook_webhook_error: response.ok ? null : responseText.slice(0, 1000),
+    };
+
+    if (response.ok) {
+      update.facebook_posted_at = new Date().toISOString();
+    }
+
+    await supabase
+      .from("trending_articles")
+      .update(update)
+      .eq("id", article.id);
+
+    return {
+      status: response.ok ? "posted" : "failed",
+      httpStatus: response.status,
+      response: responseBody,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+
+    await supabase
+      .from("trending_articles")
+      .update({
+        facebook_webhook_status: "network_error",
+        facebook_webhook_error: message.slice(0, 1000),
+      })
+      .eq("id", article.id);
+
+    return { status: "failed", error: message };
+  }
+}
+
+function makeWebhookHeaders() {
+  const headers = new Headers({ "Content-Type": "application/json" });
+  const bearerToken = Deno.env.get("MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN");
+  const authHeader = Deno.env.get("MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER");
+
+  if (bearerToken) {
+    headers.set("Authorization", `Bearer ${bearerToken}`);
+  }
+
+  if (authHeader?.includes(":")) {
+    const [name, ...valueParts] = authHeader.split(":");
+    const value = valueParts.join(":").trim();
+    if (name.trim() && value) headers.set(name.trim(), value);
+  }
+
+  return headers;
+}
+
+function facebookWebhookPayload(article: PublishedTrendingArticle) {
+  const siteUrl =
+    Deno.env.get("SITE_URL") ?? "https://www.katpanadesert.com";
+  const articleUrl = `${siteUrl}/trending/${article.slug}/`;
+  const keywords = Array.isArray(article.keywords) ? article.keywords : [];
+  const hashtags = keywords
+    .slice(0, 5)
+    .map((keyword) => `#${keyword.replace(/[^a-z0-9]+/gi, "")}`)
+    .filter((tag) => tag.length > 1);
+  const message = [
+    article.title,
+    "",
+    article.excerpt,
+    "",
+    `Read more: ${articleUrl}`,
+    hashtags.join(" "),
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return {
+    source: "katpana-desert-tour",
+    channel: "facebook",
+    message,
+    post_caption: message,
+    link: articleUrl,
+    article: {
+      id: article.id,
+      slug: article.slug,
+      title: article.title,
+      excerpt: article.excerpt,
+      url: articleUrl,
+      published_at: article.published_at,
+      generation_date: article.generation_date,
+      trend_topic: article.trend_topic,
+      trend_rank: article.trend_rank,
+      trend_source_url: article.trend_source_url,
+      trend_geo: article.trend_geo,
+      keywords,
+    },
+    facebook: {
+      message,
+      link: articleUrl,
+      hashtags,
+    },
+  };
+}
+
+function parseJsonMaybe(value: string) {
+  if (!value) return null;
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return { text: value.slice(0, 1000) };
+  }
+}
 
 async function fetchPakistanTrends(): Promise<{
   trends: TrendItem[];
