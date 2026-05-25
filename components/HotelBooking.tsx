@@ -24,18 +24,18 @@ export default function HotelBooking() {
   }
 
   return (
-    <AnimatedSection id="hotels" className="relative px-5 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+    <AnimatedSection id="hotels" className="relative px-4 py-14 sm:px-5 sm:py-20 lg:px-8 lg:py-28">
+      <div className="mx-auto grid max-w-7xl items-center gap-8 sm:gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Stay in Skardu</p>
-          <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Stay in Skardu</p>
+          <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
             Find Your Perfect Mountain Retreat
           </h2>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-skardu-ash">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
             From Serena-style comfort and Shangrila lake stays to boutique guesthouses near Katapana Desert, we shape
             accommodation around your route, season, and group style.
           </p>
-          <div className="mt-8 grid gap-3 text-sm text-skardu-ash sm:grid-cols-3">
+          <div className="mt-6 grid gap-3 text-sm text-skardu-ash sm:mt-8 sm:grid-cols-3">
             {["Heated rooms", "Lake access", "Airport pickup"].map((item) => (
               <span key={item} className="rounded-full border border-skardu-mist bg-skardu-stone/70 px-4 py-3 text-center">
                 {item}
@@ -52,11 +52,11 @@ export default function HotelBooking() {
           style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
           onMouseMove={tilt.handleMouseMove}
           onMouseLeave={tilt.handleMouseLeave}
-          className="glass-panel rounded-2xl p-6 md:p-8"
+          className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8"
         >
           <div className="mb-7 flex items-center justify-between gap-4">
             <div>
-              <h3 className="font-display text-3xl font-bold text-skardu-snow">Hotel booking</h3>
+              <h3 className="font-display text-2xl font-bold text-skardu-snow sm:text-3xl">Hotel booking</h3>
               <p className="text-sm text-skardu-ash">Send one clear request to WhatsApp.</p>
             </div>
             <span className="rounded-full bg-skardu-gold/15 px-3 py-1 text-xs font-black uppercase tracking-widest text-skardu-gold">
@@ -74,7 +74,7 @@ export default function HotelBooking() {
                 onChange={(event) => setGuests(Number(event.target.value))}
                 min={1}
                 type="number"
-                className="rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
+                className="min-h-12 rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
               />
             </label>
           </div>
@@ -86,7 +86,7 @@ export default function HotelBooking() {
                   key={type}
                   type="button"
                   onClick={() => setHotelType(type)}
-                  className="relative rounded-xl px-3 py-3 text-sm font-black text-skardu-snow"
+                  className="relative min-h-11 rounded-xl px-3 py-3 text-sm font-black text-skardu-snow"
                 >
                   {hotelType === type ? (
                     <motion.span layoutId="hotel-pill" className="absolute inset-0 rounded-xl bg-skardu-gold" />

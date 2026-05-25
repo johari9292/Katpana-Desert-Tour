@@ -33,12 +33,12 @@ export default function DateField({ label, value, onChange, className = "" }: Da
           value={value}
           onChange={(event) => onChange(event.target.value)}
           type="date"
-          className="w-full rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 pr-12 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
+          className="min-h-12 w-full rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 pr-14 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
         />
         <button
           type="button"
           onClick={openCalendar}
-          className="absolute right-3 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full border border-skardu-mist/70 text-skardu-gold"
+          className="absolute right-2 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-skardu-mist/70 text-skardu-gold"
           aria-label={`Open ${label.toLowerCase()} calendar`}
         >
           <CalendarIcon />

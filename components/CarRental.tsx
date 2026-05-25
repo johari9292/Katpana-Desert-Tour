@@ -25,10 +25,10 @@ export default function CarRental() {
   }
 
   return (
-    <AnimatedSection id="cars" className="relative px-5 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+    <AnimatedSection id="cars" className="relative px-4 py-14 sm:px-5 sm:py-20 lg:px-8 lg:py-28">
+      <div className="mx-auto grid max-w-7xl items-center gap-8 sm:gap-12 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="order-2 lg:order-1">
-          <div className="glass-panel rounded-2xl p-5 md:p-7">
+          <div className="glass-panel rounded-2xl p-4 sm:p-5 md:p-7">
             <div className="grid gap-4">
               {cars.map((car) => {
                 const active = selected.name === car.name;
@@ -37,9 +37,9 @@ export default function CarRental() {
                     key={car.name}
                     type="button"
                     onClick={() => setSelected(car)}
-                    whileHover={{ y: -4, borderColor: "#C9A84C" }}
+                    whileHover={{ y: -2, borderColor: "#C9A84C" }}
                     transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                    className={`relative flex items-center gap-4 rounded-2xl border p-4 text-left ${
+                    className={`relative flex min-h-[76px] items-center gap-4 rounded-2xl border p-4 text-left ${
                       active ? "border-skardu-gold bg-skardu-stone" : "border-skardu-mist bg-skardu-void/40"
                     }`}
                   >
@@ -71,7 +71,7 @@ export default function CarRental() {
                 <input
                   value={pickup}
                   onChange={(event) => setPickup(event.target.value)}
-                  className="rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
+                  className="min-h-12 rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
                 />
               </label>
               <DateField label="Travel date" value={date} onChange={setDate} />
@@ -122,11 +122,11 @@ export default function CarRental() {
         </div>
 
         <div className="order-1 lg:order-2">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Rent a car in Skardu</p>
-          <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Rent a car in Skardu</p>
+          <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
             Choose the right vehicle for every altitude
           </h2>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-skardu-ash">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
             City transfers, lake days, cold-desert sunsets, and Deosai routes need different vehicles. Make the choice
             simple before the traveler lands in Skardu.
           </p>

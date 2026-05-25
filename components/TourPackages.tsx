@@ -19,29 +19,29 @@ export default function TourPackages() {
   );
 
   return (
-    <AnimatedSection id="tours" className="relative px-5 py-20 lg:px-8 lg:py-28">
+    <AnimatedSection id="tours" className="relative px-4 py-14 sm:px-5 sm:py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div className="mb-7 flex flex-col justify-between gap-5 sm:mb-10 lg:flex-row lg:items-end">
           <div className="max-w-4xl">
-            <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Tour packages</p>
-            <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">
+            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Tour packages</p>
+            <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
               Northern Pakistan tours built from Skardu
             </h2>
-            <p className="mt-6 text-lg leading-8 text-skardu-ash">
+            <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
               Choose cold-desert weekends, Deosai 4x4 days, Hunza and Skardu road trips, cultural valleys, or serious
               K2-side trekking logistics with original itineraries shaped for real mountain travel.
             </p>
           </div>
           <Link
             href="/tours/"
-            className="inline-flex self-start rounded-full border border-skardu-teal px-6 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-teal lg:self-auto"
+            className="inline-flex min-h-12 items-center justify-center self-start rounded-full border border-skardu-teal px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-teal lg:self-auto lg:tracking-[0.16em]"
           >
             View all tours
           </Link>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="grid gap-4">
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0">
             {tourPackages.slice(0, 6).map((tour, index) => {
               const active = activeTour.slug === tour.slug;
 
@@ -50,9 +50,9 @@ export default function TourPackages() {
                   key={tour.slug}
                   type="button"
                   onClick={() => setActiveSlug(tour.slug)}
-                  whileHover={{ y: -4, borderColor: "#C9A84C" }}
+                  whileHover={reduceMotion ? undefined : { y: -4, borderColor: "#C9A84C" }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  className={`rounded-2xl border p-4 text-left transition ${
+                  className={`min-w-[78vw] rounded-2xl border p-4 text-left transition sm:min-w-0 ${
                     active ? "border-skardu-gold bg-skardu-stone" : "border-skardu-mist bg-skardu-stone/55"
                   }`}
                 >
@@ -61,7 +61,7 @@ export default function TourPackages() {
                     <span>{tour.duration}</span>
                     <span>{tour.difficulty}</span>
                   </span>
-                  <span className="block font-display text-2xl font-bold leading-tight text-skardu-snow">{tour.title}</span>
+                  <span className="block font-display text-[1.55rem] font-bold leading-tight text-skardu-snow sm:text-2xl">{tour.title}</span>
                   <span className="mt-2 block text-sm leading-6 text-skardu-ash">{tour.region}</span>
                 </motion.button>
               );
@@ -73,7 +73,7 @@ export default function TourPackages() {
             initial={reduceMotion ? false : { opacity: 0, x: 42 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-panel rounded-2xl p-5 md:p-7"
+            className="glass-panel rounded-2xl p-4 sm:p-5 md:p-7"
           >
             <div className="relative overflow-hidden rounded-xl border border-skardu-mist bg-skardu-void/60">
               <Image
@@ -99,8 +99,8 @@ export default function TourPackages() {
               ))}
             </div>
 
-            <h3 className="mt-5 font-display text-4xl font-bold leading-tight text-skardu-snow md:text-5xl">{activeTour.title}</h3>
-            <p className="mt-5 text-lg leading-8 text-skardu-ash">{activeTour.overview}</p>
+            <h3 className="mt-5 font-display text-3xl font-bold leading-tight text-skardu-snow sm:text-4xl md:text-5xl">{activeTour.title}</h3>
+            <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-5 sm:text-lg sm:leading-8">{activeTour.overview}</p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               {activeTour.highlights.slice(0, 4).map((highlight) => (
@@ -113,7 +113,7 @@ export default function TourPackages() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href={`/tours/${activeTour.slug}/`}
-                className="rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-void"
+                className="flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-void sm:tracking-[0.16em]"
               >
                 View itinerary
               </Link>
@@ -121,7 +121,7 @@ export default function TourPackages() {
                 href={requestUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-teal"
+                className="flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-teal sm:tracking-[0.16em]"
               >
                 Ask on WhatsApp
               </a>

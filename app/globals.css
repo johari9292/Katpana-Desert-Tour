@@ -50,4 +50,12 @@ textarea {
     box-shadow: 0 24px 80px rgb(0 0 0 / 0.32);
     backdrop-filter: blur(18px);
   }
+
+  @media (max-width: 767px) {
+    .glass-panel {
+      background: rgb(26 31 38 / 0.86);
+      box-shadow: 0 16px 44px rgb(0 0 0 / 0.26);
+      backdrop-filter: blur(10px);
+    }
+  }
 }

@@ -3,6 +3,7 @@ import { articles } from "@/data/articles";
 import { destinations } from "@/data/destinations";
 import { seoPages } from "@/data/seo";
 import { tourPackages } from "@/data/tours";
+import { staticTrendingArticles } from "@/data/trending-static";
 import { absoluteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
@@ -65,6 +66,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
         "/images/katpana-skardu-hero.jpg",
       ),
       lastModified: new Date(article.updatedAt),
+    })),
+    ...staticTrendingArticles.map((article) => ({
+      ...entry(
+        `/trending/${article.slug}`,
+        0.72,
+        "weekly",
+        "/images/places/katapana-desert.jpg",
+      ),
+      lastModified: new Date(article.published_at),
     })),
   ];
 }

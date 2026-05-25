@@ -22,19 +22,19 @@ export default function AboutTour() {
 
   return (
     <>
-      <AnimatedSection id="about" className="relative px-5 py-20 lg:px-8 lg:py-28">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.95fr_1.05fr]">
+      <AnimatedSection id="about" className="relative px-4 py-14 sm:px-5 sm:py-20 lg:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 sm:gap-12 lg:grid-cols-[0.95fr_1.05fr]">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           >
-            <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">About {BRAND_NAME}</p>
-            <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">
+            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">About {BRAND_NAME}</p>
+            <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
               Local travel planning for the Karakoram and cold desert routes
             </h2>
-            <p className="mt-6 text-lg leading-8 text-skardu-ash">
+            <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
               {BRAND_NAME} focuses on practical northern Pakistan travel: clear day plans, realistic drive times,
               route-aware vehicles, responsive hotel coordination, and original itineraries for travelers who want Skardu
               to feel smooth on the ground.
@@ -45,12 +45,12 @@ export default function AboutTour() {
             initial={reduceMotion ? false : { opacity: 0, x: 48, rotateY: 10 }}
             whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-panel rounded-2xl p-6 md:p-8"
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8"
           >
             <div className="grid gap-4">
               {servicePoints.map((point, index) => (
-                <div key={point} className="rounded-2xl border border-skardu-mist bg-skardu-void/45 p-5">
+                <div key={point} className="rounded-2xl border border-skardu-mist bg-skardu-void/45 p-4 sm:p-5">
                   <span className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">
                     {String(index + 1).padStart(2, "0")}
                   </span>
@@ -62,12 +62,12 @@ export default function AboutTour() {
         </div>
       </AnimatedSection>
 
-      <AnimatedSection className="relative px-5 py-16 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-skardu-mist bg-gradient-to-r from-skardu-stone via-skardu-void to-skardu-stone p-6 md:p-8">
+      <AnimatedSection className="relative px-4 py-12 sm:px-5 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-2xl border border-skardu-mist bg-gradient-to-r from-skardu-stone via-skardu-void to-skardu-stone p-5 sm:p-6 md:p-8">
           <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-center">
             <div className="max-w-3xl">
-              <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Plan your season</p>
-              <h2 className="font-display text-4xl font-bold leading-tight text-skardu-snow md:text-5xl">
+              <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Plan your season</p>
+              <h2 className="font-display text-3xl font-bold leading-tight text-skardu-snow sm:text-4xl md:text-5xl">
                 Build a custom package for Skardu, Hunza, Deosai, or K2 trekking
               </h2>
               <div className="mt-5 flex flex-wrap gap-2">
@@ -82,7 +82,7 @@ export default function AboutTour() {
               href={bookingUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full bg-[#25D366] px-8 py-4 text-center font-black text-white"
+              className="flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-8 py-4 text-center font-black text-white"
             >
               Start on WhatsApp
             </a>
@@ -92,4 +92,3 @@ export default function AboutTour() {
     </>
   );
 }
-

@@ -38,7 +38,7 @@ export default function Hero() {
   }, [reduceMotion]);
 
   return (
-    <section id="top" className="relative isolate min-h-screen overflow-hidden bg-skardu-void">
+    <section id="top" className="relative isolate min-h-[92svh] overflow-hidden bg-skardu-void sm:min-h-screen">
       <div className="absolute inset-0">
         <Image
           src="/images/katpana-skardu-hero.jpg"
@@ -48,10 +48,10 @@ export default function Hero() {
           priority
           fetchPriority="high"
           sizes="100vw"
-          className="object-cover opacity-45"
+          className="object-cover opacity-55 sm:opacity-45"
         />
         <video
-          className="absolute inset-0 h-full w-full object-cover opacity-90 brightness-110 contrast-105 saturate-110"
+          className="absolute inset-0 hidden h-full w-full object-cover opacity-90 brightness-110 contrast-105 saturate-110 sm:block"
           src={loadVideo ? SKARDU_HERO_VIDEO_URL : undefined}
           poster="/images/katpana-skardu-hero.jpg"
           autoPlay
@@ -64,7 +64,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(62,173,167,.24),transparent_32%),linear-gradient(90deg,rgba(8,12,16,.58),rgba(8,12,16,.28)_48%,rgba(8,12,16,.04)),linear-gradient(180deg,rgba(8,12,16,.12),#080C10_92%)]" />
       </div>
 
-      <div aria-hidden="true" className="absolute inset-0">
+      <div aria-hidden="true" className="absolute inset-0 hidden sm:block">
         {stars.map((star) => (
           <motion.div
             key={star.id}
@@ -83,16 +83,16 @@ export default function Hero() {
         <MountainLayer opacity="0.95" />
       </motion.div> */}
 
-      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-skardu-void via-skardu-void/90 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-skardu-void via-skardu-void/90 to-transparent sm:h-32" />
       <div aria-hidden="true" className="absolute bottom-20 left-0 right-0 mx-auto h-px max-w-5xl bg-gradient-to-r from-transparent via-skardu-teal/80 to-transparent shadow-teal" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 pb-28 pt-28 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[92svh] max-w-7xl items-center px-4 pb-24 pt-24 sm:min-h-screen sm:px-5 sm:pb-28 sm:pt-28 lg:px-8">
         <div className="max-w-5xl">
           <motion.p
             initial={reduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-5 text-xs font-black uppercase tracking-[0.22em] text-skardu-gold"
+            className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-5 sm:text-xs sm:tracking-[0.22em]"
           >
             Skardu and Gilgit-Baltistan, Pakistan
           </motion.p>
@@ -100,7 +100,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-display font-bold text-skardu-snow"
+            className="font-display text-[clamp(4rem,24vw,7rem)] font-bold leading-[0.78] text-skardu-snow sm:text-display"
           >
             Katapana
             <br />
@@ -112,7 +112,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.72, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-7 max-w-4xl"
+            className="mt-6 max-w-4xl sm:mt-7"
           >
             <div className="flex flex-wrap gap-2" aria-label="Skardu tourist points featured on this tour">
               {SKARDU_TOURIST_POINTS.map((point) => (
@@ -120,7 +120,7 @@ export default function Hero() {
                   key={point}
                   animate={reduceMotion ? undefined : { y: [0, -6, 0], opacity: [0.72, 1, 0.72] }}
                   transition={{ repeat: Infinity, duration: 3.2, delay: SKARDU_TOURIST_POINTS.indexOf(point) * 0.18 }}
-                  className="rounded-full border border-skardu-mist bg-skardu-stone/70 px-3 py-1.5 text-xs font-bold text-skardu-snow backdrop-blur-md"
+                  className="rounded-full border border-skardu-mist bg-skardu-stone/75 px-3 py-1.5 text-[11px] font-bold leading-4 text-skardu-snow backdrop-blur-sm sm:text-xs sm:backdrop-blur-md"
                 >
                   {point}
                 </motion.span>
@@ -131,7 +131,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.75, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-7 text-lg text-skardu-ash sm:text-xl"
+            className="mt-6 max-w-[22rem] text-base leading-7 text-skardu-ash sm:mt-7 sm:max-w-none sm:text-xl"
           >
             {subheadline}
           </motion.p>
@@ -139,13 +139,13 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.25, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-9 flex flex-col gap-4 sm:flex-row"
+            className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:gap-4"
           >
             <motion.a
               href="#tours"
               whileHover={{ scale: 1.04, boxShadow: "0 0 34px rgba(201,168,76,0.34)" }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-full bg-skardu-gold px-8 py-3 text-center font-black text-skardu-void"
+              className="flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-8 py-3 text-center font-black text-skardu-void"
             >
               View Tours -&gt;
             </motion.a>
@@ -153,7 +153,7 @@ export default function Hero() {
               href="#destinations"
               whileHover={{ scale: 1.04, boxShadow: "0 0 34px rgba(62,173,167,0.3)" }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-full border border-skardu-teal px-8 py-3 text-center font-black text-skardu-teal"
+              className="flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-8 py-3 text-center font-black text-skardu-teal"
             >
               Explore Destinations -&gt;
             </motion.a>
@@ -163,7 +163,7 @@ export default function Hero() {
 
       <motion.div
         aria-label="Altitude badge"
-        className="absolute bottom-8 right-5 z-20 rounded-2xl border border-skardu-mist/70 bg-skardu-stone/55 px-5 py-4 text-sm text-skardu-snow backdrop-blur-md animate-float lg:right-10"
+        className="absolute bottom-5 right-4 z-20 rounded-2xl border border-skardu-mist/70 bg-skardu-stone/70 px-4 py-3 text-xs text-skardu-snow backdrop-blur-sm animate-float sm:bottom-8 sm:right-5 sm:px-5 sm:py-4 sm:text-sm sm:backdrop-blur-md lg:right-10"
       >
         <span className="block font-display text-2xl italic text-skardu-gold">2,438m</span>
         <span className="text-skardu-ash">above sea level</span>

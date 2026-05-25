@@ -45,27 +45,27 @@ export default function ArticlesPage() {
         dangerouslySetInnerHTML={jsonLdScript(itemListSchema)}
       />
       <PageHeader />
-      <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
+      <section className="px-4 pb-16 pt-28 sm:px-5 sm:pb-20 sm:pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-4xl">
-            <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Articles library</p>
-            <h1 className="font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
+            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Articles library</p>
+            <h1 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-6xl md:text-7xl">
               Skardu and Gilgit Baltistan travel guides
             </h1>
-            <p className="mt-6 text-lg leading-8 text-skardu-ash">
+            <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
               Explore 40 practical guides for Skardu tourism, Katapana Desert hotel booking, Skardu rent a car planning,
               Kachura lakes, Deosai, Shigar, Khaplu, culture, food, family trips, and seasonal routes.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-10">
+          <div className="mt-9 grid gap-9 sm:mt-12 sm:gap-10">
             {categories.map((category) => {
               const categoryArticles = articles.filter((article) => article.category === category);
 
               return (
                 <section key={category} aria-labelledby={`${category.toLowerCase().replaceAll(" ", "-")}-heading`}>
-                  <div className="mb-5 flex items-end justify-between gap-4">
-                    <h2 id={`${category.toLowerCase().replaceAll(" ", "-")}-heading`} className="font-display text-4xl font-bold text-skardu-snow">
+                  <div className="mb-4 flex items-end justify-between gap-4 sm:mb-5">
+                    <h2 id={`${category.toLowerCase().replaceAll(" ", "-")}-heading`} className="font-display text-3xl font-bold text-skardu-snow sm:text-4xl">
                       {category}
                     </h2>
                     <span className="text-sm font-bold text-skardu-ash">{categoryArticles.length} guides</span>
@@ -75,12 +75,12 @@ export default function ArticlesPage() {
                       <Link
                         key={article.slug}
                         href={`/articles/${article.slug}/`}
-                        className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5 transition hover:border-skardu-gold hover:bg-skardu-stone"
+                        className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-4 transition hover:border-skardu-gold hover:bg-skardu-stone sm:p-5"
                       >
                         <span className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">{article.readTime}</span>
-                        <h3 className="mt-3 font-display text-3xl font-bold leading-tight text-skardu-snow">{article.title}</h3>
+                        <h3 className="mt-3 font-display text-2xl font-bold leading-tight text-skardu-snow sm:text-3xl">{article.title}</h3>
                         <p className="mt-4 line-clamp-3 text-sm leading-6 text-skardu-ash">{article.excerpt}</p>
-                        <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.16em] text-skardu-teal">
+                        <span className="mt-5 inline-flex min-h-11 items-center text-sm font-black uppercase tracking-[0.14em] text-skardu-teal sm:tracking-[0.16em]">
                           Read guide
                         </span>
                       </Link>
