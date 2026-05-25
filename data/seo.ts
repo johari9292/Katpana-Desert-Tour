@@ -558,7 +558,7 @@ export const blogPages: SEOPage[] = [
     eyebrow: "Season guide",
     excerpt:
       "The best time to visit Skardu Pakistan depends on whether you want Deosai, lake weather, blossom, autumn color, snow, or K2 trekking routes.",
-    image: "/images/places/Katpana-desert.jpg",
+    image: "/images/places/katapana-desert.jpg",
     imageAlt:
       "best time to visit Skardu Pakistan Katpana Desert and mountains by season",
     imageTitle: "Best time to visit Skardu Pakistan monthly weather guide",
@@ -864,7 +864,7 @@ export const blogPages: SEOPage[] = [
     eyebrow: "Packing guide",
     excerpt:
       "A Skardu packing list must cover warm layers, sun protection, road days, lake stops, high plateaus, village etiquette, and trekking gear if you continue toward K2.",
-    image: "/images/places/Katpana-desert.jpg",
+    image: "/images/places/katapana-desert.jpg",
     imageAlt:
       "Skardu packing list for Katpana Desert Deosai and K2 trekking Pakistan",
     imageTitle: "Skardu packing list for family tours and mountain trekking",
@@ -970,8 +970,8 @@ export function getSeoPageBySlug(slug: string, category?: SEOPage["category"]) {
 export const homepageAttractions = [
   {
     name: "Katpana Desert",
-    url: `${SITE_URL}/destinations/Katpana-desert-skardu`,
-    image: `${SITE_URL}/images/places/Katpana-desert.jpg`,
+    url: `${SITE_URL}/destinations/katpana-desert-skardu/`,
+    image: `${SITE_URL}/images/places/katapana-desert.jpg`,
   },
   {
     name: "Deosai National Park",

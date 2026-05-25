@@ -11,7 +11,7 @@ export const metadata: Metadata = createMetadata({
   title: `Trending Travel Articles | ${BRAND_NAME}`,
   description: "Pakistan travel trends turned into daily Skardu and Gilgit-Baltistan articles for 2026. Read today.",
   path: "/trending",
-  image: "/images/places/Katpana-desert.jpg",
+  image: "/images/places/katapana-desert.jpg",
   imageAlt: "Pakistan travel trends for Skardu and Gilgit-Baltistan tourism",
   keywords: [
     "Pakistan travel trends",

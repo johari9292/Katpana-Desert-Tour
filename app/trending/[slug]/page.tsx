@@ -28,7 +28,7 @@ export function generateMetadata({ params }: TrendingArticlePageProps): Metadata
       title: `Trending Travel Article | ${BRAND_NAME}`,
       description: "Read Pakistan travel trends adapted for Skardu and Gilgit-Baltistan tourism. Explore now.",
       path: "/trending",
-      image: "/images/places/Katpana-desert.jpg",
+      image: "/images/places/katapana-desert.jpg",
       imageAlt: "Pakistan travel trends for Skardu tourism",
       keywords: ["Pakistan travel trends", "Skardu travel articles"]
     });
@@ -38,7 +38,7 @@ export function generateMetadata({ params }: TrendingArticlePageProps): Metadata
     title: `${compactTitle(article.title)} | ${BRAND_NAME}`,
     description: compactDescription(article.excerpt),
     path: `/trending/${article.slug}`,
-    image: "/images/places/Katpana-desert.jpg",
+    image: "/images/places/katapana-desert.jpg",
     imageAlt: `${article.trend_topic} Skardu travel article Gilgit-Baltistan`,
     keywords: article.keywords,
     type: "article"
@@ -63,7 +63,7 @@ export default function TrendingArticlePage({ params }: TrendingArticlePageProps
     "@type": "Article",
     headline: article.title,
     description: article.excerpt,
-    image: absoluteUrl("/images/places/Katpana-desert.jpg"),
+    image: absoluteUrl("/images/places/katapana-desert.jpg"),
     datePublished: article.published_at,
     dateModified: article.published_at,
     author: {

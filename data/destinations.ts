@@ -26,12 +26,12 @@ export interface Destination {
 
 export const destinations: Destination[] = [
   {
-    slug: "Katpana-desert-skardu",
+    slug: "katpana-desert-skardu",
     name: "Katpana Desert",
     region: "Skardu",
     type: "Cold desert",
     bestSeason: "All year, strongest for sunrise, sunset, and winter snow",
-    image: "/images/places/Katpana-desert.jpg",
+    image: "/images/places/katapana-desert.jpg",
     overview:
       "Katpana Desert is the signature cold-desert landscape near Skardu, with soft sand, lake edges, and mountain backdrops close to the airport and city hotels.",
     highlights: [

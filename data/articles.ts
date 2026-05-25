@@ -70,7 +70,7 @@ const articleSeeds: ArticleSeed[] = [
       "Keep the first day light because flight timing, altitude, and changing mountain weather can affect the schedule.",
   },
   {
-    slug: "Katpana-desert-skardu-travel-guide",
+    slug: "katpana-desert-skardu-travel-guide",
     title: "Katpana Desert Skardu Travel Guide",
     category: "Attractions",
     location: "Katpana Desert",
@@ -335,7 +335,7 @@ const articleSeeds: ArticleSeed[] = [
       "Pick a central hotel if the family wants shorter drives to markets, pharmacies, and restaurants.",
   },
   {
-    slug: "hotels-near-Katpana-desert-guide",
+    slug: "hotels-near-katpana-desert-guide",
     title: "Hotels Near Katpana Desert Guide",
     category: "Hotels",
     location: "Katpana Desert hotels",

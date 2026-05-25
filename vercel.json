@@ -1,0 +1,84 @@
+{
+  "redirects": [
+    {
+      "source": "/destinations/Katpana-desert-skardu",
+      "destination": "/destinations/katpana-desert-skardu/",
+      "permanent": true
+    },
+    {
+      "source": "/destinations/Katpana-desert-skardu/",
+      "destination": "/destinations/katpana-desert-skardu/",
+      "permanent": true
+    },
+    {
+      "source": "/destinations/katapana-desert-skardu",
+      "destination": "/destinations/katpana-desert-skardu/",
+      "permanent": true
+    },
+    {
+      "source": "/destinations/katapana-desert-skardu/",
+      "destination": "/destinations/katpana-desert-skardu/",
+      "permanent": true
+    },
+    {
+      "source": "/tours/Katpana-desert-skardu-highlights-tour",
+      "destination": "/tours/katpana-desert-skardu-highlights-tour/",
+      "permanent": true
+    },
+    {
+      "source": "/tours/Katpana-desert-skardu-highlights-tour/",
+      "destination": "/tours/katpana-desert-skardu-highlights-tour/",
+      "permanent": true
+    },
+    {
+      "source": "/tours/katapana-desert-skardu-highlights-tour",
+      "destination": "/tours/katpana-desert-skardu-highlights-tour/",
+      "permanent": true
+    },
+    {
+      "source": "/tours/katapana-desert-skardu-highlights-tour/",
+      "destination": "/tours/katpana-desert-skardu-highlights-tour/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/Katpana-desert-skardu-travel-guide",
+      "destination": "/articles/katpana-desert-skardu-travel-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/Katpana-desert-skardu-travel-guide/",
+      "destination": "/articles/katpana-desert-skardu-travel-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/katapana-desert-skardu-travel-guide",
+      "destination": "/articles/katpana-desert-skardu-travel-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/katapana-desert-skardu-travel-guide/",
+      "destination": "/articles/katpana-desert-skardu-travel-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/hotels-near-Katpana-desert-guide",
+      "destination": "/articles/hotels-near-katpana-desert-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/hotels-near-Katpana-desert-guide/",
+      "destination": "/articles/hotels-near-katpana-desert-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/hotels-near-katapana-desert-guide",
+      "destination": "/articles/hotels-near-katpana-desert-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/articles/hotels-near-katapana-desert-guide/",
+      "destination": "/articles/hotels-near-katpana-desert-guide/",
+      "permanent": true
+    }
+  ]
+}

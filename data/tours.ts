@@ -45,7 +45,7 @@ export interface TourPackage {
 
 export const tourPackages: TourPackage[] = [
   {
-    slug: "Katpana-desert-skardu-highlights-tour",
+    slug: "katpana-desert-skardu-highlights-tour",
     title: "Katpana Desert and Skardu Highlights Tour",
     duration: "4 days / 3 nights",
     category: "Family and scenic",
@@ -53,7 +53,7 @@ export const tourPackages: TourPackage[] = [
     difficulty: "Easy",
     bestSeason: "April to October, with winter snow trips on request",
     priceFrom: "Custom quote",
-    image: "/images/places/Katpana-desert.jpg",
+    image: "/images/places/katapana-desert.jpg",
     badge: "Best seller",
     overview: `${BRAND_NAME} builds this short Skardu package around the cold desert, blue lakes, heritage lanes, and flexible airport timing. It works well for families, couples, and first-time visitors who want the strongest Skardu experiences without rushing every hour.`,
     destinationOverview:
