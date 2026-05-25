@@ -45,6 +45,10 @@ const videoSchema = {
   associatedMedia: {
     "@type": "VideoObject",
     name: "Katpana Desert Skardu travel video",
+    description:
+      "Katpana Desert travel video showing the cold desert landscape, dunes, and mountain views near Skardu.",
+    thumbnailUrl: `${SITE_URL}/images/places/katapana-desert.jpg`,
+    uploadDate: "2026-05-22",
     contentUrl: KATPANA_VIDEO_URL,
     embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
   }
