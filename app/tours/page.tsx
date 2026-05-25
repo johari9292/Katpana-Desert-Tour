@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { tourPackages } from "@/data/tours";
-import { createMetadata, jsonLdScript } from "@/lib/seo";
+import { createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: `Skardu Tour Packages | ${BRAND_NAME}`,
@@ -36,6 +36,29 @@ const itemListSchema = {
   }))
 };
 
+const toursFaqs = [
+  {
+    question: "Which Skardu tour package is best for first-time visitors?",
+    answer:
+      "First-time visitors usually do best with a 4 to 6 day Skardu package that includes Katpana Desert, Kachura Lakes, Shigar Valley, Satpara Lake, airport pickup, and flexible hotel timing. This keeps the route scenic without making the first trip too rushed."
+  },
+  {
+    question: "How many days are enough for Skardu, Deosai, and Kachura?",
+    answer:
+      "A practical Skardu plan needs at least 5 days when Deosai National Park is included. Deosai is seasonal and road conditions can change quickly, so a buffer day helps protect flights, family comfort, and hotel plans."
+  },
+  {
+    question: "Can K2 base camp trekking be booked from Skardu?",
+    answer:
+      "Yes. K2 base camp trekking starts with Skardu logistics, Askole jeep planning, guide coordination, porter systems, permits, food, camping equipment, and weather buffers. Most K2 base camp trek packages need 18 to 21 days."
+  },
+  {
+    question: "Do Skardu tour packages include hotels and transport?",
+    answer:
+      "Packages can include hotel booking support, airport pickup, private cars, 4x4 jeeps for Deosai or Basho, route planning, and local driver coordination. Exact inclusions depend on group size, hotel level, season, and route difficulty."
+  }
+];
+
 export default function ToursPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
@@ -43,6 +66,7 @@ export default function ToursPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(itemListSchema)}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(toursFaqs))} />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
@@ -93,6 +117,48 @@ export default function ToursPage() {
               </Link>
             ))}
           </div>
+
+          <section className="mt-16 grid gap-8 border-t border-skardu-mist pt-12 lg:grid-cols-[minmax(0,0.62fr)_minmax(280px,0.38fr)]">
+            <div>
+              <h2 className="font-display text-4xl font-bold leading-tight text-skardu-snow">
+                How to choose a Skardu tour package
+              </h2>
+              <div className="mt-5 grid gap-5 text-base leading-8 text-skardu-ash">
+                <p>
+                  A strong Skardu tour package is built around altitude, road timing, and the season instead of only a
+                  list of famous places. Katpana Desert, Kachura Lakes, Shigar, and Satpara are easier routes for short
+                  stays, while Deosai, Basho, Astore, and K2-side treks need more buffer time and better vehicle
+                  planning.
+                </p>
+                <p>
+                  Families usually need shorter driving days, warm hotel rooms, airport transfer support, and flexible
+                  sightseeing. Adventure travelers need route checks, 4x4 availability, permit guidance, porter systems,
+                  food planning, and weather days. The right package should make those tradeoffs clear before booking.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
+              <h2 className="font-display text-3xl font-bold text-skardu-snow">Route planning notes</h2>
+              <ul className="mt-5 grid gap-3 text-sm leading-6 text-skardu-ash">
+                <li>April to October works best for most Skardu family and sightseeing routes.</li>
+                <li>June to September is the safer window for Deosai National Park road access.</li>
+                <li>K2 base camp and Baltoro Glacier treks need serious acclimatization and weather buffers.</li>
+                <li>Private cars work for city, lake, and heritage routes; 4x4 jeeps are better for rough high tracks.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="mt-14 border-t border-skardu-mist pt-12">
+            <h2 className="font-display text-4xl font-bold leading-tight text-skardu-snow">Skardu tour package FAQs</h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {toursFaqs.map((faq) => (
+                <details key={faq.question} className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
+                  <summary className="cursor-pointer font-bold text-skardu-snow">{faq.question}</summary>
+                  <p className="mt-3 text-sm leading-7 text-skardu-ash">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
       <Footer />

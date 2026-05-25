@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { destinations } from "@/data/destinations";
-import { createMetadata, jsonLdScript } from "@/lib/seo";
+import { createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: `Gilgit-Baltistan Destinations | ${BRAND_NAME}`,
@@ -36,6 +36,29 @@ const destinationListSchema = {
   }))
 };
 
+const destinationFaqs = [
+  {
+    question: "What are the best destinations to visit in Skardu?",
+    answer:
+      "The strongest first-time Skardu destinations are Katpana Desert, Kachura Lakes, Shigar Valley, Satpara Lake, and Deosai National Park when the summer road is open. Longer trips can add Khaplu, Astore, Hunza, and K2 Base Camp routes."
+  },
+  {
+    question: "Which Gilgit-Baltistan destinations are suitable for families?",
+    answer:
+      "Families usually prefer Skardu city, Katpana Desert, Upper Kachura Lake, Shangrila, Satpara Lake, Shigar Fort, and Khaplu Palace because they combine scenery with easier access, hotel options, and shorter sightseeing days."
+  },
+  {
+    question: "When is Deosai National Park open from Skardu?",
+    answer:
+      "Deosai National Park is usually planned from June to September, but exact access depends on snow, rain, road repairs, and local conditions. Travelers should confirm the route close to departure and keep a flexible day in the itinerary."
+  },
+  {
+    question: "Can K2 Base Camp be visited as a normal day trip?",
+    answer:
+      "No. K2 Base Camp is a serious multi-day trek from the Skardu and Askole side, not a normal sightseeing day trip. It requires trekking permits, guides, porters, camping systems, food planning, and acclimatization."
+  }
+];
+
 export default function DestinationsPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
@@ -43,6 +66,7 @@ export default function DestinationsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(destinationListSchema)}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(destinationFaqs))} />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
@@ -87,6 +111,47 @@ export default function DestinationsPage() {
               </Link>
             ))}
           </div>
+
+          <section className="mt-16 grid gap-8 border-t border-skardu-mist pt-12 lg:grid-cols-[minmax(0,0.62fr)_minmax(280px,0.38fr)]">
+            <div>
+              <h2 className="font-display text-4xl font-bold leading-tight text-skardu-snow">
+                Planning Gilgit-Baltistan destinations from Skardu
+              </h2>
+              <div className="mt-5 grid gap-5 text-base leading-8 text-skardu-ash">
+                <p>
+                  Skardu works as a practical base for cold desert sunsets, lake routes, high plateaus, cultural valleys,
+                  and Karakoram trekking logistics. The easiest destination days stay close to the city, while Deosai,
+                  Astore, Hunza, and K2-side routes need more careful road timing and weather buffers.
+                </p>
+                <p>
+                  Good destination planning should match the route to the traveler. Families need reliable hotels, shorter
+                  drives, warm layers, and flexible meal stops. Photographers need sunrise and sunset timing. Trekkers need
+                  permit guidance, acclimatization, porter systems, and realistic recovery days after long trails.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
+              <h2 className="font-display text-3xl font-bold text-skardu-snow">Best route groups</h2>
+              <ul className="mt-5 grid gap-3 text-sm leading-6 text-skardu-ash">
+                <li>Short scenic stays: Katpana Desert, Kachura Lakes, Satpara Lake, and Shigar.</li>
+                <li>Cultural travel: Shigar Fort, Khaplu Palace, Ghanche Valley, and local bazaars.</li>
+                <li>Adventure routes: Deosai, Basho, Astore, Rama Meadows, and jeep safari tracks.</li>
+                <li>Trekking logistics: Askole, Baltoro Glacier, Concordia, and K2 Base Camp.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="mt-14 border-t border-skardu-mist pt-12">
+            <h2 className="font-display text-4xl font-bold leading-tight text-skardu-snow">Destination FAQs</h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {destinationFaqs.map((faq) => (
+                <details key={faq.question} className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
+                  <summary className="cursor-pointer font-bold text-skardu-snow">{faq.question}</summary>
+                  <p className="mt-3 text-sm leading-7 text-skardu-ash">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
       <Footer />
