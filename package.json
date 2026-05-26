@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
+    "prebuild": "node scripts/sync-trending-archive.cjs",
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",

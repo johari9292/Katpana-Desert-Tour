@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeTrendingArticle, type TrendingArticle, type TrendingArticleRow } from "@/data/trending";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
@@ -22,7 +23,9 @@ export default function TrendingArticles() {
   const [page, setPage] = useState(0);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [errorMessage, setErrorMessage] = useState("");
+  const searchParams = useSearchParams();
   const reduceMotion = useReducedMotion();
+  const selectedSlug = searchParams.get("article");
 
   useEffect(() => {
     let mounted = true;
@@ -54,7 +57,11 @@ export default function TrendingArticles() {
 
       const normalizedArticles = ((data ?? []) as TrendingArticleRow[]).map(normalizeTrendingArticle);
       setArticles(normalizedArticles);
-      setActiveId(normalizedArticles[0]?.id ?? null);
+      const selectedArticle = selectedSlug
+        ? normalizedArticles.find((article) => article.slug === selectedSlug)
+        : null;
+
+      setActiveId(selectedArticle?.id ?? normalizedArticles[0]?.id ?? null);
       setPage(0);
       setLoadState(normalizedArticles.length ? "ready" : "empty");
     }
@@ -64,7 +71,7 @@ export default function TrendingArticles() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [selectedSlug]);
 
   const activeArticle = useMemo(
     () => articles.find((article) => article.id === activeId) ?? articles[0],
@@ -142,10 +149,10 @@ export default function TrendingArticles() {
               </div>
 
               <Link
-                href={`/trending/${activeArticle.slug}/`}
+                href={`/trending/?article=${activeArticle.slug}`}
                 className="mt-8 flex min-h-12 w-full items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-void sm:w-fit"
               >
-                Open SEO article page
+                Open article
               </Link>
             </motion.article>
 
@@ -180,7 +187,7 @@ export default function TrendingArticles() {
                           </span>
                           <span className="mt-2 block text-sm leading-6 text-skardu-ash">{article.trend_topic}</span>
                         </button>
-                        <Link href={`/trending/${article.slug}/`} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
+                        <Link href={`/trending/?article=${article.slug}`} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
                           Details
                         </Link>
                       </div>

@@ -39,7 +39,7 @@ const videoSchema = {
   description:
     "Skardu tourism video featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
   thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
-  uploadDate: "2026-05-22",
+  uploadDate: "2026-05-22T00:00:00+05:00",
   contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
   embedUrl: "https://www.pexels.com/video/pakistan-beautiful-view-lake-and-mountain-19150354/",
   associatedMedia: {
@@ -48,7 +48,7 @@ const videoSchema = {
     description:
       "Katpana Desert travel video showing the cold desert landscape, dunes, and mountain views near Skardu.",
     thumbnailUrl: `${SITE_URL}/images/places/katapana-desert.jpg`,
-    uploadDate: "2026-05-22",
+    uploadDate: "2026-05-22T00:00:00+05:00",
     contentUrl: KATPANA_VIDEO_URL,
     embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
   }

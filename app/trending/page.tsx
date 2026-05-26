@@ -3,9 +3,8 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import TrendingArticles from "@/components/TrendingArticles";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { staticTrendingArticles } from "@/data/trending-static";
 import { createMetadata, jsonLdScript } from "@/lib/seo";
-import Link from "next/link";
+import { Suspense } from "react";
 
 export const metadata: Metadata = createMetadata({
   title: `Trending Travel Articles | ${BRAND_NAME}`,
@@ -55,32 +54,9 @@ export default function TrendingPage() {
           </p>
         </div>
       </section>
-      <TrendingArticles />
-      <section className="px-4 pb-16 sm:px-5 sm:pb-20 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-4 sm:p-6">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:text-xs sm:tracking-[0.24em]">
-             Archive
-          </p>
-          <h2 className="font-display text-3xl font-bold leading-tight text-skardu-snow sm:text-4xl">
-            
-          </h2>
-          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {staticTrendingArticles.map((article) => (
-              <Link
-                key={article.slug}
-                href={`/trending/${article.slug}/`}
-                className="rounded-2xl border border-skardu-mist bg-skardu-void/45 p-4 transition hover:border-skardu-gold"
-              >
-                <span className="text-xs font-black uppercase tracking-[0.14em] text-skardu-gold">
-                  {article.generation_date} / {article.trend_rank ? `Trend #${article.trend_rank}` : "Travel trend"}
-                </span>
-                <span className="mt-3 block font-display text-2xl font-bold leading-tight text-skardu-snow">{article.title}</span>
-                <span className="mt-3 line-clamp-2 block text-sm leading-6 text-skardu-ash">{article.excerpt}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <TrendingArticles />
+      </Suspense>
       <Footer />
     </main>
   );

@@ -38,6 +38,8 @@ type PublishedTrendingArticle = {
   slug: string;
   title: string;
   excerpt: string;
+  sections: GeneratedSection[];
+  faqs: GeneratedFaq[];
   keywords: string[];
   trend_topic: string;
   trend_rank: number | null;
@@ -117,7 +119,7 @@ Deno.serve(async (request) => {
 
     const { data: existingArticle, error: existingError } = await supabase
       .from("trending_articles")
-      .select("id, slug, title, excerpt, keywords, trend_topic, trend_rank, trend_source_url, trend_geo, published_at, generation_date, facebook_posted_at")
+      .select("id, slug, title, excerpt, sections, faqs, keywords, trend_topic, trend_rank, trend_source_url, trend_geo, published_at, generation_date, facebook_posted_at")
       .eq("generation_date", generationDate)
       .maybeSingle();
 
@@ -177,7 +179,7 @@ Deno.serve(async (request) => {
         published_at: new Date().toISOString(),
         generation_date: generationDate,
       })
-      .select("id, slug, title, excerpt, keywords, trend_topic, trend_rank, trend_source_url, trend_geo, published_at, generation_date")
+      .select("id, slug, title, excerpt, sections, faqs, keywords, trend_topic, trend_rank, trend_source_url, trend_geo, published_at, generation_date")
       .single();
 
     if (insertError) {
@@ -294,10 +296,12 @@ function makeWebhookHeaders() {
 }
 
 function facebookWebhookPayload(article: PublishedTrendingArticle) {
-  const siteUrl =
-    Deno.env.get("SITE_URL") ?? "https://www.katpanadesert.com";
+  const siteUrl = (Deno.env.get("SITE_URL") ?? "https://www.katpanadesert.com").replace(/\/+$/g, "");
   const articleUrl = `${siteUrl}/trending/${article.slug}/`;
   const keywords = Array.isArray(article.keywords) ? article.keywords : [];
+  const sections = normalizeWebhookSections(article.sections);
+  const faqs = normalizeWebhookFaqs(article.faqs);
+  const articleBody = buildArticleBody(article.title, article.excerpt, sections, faqs);
   const hashtags = keywords
     .slice(0, 5)
     .map((keyword) => `#${keyword.replace(/[^a-z0-9]+/gi, "")}`)
@@ -332,13 +336,65 @@ function facebookWebhookPayload(article: PublishedTrendingArticle) {
       trend_source_url: article.trend_source_url,
       trend_geo: article.trend_geo,
       keywords,
+      sections,
+      faqs,
+      body: articleBody,
+      full_text: articleBody,
     },
+    article_body: articleBody,
+    content: articleBody,
     facebook: {
       message,
       link: articleUrl,
       hashtags,
     },
   };
+}
+
+function normalizeWebhookSections(value: unknown): GeneratedSection[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+      const section = item as Record<string, unknown>;
+      const heading = typeof section.heading === "string" ? section.heading : "";
+      const body = typeof section.body === "string" ? section.body : "";
+      return heading && body ? { heading, body } : null;
+    })
+    .filter((item): item is GeneratedSection => Boolean(item));
+}
+
+function normalizeWebhookFaqs(value: unknown): GeneratedFaq[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+      const faq = item as Record<string, unknown>;
+      const question = typeof faq.question === "string" ? faq.question : "";
+      const answer = typeof faq.answer === "string" ? faq.answer : "";
+      return question && answer ? { question, answer } : null;
+    })
+    .filter((item): item is GeneratedFaq => Boolean(item));
+}
+
+function buildArticleBody(
+  title: string,
+  excerpt: string,
+  sections: GeneratedSection[],
+  faqs: GeneratedFaq[],
+) {
+  const sectionText = sections
+    .map((section) => `${section.heading}\n${section.body}`)
+    .join("\n\n");
+  const faqText = faqs
+    .map((faq) => `Q: ${faq.question}\nA: ${faq.answer}`)
+    .join("\n\n");
+
+  return [title, excerpt, sectionText, faqText ? `FAQs\n${faqText}` : ""]
+    .filter(Boolean)
+    .join("\n\n");
 }
 
 function parseJsonMaybe(value: string) {

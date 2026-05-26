@@ -38,6 +38,9 @@ function facebookWebhookPayload(article) {
   const siteUrl = (process.env.SITE_URL || "https://www.katpanadesert.com").replace(/\/+$/g, "");
   const articleUrl = `${siteUrl}/trending/${article.slug}/`;
   const keywords = Array.isArray(article.keywords) ? article.keywords : [];
+  const sections = normalizeSections(article.sections);
+  const faqs = normalizeFaqs(article.faqs);
+  const articleBody = buildArticleBody(article.title, article.excerpt, sections, faqs);
   const hashtags = keywords
     .slice(0, 5)
     .map((keyword) => `#${keyword.replace(/[^a-z0-9]+/gi, "")}`)
@@ -73,13 +76,52 @@ function facebookWebhookPayload(article) {
       trend_source_url: article.trend_source_url,
       trend_geo: article.trend_geo,
       keywords,
+      sections,
+      faqs,
+      body: articleBody,
+      full_text: articleBody,
     },
+    article_body: articleBody,
+    content: articleBody,
     facebook: {
       message,
       link: articleUrl,
       hashtags,
     },
   };
+}
+
+function normalizeSections(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+      const heading = typeof item.heading === "string" ? item.heading : "";
+      const body = typeof item.body === "string" ? item.body : "";
+      return heading && body ? { heading, body } : null;
+    })
+    .filter(Boolean);
+}
+
+function normalizeFaqs(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+      const question = typeof item.question === "string" ? item.question : "";
+      const answer = typeof item.answer === "string" ? item.answer : "";
+      return question && answer ? { question, answer } : null;
+    })
+    .filter(Boolean);
+}
+
+function buildArticleBody(title, excerpt, sections, faqs) {
+  const sectionText = sections.map((section) => `${section.heading}\n${section.body}`).join("\n\n");
+  const faqText = faqs.map((faq) => `Q: ${faq.question}\nA: ${faq.answer}`).join("\n\n");
+
+  return [title, excerpt, sectionText, faqText ? `FAQs\n${faqText}` : ""].filter(Boolean).join("\n\n");
 }
 
 async function markArticlePosted(supabase, articleId, response, responseText) {
@@ -144,6 +186,7 @@ async function main() {
     .from("trending_articles")
     .select(
       "id,slug,title,excerpt,keywords,trend_topic,trend_rank,trend_source_url,trend_geo,published_at,generation_date,facebook_posted_at"
+      + ",sections,faqs"
     )
     .eq("status", "published")
     .order("published_at", { ascending: false })
