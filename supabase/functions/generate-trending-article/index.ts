@@ -486,46 +486,79 @@ async function generateArticleWithGemini({
   trendFetchNote: string | null;
 }): Promise<unknown> {
   const prompt = buildPrompt(generationDate, trends, trendFetchNote);
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: prompt }],
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          responseMimeType: "application/json",
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: prompt }],
+              },
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              responseMimeType: "application/json",
+            },
+          }),
         },
-      }),
-    },
-  );
+      );
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(
-      `Gemini request failed with ${response.status}: ${text.slice(0, 400)}`,
-    );
+      if (!response.ok) {
+        const text = await response.text();
+        const error = new Error(
+          `Gemini request failed with ${response.status}: ${text.slice(0, 400)}`,
+        );
+
+        if (attempt < 3 && isRetryableGeminiStatus(response.status)) {
+          lastError = error;
+          await delay(attempt * 5000);
+          continue;
+        }
+
+        throw error;
+      }
+
+      const result = await response.json();
+      const text = result?.candidates?.[0]?.content?.parts
+        ?.map((part: { text?: string }) => part.text ?? "")
+        .join("\n")
+        .trim();
+
+      if (!text) {
+        throw new Error("Gemini returned no article text.");
+      }
+
+      return parseJsonFromModel(text);
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error("Gemini request failed.");
+
+      if (attempt < 3) {
+        await delay(attempt * 5000);
+        continue;
+      }
+
+      throw lastError;
+    }
   }
 
-  const result = await response.json();
-  const text = result?.candidates?.[0]?.content?.parts
-    ?.map((part: { text?: string }) => part.text ?? "")
-    .join("\n")
-    .trim();
+  throw lastError ?? new Error("Gemini request failed.");
+}
 
-  if (!text) {
-    throw new Error("Gemini returned no article text.");
-  }
+function isRetryableGeminiStatus(status: number) {
+  return status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+}
 
-  return parseJsonFromModel(text);
+function delay(milliseconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function buildPrompt(
