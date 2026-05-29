@@ -5,6 +5,27 @@ import { SKARDU_GEO, type RelatedLink, type SEOFaq, type SEOPage } from "@/data/
 
 export const defaultOgImage = "/images/katpana-skardu-hero.jpg";
 
+const globalKeywords = [
+  "Katpana Desert Tour",
+  "Skardu tours",
+  "Skardu travel",
+  "Skardu travel guide",
+  "Katpana Desert Skardu",
+  "Cold Desert Skardu",
+  "Gilgit-Baltistan tourism",
+  "Gilgit Baltistan tours",
+  "Pakistan tours",
+  "Pakistan travel guide",
+  "Northern Pakistan travel",
+  "Karakoram travel",
+  "K2 base camp trek",
+  "Deosai National Park",
+  "Hunza Skardu itinerary",
+  "Skardu hotels",
+  "Skardu rent a car",
+  "Skardu tour packages"
+];
+
 export function canonicalPath(path: string) {
   if (!path || path === "/") return "/";
   const cleanPath = `/${path.replace(/^\/+|\/+$/g, "")}`;
@@ -20,13 +41,6 @@ export function languageAlternates(path: string) {
   const url = absoluteUrl(path);
   return {
     en: url,
-    "en-GB": url,
-    "en-AU": url,
-    "en-US": url,
-    de: url,
-    fr: url,
-    ar: url,
-    ur: url,
     "x-default": url
   };
 }
@@ -64,11 +78,12 @@ export function createMetadata({
 }): Metadata {
   const canonical = absoluteUrl(path);
   const imageUrl = image.startsWith("http") ? image : absoluteUrl(image);
+  const mergedKeywords = Array.from(new Set([...keywords, ...globalKeywords]));
 
   return {
     title,
     description,
-    keywords,
+    keywords: mergedKeywords,
     alternates: {
       canonical,
       languages: languageAlternates(path)

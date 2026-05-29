@@ -19,6 +19,7 @@ const displayFont = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   ...createMetadata({
     title: "Katpana Desert Tour | Skardu Travel Experts",
     description:

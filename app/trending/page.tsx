@@ -50,7 +50,7 @@ export default function TrendingPage() {
             Daily Pakistan trends
           </h1>
           <p className="mt-4 max-w-4xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            Daily  travel articles connect Pakistan trend topics with Skardu, Gilgit-Baltistan, culture, seasons, road trips, and adventure planning.
+            Daily travel articles connect Pakistan trend topics with Skardu, Gilgit-Baltistan, culture, seasons, road trips, and adventure planning.
           </p>
         </div>
       </section>

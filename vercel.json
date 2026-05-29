@@ -1,16 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/trending/:slug",
-      "destination": "/trending/?article=:slug",
-      "permanent": false
-    },
-    {
-      "source": "/trending/:slug/",
-      "destination": "/trending/?article=:slug",
-      "permanent": false
-    },
-    {
       "source": "/destinations/Katpana-desert-skardu",
       "destination": "/destinations/katpana-desert-skardu/",
       "permanent": true

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeTrendingArticle, type TrendingArticle, type TrendingArticleRow } from "@/data/trending";
+import { staticTrendingArticles } from "@/data/trending-static";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import AnimatedSection from "./AnimatedSection";
 
@@ -18,10 +19,10 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 const PAGE_SIZE = 5;
 
 export default function TrendingArticles() {
-  const [articles, setArticles] = useState<TrendingArticle[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [articles, setArticles] = useState<TrendingArticle[]>(staticTrendingArticles);
+  const [activeId, setActiveId] = useState<string | null>(staticTrendingArticles[0]?.id ?? null);
   const [page, setPage] = useState(0);
-  const [loadState, setLoadState] = useState<LoadState>("loading");
+  const [loadState, setLoadState] = useState<LoadState>(staticTrendingArticles.length ? "ready" : "loading");
   const [errorMessage, setErrorMessage] = useState("");
   const searchParams = useSearchParams();
   const reduceMotion = useReducedMotion();
@@ -34,7 +35,7 @@ export default function TrendingArticles() {
       const supabase = getSupabaseBrowserClient();
 
       if (!supabase) {
-        setLoadState("missing-config");
+        setLoadState(staticTrendingArticles.length ? "ready" : "missing-config");
         return;
       }
 
@@ -51,19 +52,20 @@ export default function TrendingArticles() {
 
       if (error) {
         setErrorMessage(error.message);
-        setLoadState("error");
+        setLoadState(staticTrendingArticles.length ? "ready" : "error");
         return;
       }
 
       const normalizedArticles = ((data ?? []) as TrendingArticleRow[]).map(normalizeTrendingArticle);
-      setArticles(normalizedArticles);
+      const nextArticles = normalizedArticles.length ? normalizedArticles : staticTrendingArticles;
+      setArticles(nextArticles);
       const selectedArticle = selectedSlug
-        ? normalizedArticles.find((article) => article.slug === selectedSlug)
+        ? nextArticles.find((article) => article.slug === selectedSlug)
         : null;
 
-      setActiveId(selectedArticle?.id ?? normalizedArticles[0]?.id ?? null);
+      setActiveId(selectedArticle?.id ?? nextArticles[0]?.id ?? null);
       setPage(0);
-      setLoadState(normalizedArticles.length ? "ready" : "empty");
+      setLoadState(nextArticles.length ? "ready" : "empty");
     }
 
     loadArticles();
@@ -149,7 +151,7 @@ export default function TrendingArticles() {
               </div>
 
               <Link
-                href={`/trending/?article=${activeArticle.slug}`}
+                href={`/trending/${activeArticle.slug}/`}
                 className="mt-8 flex min-h-12 w-full items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-void sm:w-fit"
               >
                 Open article
@@ -187,7 +189,7 @@ export default function TrendingArticles() {
                           </span>
                           <span className="mt-2 block text-sm leading-6 text-skardu-ash">{article.trend_topic}</span>
                         </button>
-                        <Link href={`/trending/?article=${article.slug}`} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
+                        <Link href={`/trending/${article.slug}/`} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
                           Details
                         </Link>
                       </div>

@@ -1,6 +1,2 @@
-https://www.katpanadesert.com/trending/:slug https://katpanadesert.com/trending/?article=:slug 302!
-https://www.katpanadesert.com/trending/:slug/ https://katpanadesert.com/trending/?article=:slug 302!
-/trending/:slug /trending/?article=:slug 302
-/trending/:slug/ /trending/?article=:slug 302
-https://www.katpanadesert.com/* https://katpanadesert.com/:splat 301!
+https://katpanadesert.com/* https://www.katpanadesert.com/:splat 301!
 /index / 301!
