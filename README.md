@@ -54,7 +54,7 @@ supabase secrets set SITE_URL=https://www.katpanadesert.com
 ```
 
 Do not reuse the publishable or anon key for `SUPABASE_SERVICE_ROLE_KEY`; the function needs an admin-capable key to insert daily articles.
-When `MAKE_FACEBOOK_WEBHOOK_URL` is configured, each newly published trending article is also sent to Make.com for Facebook publishing. The webhook keeps the existing title, excerpt, canonical URL, trend metadata, keywords, and ready-to-post Facebook message fields, and also includes the full article body, sections, and FAQs.
+When `MAKE_FACEBOOK_WEBHOOK_URL` is configured, each newly published trending article is also sent to Make.com for Facebook publishing. The webhook keeps the existing title, excerpt, immediate public URL, canonical static URL, trend metadata, keywords, and ready-to-post Facebook message fields, and also includes the full article body, sections, and FAQs.
 If your Make webhook requires authentication, set either `MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN` or `MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER` such as `X-Webhook-Token: your-token`.
 
 Static `/trending/[slug]/` article pages are generated from `data/trending-static.ts`. The build runs `npm run sync:trending-archive` first, which pulls published Supabase rows into that archive so newly generated articles get real static links after the next deploy/build.
