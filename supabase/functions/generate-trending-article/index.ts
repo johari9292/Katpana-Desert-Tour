@@ -297,8 +297,8 @@ function makeWebhookHeaders() {
 
 function facebookWebhookPayload(article: PublishedTrendingArticle) {
   const siteUrl = (Deno.env.get("SITE_URL") ?? "https://www.katpanadesert.com").replace(/\/+$/g, "");
-  const articleUrl = `${siteUrl}/trending/?article=${encodeURIComponent(article.slug)}`;
-  const canonicalUrl = `${siteUrl}/trending/${article.slug}/`;
+  const articleUrl = publicTrendingArticleUrl(siteUrl, article.slug);
+  const staticUrl = staticTrendingArticleUrl(siteUrl, article.slug);
   const keywords = Array.isArray(article.keywords) ? article.keywords : [];
   const sections = normalizeWebhookSections(article.sections);
   const faqs = normalizeWebhookFaqs(article.faqs);
@@ -324,14 +324,21 @@ function facebookWebhookPayload(article: PublishedTrendingArticle) {
     message,
     post_caption: message,
     link: articleUrl,
-    canonical_url: canonicalUrl,
+    url: articleUrl,
+    article_url: articleUrl,
+    public_url: articleUrl,
+    canonical_url: articleUrl,
+    static_url: staticUrl,
     article: {
       id: article.id,
       slug: article.slug,
       title: article.title,
       excerpt: article.excerpt,
       url: articleUrl,
-      canonical_url: canonicalUrl,
+      article_url: articleUrl,
+      public_url: articleUrl,
+      canonical_url: articleUrl,
+      static_url: staticUrl,
       published_at: article.published_at,
       generation_date: article.generation_date,
       trend_topic: article.trend_topic,
@@ -349,9 +356,18 @@ function facebookWebhookPayload(article: PublishedTrendingArticle) {
     facebook: {
       message,
       link: articleUrl,
+      url: articleUrl,
       hashtags,
     },
   };
+}
+
+function publicTrendingArticleUrl(siteUrl: string, slug: string) {
+  return `${siteUrl}/trending/?article=${encodeURIComponent(slug)}`;
+}
+
+function staticTrendingArticleUrl(siteUrl: string, slug: string) {
+  return `${siteUrl}/trending/${encodeURIComponent(slug)}/`;
 }
 
 function normalizeWebhookSections(value: unknown): GeneratedSection[] {

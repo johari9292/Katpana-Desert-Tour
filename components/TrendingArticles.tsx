@@ -17,6 +17,9 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 });
 
 const PAGE_SIZE = 5;
+const trendingArticleSelect =
+  "id,slug,title,excerpt,sections,faqs,keywords,trend_topic,trend_rank,trend_source_url,trend_geo,published_at,generation_date";
+const staticTrendingSlugs = new Set(staticTrendingArticles.map((article) => article.slug));
 
 export default function TrendingArticles() {
   const [articles, setArticles] = useState<TrendingArticle[]>(staticTrendingArticles);
@@ -41,9 +44,7 @@ export default function TrendingArticles() {
 
       const { data, error } = await supabase
         .from("trending_articles")
-        .select(
-          "id,slug,title,excerpt,sections,faqs,keywords,trend_topic,trend_rank,trend_source_url,trend_geo,published_at,generation_date"
-        )
+        .select(trendingArticleSelect)
         .eq("status", "published")
         .order("published_at", { ascending: false })
         .limit(30);
@@ -56,7 +57,33 @@ export default function TrendingArticles() {
         return;
       }
 
-      const normalizedArticles = ((data ?? []) as TrendingArticleRow[]).map(normalizeTrendingArticle);
+      let normalizedArticles = ((data ?? []) as TrendingArticleRow[]).map(normalizeTrendingArticle);
+
+      if (selectedSlug && !normalizedArticles.some((article) => article.slug === selectedSlug)) {
+        const { data: selectedData, error: selectedError } = await supabase
+          .from("trending_articles")
+          .select(trendingArticleSelect)
+          .eq("status", "published")
+          .eq("slug", selectedSlug)
+          .maybeSingle();
+
+        if (!mounted) return;
+
+        if (!selectedError && selectedData) {
+          normalizedArticles = [
+            normalizeTrendingArticle(selectedData as TrendingArticleRow),
+            ...normalizedArticles
+          ];
+        }
+      }
+
+      if (selectedSlug && !normalizedArticles.some((article) => article.slug === selectedSlug)) {
+        const selectedStaticArticle = staticTrendingArticles.find((article) => article.slug === selectedSlug);
+        if (selectedStaticArticle) {
+          normalizedArticles = [selectedStaticArticle, ...normalizedArticles];
+        }
+      }
+
       const nextArticles = normalizedArticles.length ? normalizedArticles : staticTrendingArticles;
       setArticles(nextArticles);
       const selectedArticle = selectedSlug
@@ -151,7 +178,7 @@ export default function TrendingArticles() {
               </div>
 
               <Link
-                href={`/trending/${activeArticle.slug}/`}
+                href={getTrendingArticleHref(activeArticle.slug)}
                 className="mt-8 flex min-h-12 w-full items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-void sm:w-fit"
               >
                 Open article
@@ -189,7 +216,7 @@ export default function TrendingArticles() {
                           </span>
                           <span className="mt-2 block text-sm leading-6 text-skardu-ash">{article.trend_topic}</span>
                         </button>
-                        <Link href={`/trending/${article.slug}/`} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
+                        <Link href={getTrendingArticleHref(article.slug)} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
                           Details
                         </Link>
                       </div>
@@ -271,4 +298,12 @@ function StatePanel({ title, body }: { title: string; body: string }) {
 function formatDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : dateFormatter.format(date);
+}
+
+function getTrendingArticleHref(slug: string) {
+  if (staticTrendingSlugs.has(slug)) {
+    return `/trending/${slug}/`;
+  }
+
+  return `/trending/?article=${encodeURIComponent(slug)}`;
 }
