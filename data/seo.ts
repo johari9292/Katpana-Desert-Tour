@@ -45,7 +45,7 @@ export const SKARDU_GEO = {
 };
 
 export const seoAuthor = "Katpana Desert Tour Local Planning Team";
-export const lastUpdated = "May 2026";
+export const lastUpdated = "June 2026";
 
 export const authorityLinks: RelatedLink[] = [
   {
@@ -91,6 +91,7 @@ export const commonTravelFaqs: SEOFaq[] = [
 ];
 
 const pillarRelated: RelatedLink[] = [
+  { label: "International Pakistan tours", href: "/international-pakistan-tours/" },
   { label: "Skardu travel guide", href: "/skardu-travel-guide/" },
   { label: "Gilgit-Baltistan tourism", href: "/gilgit-baltistan-tourism/" },
   { label: "Pakistan trekking guide", href: "/pakistan-trekking-guide/" },
@@ -148,6 +149,89 @@ export const pillarPages: SEOPage[] = [
       "Skardu tourism",
       "Skardu itinerary",
       "Gilgit Baltistan travel",
+    ],
+  },
+  {
+    slug: "international-pakistan-tours",
+    path: "/international-pakistan-tours",
+    primaryKeyword: "Pakistan tours for international travelers",
+    title: "Pakistan tours for international travelers",
+    metaTitle: "Pakistan Tours for International Travelers 2026 | Katpana",
+    metaDescription:
+      "Pakistan tours for international travelers in 2026 with Skardu, Hunza, K2, Deosai, visas, flights, hotels and private transport.",
+    eyebrow: "Global travel planning",
+    excerpt:
+      "Plan Pakistan tours from abroad with Skardu-based local support for airport transfers, hotel choices, private cars, Deosai jeep routes, Hunza extensions, and K2 trekking logistics.",
+    image: "/images/katpana-skardu-hero.jpg",
+    imageAlt:
+      "Pakistan tours for international travelers visiting Skardu and the Karakoram",
+    imageTitle:
+      "Pakistan tours for international travelers to Skardu Hunza and K2",
+    category: "pillar",
+    schemaType: "Article",
+    cta: "Plan an International Trip",
+    lastUpdated,
+    author: seoAuthor,
+    sections: [
+      {
+        heading: "Book Pakistan tours from anywhere in the world",
+        body: "International travelers can plan Skardu and northern Pakistan trips before arrival by confirming the route, hotel level, airport pickup, private transport, and seasonal timing. Katpana Desert Tour supports travelers from the USA, UK, Europe, Canada, Australia, the Middle East, Southeast Asia, and Pakistan with practical local planning rather than generic package lists.",
+      },
+      {
+        heading: "Best northern Pakistan routes for first-time visitors",
+        body: "A first international Pakistan tour should usually start with Islamabad, Skardu, Katpana Desert, Kachura Lakes, Shigar, Khaplu, and Deosai when the plateau road is open. Travelers with more time can add Hunza, Astore, Fairy Meadows, or a K2-side trekking route. The best itinerary depends on flight buffers, altitude comfort, road tolerance, season, and photography goals.",
+      },
+      {
+        heading: "Foreign tourist logistics in Skardu and Gilgit-Baltistan",
+        body: "Good planning for foreign tourists includes passport-name hotel reservations, airport transfer timing, reliable drivers, clean vehicles, local SIM or WhatsApp communication, cash guidance, clothing expectations, and backup routes for weather delays. K2, Baltoro, Concordia, and restricted trekking corridors need permit checks, guide coordination, porter systems, and clear emergency planning.",
+      },
+      {
+        heading: "Private Pakistan travel for families couples and groups",
+        body: "Private Pakistan travel works well for families, honeymoon couples, photographers, and small groups because mountain routes need flexible stops. A private car helps with luggage, meals, prayer or rest breaks, sunrise and sunset timing, and safe pacing on long road days. For Deosai, Basho, Askole-side routes, and rough valleys, a 4x4 with a local driver is usually the stronger choice.",
+      },
+      {
+        heading: "Seasonal advice for worldwide visitors",
+        body: "April brings blossom color, May and June open warmer sightseeing, July and August support high routes and trekking, while September and October are excellent for clear light and autumn landscapes. Winter can be beautiful for snow views, but international travelers should keep larger buffers because flights, heating, roads, and daylight can be less predictable.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Can international travelers book a Skardu tour before arriving in Pakistan?",
+        answer:
+          "Yes. Travelers can confirm the route, hotel preference, airport pickup, private transport, and seasonal plan before arrival. Final details should still be checked close to travel because flights, road conditions, and weather can change in northern Pakistan.",
+      },
+      {
+        question: "What is the best Pakistan tour for a first international trip?",
+        answer:
+          "A strong first trip combines Islamabad, Skardu, Katpana Desert, Kachura Lakes, Shigar, Khaplu, and Deosai in season. Travelers with more days can add Hunza, Astore, Fairy Meadows, or K2-side trekking logistics.",
+      },
+      {
+        question: "Do foreign tourists need permits for K2 base camp?",
+        answer:
+          "Foreign trekkers normally need restricted-area trekking permits for K2 base camp, Baltoro Glacier, and Concordia routes. A local operator can help with current permit requirements, guide paperwork, porters, food, camps, and safety planning.",
+      },
+      {
+        question: "Which languages are supported for trip planning?",
+        answer:
+          "Trip planning support is available in English and Urdu. WhatsApp is usually the easiest way to coordinate routes, hotel choices, transport, and timing across international time zones.",
+      },
+    ],
+    relatedLinks: [
+      { label: "Skardu travel guide", href: "/skardu-travel-guide/" },
+      { label: "Skardu tour packages", href: "/tours/" },
+      { label: "Gilgit-Baltistan tourism", href: "/gilgit-baltistan-tourism/" },
+      { label: "K2 base camp trek", href: "/treks/k2-base-camp/" },
+      { label: "Karakoram Highway travel", href: "/karakoram-highway-travel/" },
+    ],
+    keywords: [
+      "Pakistan tours for international travelers",
+      "Pakistan tours from USA",
+      "Pakistan tours from UK",
+      "Skardu tours for foreigners",
+      "private Pakistan tours",
+      "international Skardu travel",
+      "K2 trek for foreigners",
+      "northern Pakistan tour operator",
     ],
   },
   {

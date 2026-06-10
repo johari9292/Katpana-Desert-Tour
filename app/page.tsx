@@ -6,12 +6,20 @@ import { commonTravelFaqs, homepageAttractions, SKARDU_GEO } from "@/data/seo";
 import { createMetadata, faqSchema, jsonLdScript, organizationSchema, websiteSearchSchema } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Katpana Desert Tour | Skardu Travel Experts",
+  title: "Katpana Desert Tour | Pakistan Tours for Global Travelers",
   description:
-    "Katpana Desert Tour plans Skardu, K2, Deosai and Gilgit-Baltistan trips in 2026. Talk to local experts.",
+    "Plan Skardu, K2, Deosai, Hunza and Gilgit-Baltistan tours from anywhere in the world with local Pakistan travel experts.",
   path: "/",
   imageAlt: "Katpana Desert Tour Skardu cold desert and Karakoram travel Pakistan",
-  keywords: ["Katpana Desert Tour", "Skardu travel guide", "Gilgit-Baltistan tourism", "K2 base camp trek"]
+  keywords: [
+    "Katpana Desert Tour",
+    "Pakistan tours for international travelers",
+    "Pakistan travel agency",
+    "Skardu tours for foreigners",
+    "Skardu travel guide",
+    "Gilgit-Baltistan tourism",
+    "K2 base camp trek"
+  ]
 });
 
 const touristDestinationSchema = {
@@ -19,11 +27,11 @@ const touristDestinationSchema = {
   "@type": "TouristDestination",
   name: "Skardu, Gilgit-Baltistan, Pakistan",
   description:
-    "Skardu is a Karakoram travel base for Katpana Desert, Deosai National Park, Upper Kachura Lake, Shigar Valley, Khaplu and K2 trekking routes.",
+    "Skardu is a Karakoram travel base for international Pakistan tours to Katpana Desert, Deosai National Park, Upper Kachura Lake, Shigar Valley, Khaplu and K2 trekking routes.",
   url: SITE_URL,
   geo: SKARDU_GEO,
   image: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
-  touristType: ["Adventure", "Cultural", "Eco"],
+  touristType: ["Adventure", "Cultural", "Eco", "International"],
   includesAttraction: homepageAttractions.map((attraction) => ({
     "@type": "TouristAttraction",
     name: attraction.name,
@@ -37,7 +45,7 @@ const videoSchema = {
   "@type": "VideoObject",
   name: "Skardu destination travel video",
   description:
-    "Skardu tourism video featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
+    "Skardu tourism video for worldwide visitors featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
   thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
   uploadDate: "2026-05-22T00:00:00+05:00",
   contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,

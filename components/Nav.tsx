@@ -12,6 +12,7 @@ const quickLinks = [
 ];
 
 const guideLinks = [
+  ["International Pakistan Tours", "/international-pakistan-tours/", "Global trip planning"],
   ["Skardu Travel Guide", "/skardu-travel-guide/", "Skardu travel guide"],
   ["Gilgit-Baltistan Tourism", "/gilgit-baltistan-tourism/", "Gilgit-Baltistan tourism"],
   ["Pakistan Trekking Guide", "/pakistan-trekking-guide/", "Best trekking in Pakistan"],

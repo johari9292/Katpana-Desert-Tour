@@ -21,13 +21,15 @@ const displayFont = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   ...createMetadata({
-    title: "Katpana Desert Tour | Skardu Travel Experts",
+    title: "Katpana Desert Tour | Pakistan Tours for Global Travelers",
     description:
-      "Katpana Desert Tour plans Skardu, K2, Deosai and Gilgit-Baltistan trips in 2026. Talk to local experts.",
+      "Plan Skardu, K2, Deosai, Hunza and Gilgit-Baltistan tours from anywhere in the world with local Pakistan travel experts.",
     path: "/",
     imageAlt: "Katpana Desert Tour Skardu cold desert and Karakoram travel Pakistan",
     keywords: [
       "Katpana Desert Tour",
+      "Pakistan tours for international travelers",
+      "Pakistan travel agency",
       "Skardu travel guide",
       "Gilgit-Baltistan tourism",
       "K2 base camp trek",

@@ -8,12 +8,14 @@ import { tourPackages } from "@/data/tours";
 import { createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: `Skardu Tour Packages | ${BRAND_NAME}`,
-  description: "Skardu tour packages 2026 for K2, Deosai, Hunza, Shigar, Khaplu and jeep routes. Check availability.",
+  title: `Pakistan and Skardu Tour Packages | ${BRAND_NAME}`,
+  description: "Pakistan and Skardu tour packages 2026 for international travelers visiting K2, Deosai, Hunza, Shigar and Khaplu.",
   path: "/tours",
-  imageAlt: "Skardu tour packages for K2 Deosai Hunza and Karakoram Pakistan",
+  imageAlt: "Pakistan and Skardu tour packages for international travelers to K2 Deosai Hunza and Karakoram",
   keywords: [
     "Katpana Desert Tour packages",
+    "Pakistan tour packages",
+    "Pakistan tours for international travelers",
     "Skardu tour packages",
     "Hunza Skardu tour",
     "Deosai 4x4 tour",
@@ -73,11 +75,11 @@ export default function ToursPage() {
           <div className="max-w-4xl">
             <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Tour packages</p>
             <h1 className="font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-              Skardu, Hunza, Deosai, and Karakoram tour packages
+              Pakistan, Skardu, Hunza, Deosai, and Karakoram tour packages
             </h1>
             <p className="mt-6 text-lg leading-8 text-skardu-ash">
-              Compare realistic northern Pakistan itineraries with durations, route notes, destination overviews,
-              highlights, inclusions, exclusions, and direct planning support from {BRAND_NAME}.
+              Compare realistic northern Pakistan itineraries for local and international travelers with durations,
+              route notes, destination overviews, highlights, inclusions, exclusions, and direct planning support from {BRAND_NAME}.
             </p>
           </div>
 

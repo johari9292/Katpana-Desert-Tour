@@ -8,12 +8,14 @@ import { Suspense } from "react";
 
 export const metadata: Metadata = createMetadata({
   title: `Trending Travel Articles | ${BRAND_NAME}`,
-  description: "Pakistan travel trends turned into daily Skardu and Gilgit-Baltistan articles for 2026. Read today.",
+  description: "Pakistan travel trends turned into daily Skardu, Hunza, K2 and Gilgit-Baltistan articles for global travelers.",
   path: "/trending",
   image: "/images/places/katapana-desert.jpg",
   imageAlt: "Pakistan travel trends for Skardu and Gilgit-Baltistan tourism",
   keywords: [
     "Pakistan travel trends",
+    "global Pakistan travel",
+    "international Skardu articles",
     "Skardu trending articles",
     "Gilgit Baltistan travel news",
     "AI travel articles",
@@ -26,7 +28,7 @@ const trendingSchema = {
   "@type": "CollectionPage",
   name: `Trending Travel Articles | ${BRAND_NAME}`,
   description:
-    "Daily travel articles generated from Pakistan trends and adapted for Skardu and northern Pakistan tourism.",
+    "Daily travel articles generated from Pakistan trends and adapted for Skardu and northern Pakistan tourism for global travelers.",
   url: `${SITE_URL}/trending/`,
   publisher: {
     "@type": "TravelAgency",
@@ -47,10 +49,10 @@ export default function TrendingPage() {
         <div className="mx-auto max-w-7xl">
           <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Trending articles</p>
           <h1 className="max-w-5xl font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-6xl md:text-7xl">
-            Daily Pakistan trends
+            Daily Pakistan travel trends
           </h1>
           <p className="mt-4 max-w-4xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            Daily travel articles connect Pakistan trend topics with Skardu, Gilgit-Baltistan, culture, seasons, road trips, and adventure planning.
+            Daily travel articles connect Pakistan trend topics with Skardu, Gilgit-Baltistan, culture, seasons, road trips, and adventure planning for travelers worldwide.
           </p>
         </div>
       </section>

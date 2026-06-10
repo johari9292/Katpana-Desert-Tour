@@ -7,11 +7,13 @@ import { articleCategories, articles } from "@/data/articles";
 import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Skardu Travel Articles | Katpana Desert Tour",
-  description: "Skardu travel articles for 2026 covering routes, hotels, cars, Deosai, Kachura and culture. Read now.",
+  title: "Pakistan and Skardu Travel Articles | Katpana Desert Tour",
+  description: "Pakistan and Skardu travel articles for international visitors covering routes, hotels, cars, Deosai, Kachura and culture.",
   path: "/articles",
-  imageAlt: "Skardu travel articles and Gilgit-Baltistan tourism guides",
+  imageAlt: "Pakistan and Skardu travel articles for international Gilgit-Baltistan tourism",
   keywords: [
+    "Pakistan travel articles",
+    "international Pakistan travel blog",
     "Skardu travel articles",
     "Skardu tourism blog",
     "Gilgit Baltistan travel guide",
@@ -24,7 +26,7 @@ export const metadata: Metadata = createMetadata({
 const itemListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  name: "Skardu and Gilgit Baltistan travel articles",
+  name: "Pakistan, Skardu and Gilgit-Baltistan travel articles",
   numberOfItems: articles.length,
   itemListElement: articles.map((article, index) => ({
     "@type": "ListItem",
@@ -50,11 +52,11 @@ export default function ArticlesPage() {
           <div className="max-w-4xl">
             <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Articles library</p>
             <h1 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-6xl md:text-7xl">
-              Skardu and Gilgit Baltistan travel guides
+              Pakistan, Skardu, and Gilgit-Baltistan travel guides
             </h1>
             <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-              Explore 40 practical guides for Skardu tourism, Katpana Desert hotel booking, Skardu rent a car planning,
-              Kachura lakes, Deosai, Shigar, Khaplu, culture, food, family trips, and seasonal routes.
+              Explore 40 practical guides for international Pakistan travel, Skardu tourism, Katpana Desert hotel booking,
+              Skardu rent a car planning, Kachura lakes, Deosai, Shigar, Khaplu, culture, food, family trips, and seasonal routes.
             </p>
           </div>
 

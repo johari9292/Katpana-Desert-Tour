@@ -46,16 +46,7 @@ function facebookWebhookPayload(article) {
     .slice(0, 5)
     .map((keyword) => `#${keyword.replace(/[^a-z0-9]+/gi, "")}`)
     .filter((tag) => tag.length > 1);
-  const message = [
-    article.title,
-    "",
-    article.excerpt,
-    "",
-    `Read more: ${articleUrl}`,
-    hashtags.join(" "),
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const message = buildFacebookMessage(articleBody, articleUrl, hashtags);
 
   return {
     source: "katpana-desert-tour",
@@ -141,6 +132,10 @@ function buildArticleBody(title, excerpt, sections, faqs) {
   const faqText = faqs.map((faq) => `Q: ${faq.question}\nA: ${faq.answer}`).join("\n\n");
 
   return [title, excerpt, sectionText, faqText ? `FAQs\n${faqText}` : ""].filter(Boolean).join("\n\n");
+}
+
+function buildFacebookMessage(articleBody, articleUrl, hashtags) {
+  return [articleBody, `Read more: ${articleUrl}`, hashtags.join(" ")].filter(Boolean).join("\n\n");
 }
 
 async function markArticlePosted(supabase, articleId, response, responseText) {

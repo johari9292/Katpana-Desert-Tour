@@ -307,16 +307,7 @@ function facebookWebhookPayload(article: PublishedTrendingArticle) {
     .slice(0, 5)
     .map((keyword) => `#${keyword.replace(/[^a-z0-9]+/gi, "")}`)
     .filter((tag) => tag.length > 1);
-  const message = [
-    article.title,
-    "",
-    article.excerpt,
-    "",
-    `Read more: ${articleUrl}`,
-    hashtags.join(" "),
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const message = buildFacebookMessage(articleBody, articleUrl, hashtags);
 
   return {
     source: "katpana-desert-tour",
@@ -412,6 +403,20 @@ function buildArticleBody(
     .join("\n\n");
 
   return [title, excerpt, sectionText, faqText ? `FAQs\n${faqText}` : ""]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function buildFacebookMessage(
+  articleBody: string,
+  articleUrl: string,
+  hashtags: string[],
+) {
+  return [
+    articleBody,
+    `Read more: ${articleUrl}`,
+    hashtags.join(" "),
+  ]
     .filter(Boolean)
     .join("\n\n");
 }

@@ -6,6 +6,7 @@ import DestinationShowcase from "./DestinationShowcase";
 import AboutTour from "./AboutTour";
 import Hero from "./Hero";
 import DeferredLandingSections from "./DeferredLandingSections";
+import GlobalTravelSeo from "./GlobalTravelSeo";
 
 export default function SkarduLanding() {
   return (
@@ -16,6 +17,7 @@ export default function SkarduLanding() {
       <TourPackages />
       <DestinationShowcase />
       <AboutTour />
+      <GlobalTravelSeo />
       <DeferredLandingSections />
       <Footer />
     </main>

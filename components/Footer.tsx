@@ -12,7 +12,7 @@ export default function Footer() {
     <footer className="relative border-t border-skardu-mist/60 bg-gradient-to-r from-skardu-void via-skardu-stone to-skardu-void px-4 py-12 sm:px-5 sm:py-16 lg:px-8">
       <div className="mx-auto max-w-7xl text-center">
         <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Start the journey</p>
-        <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">Ready to Plan Northern Pakistan?</h2>
+        <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">Ready to Plan Northern Pakistan from Anywhere?</h2>
         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
           <WhatsAppButton href={hotelUrl}>Book stay</WhatsAppButton>
           <WhatsAppButton href={carUrl}>Plan transport</WhatsAppButton>

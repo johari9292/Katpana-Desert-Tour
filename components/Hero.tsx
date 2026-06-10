@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { SKARDU_HERO_VIDEO_URL, SKARDU_TOURIST_POINTS } from "@/constants/media";
 
-const subheadline = "Private Skardu, Hunza, Deosai, and Karakoram journeys";
+const subheadline = "Private Skardu, Hunza, Deosai, and Karakoram journeys for travelers worldwide";
 
 const stars = Array.from({ length: 28 }, (_, index) => ({
   id: index,

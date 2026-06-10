@@ -6,11 +6,11 @@ import { blogPages, pillarPages, trekPages } from "@/data/seo";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Search Skardu Travel Guides | Katpana Desert Tour",
-  description: "Search Skardu travel guides, K2 treks, Deosai routes and Gilgit-Baltistan tourism pages. Explore now.",
+  title: "Search Pakistan Travel Guides Worldwide | Katpana Desert Tour",
+  description: "Search Pakistan travel guides for international Skardu tours, K2 treks, Deosai routes, Hunza and Gilgit-Baltistan tourism.",
   path: "/search",
-  imageAlt: "Search Skardu travel guides and K2 trekking routes Pakistan",
-  keywords: ["Skardu search", "Skardu travel guide", "K2 trek search"]
+  imageAlt: "Search Pakistan travel guides and K2 trekking routes for international travelers",
+  keywords: ["Pakistan travel search", "Skardu search", "Skardu travel guide", "K2 trek search", "international Pakistan tours"]
 });
 
 const searchPages = [...pillarPages, ...trekPages, ...blogPages];
@@ -23,10 +23,10 @@ export default function SearchPage() {
         <div className="mx-auto max-w-7xl">
           <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Search</p>
           <h1 className="max-w-5xl font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-            Search Skardu travel guides
+            Search Pakistan travel guides
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Find practical guides for Skardu, K2 trekking, Deosai safari, Gilgit-Baltistan tourism, Karakoram Highway travel, and seasonal planning.
+            Find practical guides for international Pakistan tours, Skardu, K2 trekking, Deosai safari, Gilgit-Baltistan tourism, Karakoram Highway travel, and seasonal planning.
           </p>
           <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {searchPages.map((page) => (

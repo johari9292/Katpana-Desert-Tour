@@ -7,6 +7,16 @@ export const defaultOgImage = "/images/katpana-skardu-hero.jpg";
 
 const globalKeywords = [
   "Katpana Desert Tour",
+  "Pakistan tours for international travelers",
+  "Pakistan tours from USA",
+  "Pakistan tours from UK",
+  "Pakistan tours from Europe",
+  "Pakistan tours from Canada",
+  "Pakistan tours from Australia",
+  "Skardu tours for foreigners",
+  "private Pakistan tours",
+  "Pakistan travel agency",
+  "international Pakistan travel",
   "Skardu tours",
   "Skardu travel",
   "Skardu travel guide",
@@ -26,6 +36,21 @@ const globalKeywords = [
   "Skardu tour packages"
 ];
 
+const worldwideServiceAreas = [
+  "Worldwide",
+  "United States",
+  "United Kingdom",
+  "Europe",
+  "Canada",
+  "Australia",
+  "United Arab Emirates",
+  "Saudi Arabia",
+  "Qatar",
+  "Singapore",
+  "Malaysia",
+  "Pakistan"
+];
+
 export function canonicalPath(path: string) {
   if (!path || path === "/") return "/";
   const cleanPath = `/${path.replace(/^\/+|\/+$/g, "")}`;
@@ -41,6 +66,11 @@ export function languageAlternates(path: string) {
   const url = absoluteUrl(path);
   return {
     en: url,
+    "en-US": url,
+    "en-GB": url,
+    "en-CA": url,
+    "en-AU": url,
+    "en-PK": url,
     "x-default": url
   };
 }
@@ -102,6 +132,7 @@ export function createMetadata({
         }
       ],
       locale: "en_US",
+      alternateLocale: ["en_GB", "en_CA", "en_AU", "en_PK"],
       type
     },
     twitter: {
@@ -110,7 +141,14 @@ export function createMetadata({
       description,
       images: [imageUrl]
     },
-    robots: robotsMetadata()
+    robots: robotsMetadata(),
+    classification: "Travel agency, Pakistan tour operator, Skardu travel guide",
+    other: {
+      "geo.region": "PK-GB",
+      "geo.placename": "Skardu, Gilgit-Baltistan, Pakistan",
+      "travel.region": "Skardu, Gilgit-Baltistan, Karakoram, Northern Pakistan",
+      "audience": "International travelers, foreign tourists, families, trekkers, photographers"
+    }
   };
 }
 
@@ -179,14 +217,60 @@ export function organizationSchema() {
       addressCountry: "PK"
     },
     geo: SKARDU_GEO,
-    areaServed: ["Skardu", "Gilgit-Baltistan", "Hunza", "Deosai", "Karakoram"],
+    areaServed: [
+      ...worldwideServiceAreas,
+      "Skardu",
+      "Gilgit-Baltistan",
+      "Hunza",
+      "Deosai",
+      "Karakoram",
+      "Northern Pakistan"
+    ],
+    knowsAbout: [
+      "Skardu travel planning",
+      "Pakistan tours for international travelers",
+      "K2 base camp trekking",
+      "Gilgit-Baltistan tourism",
+      "Karakoram Highway road trips",
+      "Deosai National Park jeep safaris",
+      "Skardu hotels and private transport"
+    ],
     priceRange: "$$",
     currenciesAccepted: "PKR, USD",
+    availableLanguage: ["English", "Urdu"],
     contactPoint: {
       "@type": "ContactPoint",
       telephone: displayPhone,
       contactType: "tour booking",
+      areaServed: worldwideServiceAreas,
       availableLanguage: ["English", "Urdu"]
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Pakistan and Skardu tour planning services",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "International Pakistan tour planning"
+          }
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Skardu private tour packages"
+          }
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "K2 base camp trekking logistics"
+          }
+        }
+      ]
     }
   };
 }
@@ -197,6 +281,7 @@ export function websiteSearchSchema() {
     "@type": "WebSite",
     name: BRAND_NAME,
     url: SITE_URL,
+    inLanguage: "en",
     potentialAction: {
       "@type": "SearchAction",
       target: `${SITE_URL}/search?q={search_term_string}`,

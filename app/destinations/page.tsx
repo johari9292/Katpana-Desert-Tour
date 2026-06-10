@@ -9,10 +9,11 @@ import { createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: `Gilgit-Baltistan Destinations | ${BRAND_NAME}`,
-  description: "Gilgit-Baltistan destinations 2026 guide to Skardu, Deosai, Kachura, Shigar, Khaplu and K2. Explore.",
+  description: "Gilgit-Baltistan destinations 2026 guide for international travelers visiting Skardu, Deosai, Hunza, Khaplu and K2.",
   path: "/destinations",
-  imageAlt: "Gilgit-Baltistan destinations for Skardu Deosai Kachura and K2 travel",
+  imageAlt: "Gilgit-Baltistan destinations for international Skardu Deosai Hunza and K2 travel",
   keywords: [
+    "Pakistan destinations for international travelers",
     "Skardu destinations",
     "Katpana Desert",
     "Deosai National Park",
@@ -73,11 +74,11 @@ export default function DestinationsPage() {
           <div className="max-w-4xl">
             <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Destinations</p>
             <h1 className="font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-              Northern areas, deserts, mountains, lakes, and cultural valleys
+              Northern Pakistan destinations for global travelers
             </h1>
             <p className="mt-6 text-lg leading-8 text-skardu-ash">
-              Read production-ready destination overviews for Skardu tourism, trekking, family trips, cultural travel,
-              high plateaus, and adventure routes across Gilgit Baltistan.
+              Read destination overviews for international Skardu tourism, trekking, family trips, cultural travel,
+              high plateaus, and adventure routes across Gilgit-Baltistan.
             </p>
           </div>
 
