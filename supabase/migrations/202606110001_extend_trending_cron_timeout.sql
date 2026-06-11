@@ -1,10 +1,3 @@
-create extension if not exists pg_cron;
-create extension if not exists pg_net;
-
--- Set these database settings after replacing the placeholders:
--- alter database postgres set app.settings.edge_function_base_url = 'https://<project-ref>.functions.supabase.co';
--- alter database postgres set app.settings.cron_secret = '<same CRON_SECRET used by the Edge Function>';
-
 do $$
 begin
   if exists (select 1 from cron.job where jobname = 'generate-trending-article-daily') then

@@ -68,7 +68,8 @@ select net.http_post(
   body := jsonb_build_object(
     'source', 'supabase-cron',
     'scheduled_at', now()
-  )
+  ),
+  timeout_milliseconds := 120000
 ) as request_id;
 `;
 
