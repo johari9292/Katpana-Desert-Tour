@@ -3,7 +3,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { articleCategories, articles } from "@/data/articles";
+import { articleCategories, reviewedArticles } from "@/data/articles";
 import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
@@ -11,24 +11,15 @@ export const metadata: Metadata = createMetadata({
   description: "Pakistan and Skardu travel articles for international visitors covering routes, hotels, cars, Deosai, Kachura and culture.",
   path: "/articles",
   imageAlt: "Pakistan and Skardu travel articles for international Gilgit-Baltistan tourism",
-  keywords: [
-    "Pakistan travel articles",
-    "international Pakistan travel blog",
-    "Skardu travel articles",
-    "Skardu tourism blog",
-    "Gilgit Baltistan travel guide",
-    "Katpana Desert guide",
-    "Skardu rent a car",
-    "Skardu hotels"
-  ]
+  index: reviewedArticles.length > 0
 });
 
 const itemListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "Pakistan, Skardu and Gilgit-Baltistan travel articles",
-  numberOfItems: articles.length,
-  itemListElement: articles.map((article, index) => ({
+  numberOfItems: reviewedArticles.length,
+  itemListElement: reviewedArticles.map((article, index) => ({
     "@type": "ListItem",
     position: index + 1,
     url: `${SITE_URL}/articles/${article.slug}/`,
@@ -41,11 +32,10 @@ export default function ArticlesPage() {
   const categories = articleCategories.filter((category) => category !== "All");
 
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript(itemListSchema)}
-      />
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+      {reviewedArticles.length ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(itemListSchema)} />
+      ) : null}
       <PageHeader />
       <section className="px-4 pb-16 pt-28 sm:px-5 sm:pb-20 sm:pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
@@ -55,14 +45,22 @@ export default function ArticlesPage() {
               Pakistan, Skardu, and Gilgit-Baltistan travel guides
             </h1>
             <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-              Explore 40 practical guides for international Pakistan travel, Skardu tourism, Katpana Desert hotel booking,
-              Skardu rent a car planning, Kachura lakes, Deosai, Shigar, Khaplu, culture, food, family trips, and seasonal routes.
+              Locally reviewed route articles appear here after their seasonal, access and safety claims pass the
+              editorial evidence gate. Start with the structured guide library while reviews are in progress.
             </p>
+            <Link
+              href="/travel-guides/"
+              className="mt-6 inline-flex min-h-12 items-center rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-void"
+            >
+              Browse travel guide clusters
+            </Link>
           </div>
 
-          <div className="mt-9 grid gap-9 sm:mt-12 sm:gap-10">
+          {reviewedArticles.length ? <div className="mt-9 grid gap-9 sm:mt-12 sm:gap-10">
             {categories.map((category) => {
-              const categoryArticles = articles.filter((article) => article.category === category);
+              const categoryArticles = reviewedArticles.filter((article) => article.category === category);
+
+              if (!categoryArticles.length) return null;
 
               return (
                 <section key={category} aria-labelledby={`${category.toLowerCase().replaceAll(" ", "-")}-heading`}>
@@ -91,7 +89,11 @@ export default function ArticlesPage() {
                 </section>
               );
             })}
-          </div>
+          </div> : (
+            <p className="mt-10 rounded-2xl border border-skardu-control bg-skardu-stone/65 p-6 leading-7 text-skardu-ash">
+              No route article has completed local review yet. Drafts remain outside the search index and XML sitemap.
+            </p>
+          )}
         </div>
       </section>
       <Footer />

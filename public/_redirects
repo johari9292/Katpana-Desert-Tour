@@ -1,2 +1,36 @@
 https://katpanadesert.com/* https://www.katpanadesert.com/:splat 301!
 /index / 301!
+
+# Build-only sentinel required by Next static export when the travel-update archive is empty
+/trending/__editorial-archive-empty /trending/ 302!
+/trending/__editorial-archive-empty/ /trending/ 302!
+
+# Consolidated legacy auto-generated trend pages
+/trending/navigating-thunderstorms-your-guide-to-skardu-and-northern-pakistan-trav-2026-06-08 /blog/skardu-weather-month-by-month/ 301!
+/trending/navigating-thunderstorms-your-guide-to-skardu-and-northern-pakistan-trav-2026-06-08/ /blog/skardu-weather-month-by-month/ 301!
+/trending/beyond-weather-today-essential-climate-tips-for-your-skardu-and-northern-2026-05-30 /blog/skardu-weather-month-by-month/ 301!
+/trending/beyond-weather-today-essential-climate-tips-for-your-skardu-and-northern-2026-05-30/ /blog/skardu-weather-month-by-month/ 301!
+/trending/planning-your-skardu-adventure-why-weather-is-your-essential-travel-guid-2026-05-29 /blog/skardu-weather-month-by-month/ 301!
+/trending/planning-your-skardu-adventure-why-weather-is-your-essential-travel-guid-2026-05-29/ /blog/skardu-weather-month-by-month/ 301!
+/trending/skardu-s-seasons-unveiled-the-best-time-for-your-northern-pakistan-tour-2026-06-07 /blog/best-time-to-visit-skardu/ 301!
+/trending/skardu-s-seasons-unveiled-the-best-time-for-your-northern-pakistan-tour-2026-06-07/ /blog/best-time-to-visit-skardu/ 301!
+/trending/seasonal-guide-to-northern-pakistan-best-times-for-skardu-hunza-and-deos-2026-05-31 /blog/best-time-to-visit-skardu/ 301!
+/trending/seasonal-guide-to-northern-pakistan-best-times-for-skardu-hunza-and-deos-2026-05-31/ /blog/best-time-to-visit-skardu/ 301!
+/trending/skardu-seasons-guide-best-time-to-visit-for-every-adventure-2026-05-28 /blog/best-time-to-visit-skardu/ 301!
+/trending/skardu-seasons-guide-best-time-to-visit-for-every-adventure-2026-05-28/ /blog/best-time-to-visit-skardu/ 301!
+/trending/summer-in-skardu-your-ultimate-guide-to-gilgit-baltistan-s-mountain-para-2026-06-06 /blog/things-to-do-skardu-summer/ 301!
+/trending/summer-in-skardu-your-ultimate-guide-to-gilgit-baltistan-s-mountain-para-2026-06-06/ /blog/things-to-do-skardu-summer/ 301!
+/trending/trade-the-roar-of-the-crowd-for-mountain-majesty-skardu-adventures-durin-2026-06-05 /blog/things-to-do-skardu-summer/ 301!
+/trending/trade-the-roar-of-the-crowd-for-mountain-majesty-skardu-adventures-durin-2026-06-05/ /blog/things-to-do-skardu-summer/ 301!
+/trending/eid-al-adha-2026-in-skardu-celebrate-family-and-culture-amidst-northern--2026-05-27 /gilgit-baltistan-tourism/ 301!
+/trending/eid-al-adha-2026-in-skardu-celebrate-family-and-culture-amidst-northern--2026-05-27/ /gilgit-baltistan-tourism/ 301!
+/trending/celebrate-eid-ul-azha-2026-in-skardu-your-ultimate-northern-pakistan-esc-2026-05-25 /gilgit-baltistan-tourism/ 301!
+/trending/celebrate-eid-ul-azha-2026-in-skardu-your-ultimate-northern-pakistan-esc-2026-05-25/ /gilgit-baltistan-tourism/ 301!
+/trending/eid-ul-azha-2026-in-skardu-the-ultimate-guide-to-planning-your-festive-e-2026-05-24 /gilgit-baltistan-tourism/ 301!
+/trending/eid-ul-azha-2026-in-skardu-the-ultimate-guide-to-planning-your-festive-e-2026-05-24/ /gilgit-baltistan-tourism/ 301!
+/trending/beyond-karachi-s-heat-planning-your-skardu-adventure-with-northern-pakis-2026-06-03 /skardu-travel-guide/ 301!
+/trending/beyond-karachi-s-heat-planning-your-skardu-adventure-with-northern-pakis-2026-06-03/ /skardu-travel-guide/ 301!
+/trending/skardu-unveiled-your-ultimate-guide-to-northern-pakistan-s-jewel-2026-05-26 /skardu-travel-guide/ 301!
+/trending/skardu-unveiled-your-ultimate-guide-to-northern-pakistan-s-jewel-2026-05-26/ /skardu-travel-guide/ 301!
+/trending/karachi-to-skardu-northern-pakistan-escape-2026-05-23 /skardu-travel-guide/ 301!
+/trending/karachi-to-skardu-northern-pakistan-escape-2026-05-23/ /skardu-travel-guide/ 301!

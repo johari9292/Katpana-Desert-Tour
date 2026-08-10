@@ -94,7 +94,7 @@ function facebookWebhookPayload(article) {
 }
 
 function publicTrendingArticleUrl(siteUrl, slug) {
-  return `${siteUrl}/trending/?article=${encodeURIComponent(slug)}`;
+  return staticTrendingArticleUrl(siteUrl, slug);
 }
 
 function staticTrendingArticleUrl(siteUrl, slug) {
@@ -199,10 +199,11 @@ async function main() {
   let query = supabase
     .from("trending_articles")
     .select(
-      "id,slug,title,excerpt,keywords,trend_topic,trend_rank,trend_source_url,trend_geo,published_at,generation_date,facebook_posted_at"
+      "id,slug,title,excerpt,keywords,trend_topic,trend_rank,trend_source_url,trend_geo,published_at,generation_date,facebook_posted_at,next_review_at"
       + ",sections,faqs"
     )
     .eq("status", "published")
+    .gte("next_review_at", new Date().toISOString().slice(0, 10))
     .order("published_at", { ascending: false })
     .limit(limit);
 

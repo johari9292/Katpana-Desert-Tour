@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { buildWhatsAppURL, WHATSAPP_HOTEL } from "@/constants/contact";
-import { useTilt } from "@/hooks/useTilt";
+import { trackConversion } from "@/lib/analytics";
 import AnimatedSection from "./AnimatedSection";
 import DateField from "./DateField";
 
@@ -15,11 +15,11 @@ export default function HotelBooking() {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
-  const tilt = useTilt(12);
   const reduceMotion = useReducedMotion();
 
   function requestHotel() {
     const msg = `Hi! I'd like to book a *${hotelType}* hotel in Skardu.\nCheck-in: ${checkIn || "Flexible"}\nCheck-out: ${checkOut || "Flexible"}\nGuests: ${guests}\n\nPlease send availability and rates.`;
+    trackConversion("whatsapp_click", { placement: "hotel_booking_form", context: hotelType, guests });
     window.open(buildWhatsAppURL(WHATSAPP_HOTEL, msg), "_blank", "noopener,noreferrer");
   }
 
@@ -29,14 +29,14 @@ export default function HotelBooking() {
         <div>
           <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Stay in Skardu</p>
           <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
-            Find Your Perfect Mountain Retreat
+            Match accommodation to your route
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            From Serena-style comfort and Shangrila lake stays to boutique guesthouses near Katpana Desert, we shape
-            accommodation around your route, season, and group style.
+            Share the standard, dates and group size you need. The reply should confirm a named property, room setup,
+            heating or hot-water requirements, location, inclusions, cancellation terms and current rate.
           </p>
           <div className="mt-6 grid gap-3 text-sm text-skardu-ash sm:mt-8 sm:grid-cols-3">
-            {["Heated rooms", "Lake access", "Airport pickup"].map((item) => (
+            {["Heating requirement", "Route location", "Transfer needs"].map((item) => (
               <span key={item} className="rounded-full border border-skardu-mist bg-skardu-stone/70 px-4 py-3 text-center">
                 {item}
               </span>
@@ -49,9 +49,6 @@ export default function HotelBooking() {
           whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1000 }}
-          onMouseMove={tilt.handleMouseMove}
-          onMouseLeave={tilt.handleMouseLeave}
           className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8"
         >
           <div className="mb-7 flex items-center justify-between gap-4">
@@ -60,21 +57,31 @@ export default function HotelBooking() {
               <p className="text-sm text-skardu-ash">Send one clear request to WhatsApp.</p>
             </div>
             <span className="rounded-full bg-skardu-gold/15 px-3 py-1 text-xs font-black uppercase tracking-widest text-skardu-gold">
-              Live lead
+              Inquiry only
             </span>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <DateField label="Check-in date" value={checkIn} onChange={setCheckIn} />
-            <DateField label="Check-out date" value={checkOut} onChange={setCheckOut} />
-            <label className="grid gap-2 text-sm font-bold text-skardu-snow sm:col-span-2">
+            <DateField
+              label="Check-in date"
+              value={checkIn}
+              onChange={(value) => {
+                setCheckIn(value);
+                if (checkOut && checkOut < value) setCheckOut("");
+              }}
+            />
+            <DateField label="Check-out date" value={checkOut} onChange={setCheckOut} min={checkIn || undefined} />
+            <label htmlFor="hotel-guests" className="grid gap-2 text-sm font-bold text-skardu-snow sm:col-span-2">
               Guests
               <input
+                id="hotel-guests"
+                name="hotel_guests"
                 value={guests}
                 onChange={(event) => setGuests(Number(event.target.value))}
                 min={1}
+                max={30}
                 type="number"
-                className="min-h-12 rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
+                className="min-h-12 rounded-xl border border-skardu-control bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/40"
               />
             </label>
           </div>
@@ -85,8 +92,9 @@ export default function HotelBooking() {
                 <button
                   key={type}
                   type="button"
+                  aria-pressed={hotelType === type}
                   onClick={() => setHotelType(type)}
-                  className="relative min-h-11 rounded-xl px-3 py-3 text-sm font-black text-skardu-snow"
+                  className="relative min-h-12 rounded-xl px-3 py-3 text-sm font-black text-skardu-snow"
                 >
                   {hotelType === type ? (
                     <motion.span layoutId="hotel-pill" className="absolute inset-0 rounded-xl bg-skardu-gold" />
@@ -102,10 +110,10 @@ export default function HotelBooking() {
             onClick={requestHotel}
             whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(37,211,102,0.3)" }}
             whileTap={{ scale: 0.98 }}
-            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-[#25D366] px-5 py-4 font-black text-white"
+            className="mt-6 flex min-h-12 w-full items-center justify-center gap-3 rounded-xl bg-[#25D366] px-5 py-4 font-black text-skardu-void"
           >
             <WhatsAppIcon />
-            Book via WhatsApp
+            Request options via WhatsApp
           </motion.button>
         </motion.div>
       </div>

@@ -18,6 +18,8 @@ export interface ArticleFaq {
   answer: string;
 }
 
+export type ArticleEditorialStatus = "draft" | "reviewed";
+
 interface ArticleSeed {
   slug: string;
   title: string;
@@ -31,19 +33,21 @@ interface ArticleSeed {
   season: string;
   bookingTip: string;
   localTip: string;
+  editorialStatus?: ArticleEditorialStatus;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  evidenceSources?: string[];
 }
 
 export interface TravelArticle extends ArticleSeed {
+  editorialStatus: ArticleEditorialStatus;
   excerpt: string;
   readTime: string;
-  updatedAt: string;
   keywords: string[];
   highlights: string[];
   sections: ArticleSection[];
   faqs: ArticleFaq[];
 }
-
-const updatedAt = "2026-05-22";
 
 const articleSeeds: ArticleSeed[] = [
   {
@@ -968,7 +972,7 @@ function createArticle(seed: ArticleSeed): TravelArticle {
 
   return {
     ...seed,
-    updatedAt,
+    editorialStatus: seed.editorialStatus ?? "draft",
     keywords,
     readTime:
       seed.category === "Itinerary" || seed.category === "Adventure"
@@ -1022,6 +1026,22 @@ function createArticle(seed: ArticleSeed): TravelArticle {
 
 export const articles: TravelArticle[] = articleSeeds.map(createArticle);
 
+/**
+ * Indexing requires more than a status toggle. A reviewed article must name the
+ * human reviewer, record the review date, and retain at least one evidence
+ * source so generated drafts cannot accidentally enter search results.
+ */
+export function isReviewedArticle(article: TravelArticle) {
+  return (
+    article.editorialStatus === "reviewed" &&
+    Boolean(article.reviewedBy?.trim()) &&
+    Boolean(article.reviewedAt && !Number.isNaN(Date.parse(article.reviewedAt))) &&
+    Boolean(article.evidenceSources?.length)
+  );
+}
+
+export const reviewedArticles = articles.filter(isReviewedArticle);
+
 export const articleCategories = [
   "All",
   "Travel Guide",
@@ -1039,7 +1059,7 @@ export function getArticleBySlug(slug: string) {
 }
 
 export function getRelatedArticles(article: TravelArticle, limit = 3) {
-  return articles
+  return reviewedArticles
     .filter(
       (item) =>
         item.slug !== article.slug &&

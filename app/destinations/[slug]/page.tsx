@@ -4,17 +4,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
+import MobileBookingBar from "@/components/MobileBookingBar";
 import PageHeader from "@/components/PageHeader";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { commonTravelFaqs, SKARDU_GEO } from "@/data/seo";
+import TrackedLink from "@/components/TrackedLink";
+import { BRAND_NAME } from "@/constants/brand";
+import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import { destinations, getDestinationBySlug, getRelatedDestinations } from "@/data/destinations";
 import { tourPackages } from "@/data/tours";
-import { absoluteUrl, breadcrumbSchema, createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
+import { imageAltFor } from "@/lib/image-alt";
+import { absoluteUrl, breadcrumbSchema, createMetadata, jsonLdScript } from "@/lib/seo";
 
 interface DestinationPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {
@@ -23,8 +26,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: DestinationPageProps): Metadata {
-  const destination = getDestinationBySlug(params.slug);
+export async function generateMetadata({ params }: DestinationPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const destination = getDestinationBySlug(slug);
 
   if (!destination) {
     return {
@@ -39,13 +43,13 @@ export function generateMetadata({ params }: DestinationPageProps): Metadata {
     path: destination.canonicalPath ?? `/destinations/${destination.slug}`,
     image: destination.image,
     imageAlt: destination.imageAlt ?? `${destination.name} destination guide in Skardu Gilgit-Baltistan Pakistan`,
-    keywords: destination.keywords,
     type: "article"
   });
 }
 
-export default function DestinationPage({ params }: DestinationPageProps) {
-  const destination = getDestinationBySlug(params.slug);
+export default async function DestinationPage({ params }: DestinationPageProps) {
+  const { slug } = await params;
+  const destination = getDestinationBySlug(slug);
 
   if (!destination) {
     notFound();
@@ -57,6 +61,10 @@ export default function DestinationPage({ params }: DestinationPageProps) {
     .slice(0, 3);
   const destinationUrl = absoluteUrl(destination.canonicalPath ?? `/destinations/${destination.slug}`);
   const destinationFaqs = destination.faqs ?? buildDestinationFaqs(destination);
+  const whatsappUrl = buildWhatsAppURL(
+    WHATSAPP_MAIN,
+    `Hi ${BRAND_NAME}, I want to include ${destination.name} in a private itinerary. Please ask for my dates, group size and route priorities.`
+  );
   const breadcrumbs = [
     { label: "Home", href: "/" },
     { label: "Destinations", href: "/destinations/" },
@@ -65,38 +73,28 @@ export default function DestinationPage({ params }: DestinationPageProps) {
 
   const destinationSchema = {
     "@context": "https://schema.org",
-    "@type": "TouristAttraction",
+    "@type": "TouristDestination",
+    "@id": `${destinationUrl}#destination`,
     name: destination.name,
     description: destination.overview,
-    image: `${SITE_URL}${destination.image}`,
+    image: absoluteUrl(destination.image),
     url: destinationUrl,
-    geo: SKARDU_GEO,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: destination.region,
-      addressRegion: "Gilgit-Baltistan",
-      addressCountry: "PK"
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": destinationUrl
     },
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-      opens: "06:00",
-      closes: "18:00"
+    containedInPlace: {
+      "@type": "AdministrativeArea",
+      name: `${destination.region}, Pakistan`
     },
-    amenityFeature: destination.activities.map((activity) => ({
-      "@type": "LocationFeatureSpecification",
-      name: activity,
-      value: true
-    })),
     touristType: destination.idealFor,
-    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${destination.name}, ${destination.region}, Gilgit-Baltistan, Pakistan`)}`
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${destination.name}, ${destination.region}, Pakistan`)}`
   };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(destinationSchema)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumbSchema(breadcrumbs))} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(destinationFaqs))} />
       <PageHeader />
       <article className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.28fr)]">
@@ -105,22 +103,32 @@ export default function DestinationPage({ params }: DestinationPageProps) {
             <div className="mt-8 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em]">
               <span className="rounded-full bg-skardu-gold px-3 py-1 text-skardu-void">{destination.type}</span>
               <span className="text-skardu-ash">{destination.region}</span>
-              <span className="text-skardu-ash">Last updated: {destination.lastUpdated ?? "May 2026"}</span>
             </div>
             <h1 className="mt-5 font-display text-5xl font-bold leading-none text-skardu-snow md:text-7xl">{destination.name}</h1>
-            <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
-              Written by {destination.author ?? "Katpana Desert Tour Local Planning Team"}
-            </p>
             <p className="mt-6 text-xl leading-9 text-skardu-ash">{destination.overview}</p>
-            <Link href="/#tours" className="mt-8 inline-flex rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
-              Book Your Skardu Adventure
-            </Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <TrackedLink
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                eventName="whatsapp_click"
+                eventData={{ placement: "destination_hero", context: destination.slug }}
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-void"
+              >
+                Ask about this route
+              </TrackedLink>
+              <Link
+                href="/contact/"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-skardu-teal px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-snow"
+              >
+                Customize itinerary
+              </Link>
+            </div>
 
             <div className="mt-10 overflow-hidden rounded-2xl border border-skardu-mist bg-skardu-stone/65">
               <Image
                 src={destination.image}
-                alt={destination.imageAlt ?? `${destination.name} destination view in Gilgit-Baltistan Pakistan`}
-                title={destination.imageTitle ?? `${destination.name} Skardu destination guide`}
+                alt={imageAltFor(destination.image)}
                 width={1536}
                 height={864}
                 sizes="(max-width: 768px) 100vw, 70vw"
@@ -178,17 +186,6 @@ export default function DestinationPage({ params }: DestinationPageProps) {
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
-              <h2 className="font-display text-3xl font-bold text-skardu-snow">Destination keywords</h2>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {destination.keywords.map((keyword) => (
-                  <span key={keyword} className="rounded-full border border-skardu-mist px-3 py-1 text-xs font-bold text-skardu-ash">
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
               <h2 className="font-display text-3xl font-bold text-skardu-snow">Related destinations</h2>
               <div className="mt-5 grid gap-4">
                 {(destination.relatedLinks ?? []).map((related) => (
@@ -229,6 +226,7 @@ export default function DestinationPage({ params }: DestinationPageProps) {
         </div>
       </article>
       <Footer />
+      <MobileBookingBar whatsappUrl={whatsappUrl} context={`destination_${destination.slug}`} customizeHref="/contact/" />
     </main>
   );
 }

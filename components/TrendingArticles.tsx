@@ -1,296 +1,90 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { normalizeTrendingArticle, type TrendingArticle, type TrendingArticleRow } from "@/data/trending";
 import { staticTrendingArticles } from "@/data/trending-static";
-import { getSupabaseBrowserClient } from "@/lib/supabase";
-import AnimatedSection from "./AnimatedSection";
 
-type LoadState = "loading" | "ready" | "empty" | "error" | "missing-config";
-
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "medium",
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
   timeZone: "Asia/Karachi"
 });
 
-const PAGE_SIZE = 5;
-const trendingArticleSelect =
-  "id,slug,title,excerpt,sections,faqs,keywords,trend_topic,trend_rank,trend_source_url,trend_geo,published_at,generation_date";
-const staticTrendingSlugs = new Set(staticTrendingArticles.map((article) => article.slug));
-
 export default function TrendingArticles() {
-  const [articles, setArticles] = useState<TrendingArticle[]>(staticTrendingArticles);
-  const [activeId, setActiveId] = useState<string | null>(staticTrendingArticles[0]?.id ?? null);
-  const [page, setPage] = useState(0);
-  const [loadState, setLoadState] = useState<LoadState>(staticTrendingArticles.length ? "ready" : "loading");
-  const [errorMessage, setErrorMessage] = useState("");
-  const searchParams = useSearchParams();
-  const reduceMotion = useReducedMotion();
-  const selectedSlug = searchParams.get("article");
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadArticles() {
-      const supabase = getSupabaseBrowserClient();
-
-      if (!supabase) {
-        setLoadState(staticTrendingArticles.length ? "ready" : "missing-config");
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("trending_articles")
-        .select(trendingArticleSelect)
-        .eq("status", "published")
-        .order("published_at", { ascending: false })
-        .limit(30);
-
-      if (!mounted) return;
-
-      if (error) {
-        setErrorMessage(error.message);
-        setLoadState(staticTrendingArticles.length ? "ready" : "error");
-        return;
-      }
-
-      let normalizedArticles = ((data ?? []) as TrendingArticleRow[]).map(normalizeTrendingArticle);
-
-      if (selectedSlug && !normalizedArticles.some((article) => article.slug === selectedSlug)) {
-        const { data: selectedData, error: selectedError } = await supabase
-          .from("trending_articles")
-          .select(trendingArticleSelect)
-          .eq("status", "published")
-          .eq("slug", selectedSlug)
-          .maybeSingle();
-
-        if (!mounted) return;
-
-        if (!selectedError && selectedData) {
-          normalizedArticles = [
-            normalizeTrendingArticle(selectedData as TrendingArticleRow),
-            ...normalizedArticles
-          ];
-        }
-      }
-
-      if (selectedSlug && !normalizedArticles.some((article) => article.slug === selectedSlug)) {
-        const selectedStaticArticle = staticTrendingArticles.find((article) => article.slug === selectedSlug);
-        if (selectedStaticArticle) {
-          normalizedArticles = [selectedStaticArticle, ...normalizedArticles];
-        }
-      }
-
-      const nextArticles = normalizedArticles.length ? normalizedArticles : staticTrendingArticles;
-      setArticles(nextArticles);
-      const selectedArticle = selectedSlug
-        ? nextArticles.find((article) => article.slug === selectedSlug)
-        : null;
-
-      setActiveId(selectedArticle?.id ?? nextArticles[0]?.id ?? null);
-      setPage(0);
-      setLoadState(nextArticles.length ? "ready" : "empty");
-    }
-
-    loadArticles();
-
-    return () => {
-      mounted = false;
-    };
-  }, [selectedSlug]);
-
-  const activeArticle = useMemo(
-    () => articles.find((article) => article.id === activeId) ?? articles[0],
-    [activeId, articles]
+  const articles = [...staticTrendingArticles].sort(
+    (left, right) => Date.parse(right.last_verified_at) - Date.parse(left.last_verified_at)
   );
-  const pageCount = Math.max(1, Math.ceil(articles.length / PAGE_SIZE));
-  const paginatedArticles = articles.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   return (
-    <AnimatedSection className="relative px-4 pb-16 pt-6 sm:px-5 sm:pb-20 sm:pt-10 lg:px-8 lg:pb-28">
+    <section aria-labelledby="verified-updates-heading" className="relative px-4 pb-16 pt-6 sm:px-5 sm:pb-20 sm:pt-10 lg:px-8 lg:pb-28">
       <div className="mx-auto max-w-7xl">
-        {loadState === "loading" ? <LoadingState /> : null}
-        {loadState === "missing-config" ? <MissingConfigState /> : null}
-        {loadState === "error" ? <ErrorState message={errorMessage} /> : null}
-        {loadState === "empty" ? <EmptyState /> : null}
-
-        {loadState === "ready" && activeArticle ? (
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(300px,0.32fr)]">
-            <motion.article
-              key={activeArticle.id}
-              initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="glass-panel rounded-2xl p-4 sm:p-6 md:p-8"
-            >
-              <div className="mb-5 flex flex-wrap items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] sm:gap-3 sm:text-xs sm:tracking-[0.16em]">
-                <span className="rounded-full bg-skardu-gold px-3 py-1.5 text-skardu-void">
-                  {activeArticle.trend_rank ? `Trend #${activeArticle.trend_rank}` : "Travel trend"}
-                </span>
-                <span className="rounded-full border border-skardu-mist px-3 py-1.5 text-skardu-ash">
-                  {activeArticle.trend_geo}
-                </span>
-                <span className="text-skardu-ash">{formatDate(activeArticle.published_at)}</span>
-              </div>
-
-              <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">
-                Trending topic: {activeArticle.trend_topic}
-              </p>
-              <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
-                {activeArticle.title}
-              </h2>
-              <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-xl sm:leading-9">{activeArticle.excerpt}</p>
-
-              <div className="mt-7 grid gap-7 sm:mt-8 sm:gap-8">
-                {activeArticle.sections.map((section) => (
-                  <section key={section.heading}>
-                    <h3 className="font-display text-2xl font-bold leading-tight text-skardu-snow sm:text-3xl md:text-4xl">
-                      {section.heading}
-                    </h3>
-                    <p className="mt-3 text-base leading-8 text-skardu-ash sm:text-lg sm:leading-9">{section.body}</p>
-                  </section>
-                ))}
-              </div>
-
-              {activeArticle.faqs.length ? (
-                <section className="mt-8 border-t border-skardu-mist pt-7 sm:mt-10 sm:pt-8">
-                  <h3 className="font-display text-3xl font-bold text-skardu-snow sm:text-4xl">Frequently asked questions</h3>
-                  <div className="mt-5 grid gap-4">
-                    {activeArticle.faqs.map((faq) => (
-                      <details key={faq.question} className="rounded-2xl border border-skardu-mist bg-skardu-void/45 p-4 sm:p-5">
-                        <summary className="cursor-pointer font-bold text-skardu-snow">{faq.question}</summary>
-                        <p className="mt-3 leading-7 text-skardu-ash">{faq.answer}</p>
-                      </details>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              <div className="mt-8 flex flex-wrap gap-2">
-                {activeArticle.keywords.map((keyword) => (
-                  <span key={keyword} className="rounded-full border border-skardu-mist px-3 py-1 text-xs font-bold text-skardu-ash">
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-
-              <Link
-                href={getTrendingArticleHref(activeArticle.slug)}
-                className="mt-8 flex min-h-12 w-full items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-void sm:w-fit"
-              >
-                Open article
-              </Link>
-            </motion.article>
-
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-4 sm:p-5">
-                <div className="flex items-end justify-between gap-3">
-                  <h2 className="font-display text-2xl font-bold text-skardu-snow sm:text-3xl">Date-wise posts</h2>
-                  <span className="text-xs font-bold uppercase tracking-[0.14em] text-skardu-ash">
-                    {page + 1}/{pageCount}
-                  </span>
-                </div>
-                <div className="mt-4 grid gap-3 sm:mt-5">
-                  {paginatedArticles.map((article) => {
-                    const active = article.id === activeArticle.id;
-
-                    return (
-                      <div
-                        key={article.id}
-                        className={`rounded-2xl border p-4 transition ${
-                          active ? "border-skardu-gold bg-skardu-stone" : "border-skardu-mist bg-skardu-void/45 hover:border-skardu-gold"
-                        }`}
-                      >
-                        <button type="button" onClick={() => setActiveId(article.id)} className="block w-full text-left">
-                          <span className="mb-2 flex flex-wrap gap-2 text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">
-                            <span className={active ? "text-skardu-gold" : "text-skardu-ash"}>
-                              {formatDate(article.published_at)}
-                            </span>
-                            <span>{article.trend_rank ? `#${article.trend_rank}` : "Travel"}</span>
-                          </span>
-                          <span className="block font-display text-xl font-bold leading-tight text-skardu-snow sm:text-2xl">
-                            {article.title}
-                          </span>
-                          <span className="mt-2 block text-sm leading-6 text-skardu-ash">{article.trend_topic}</span>
-                        </button>
-                        <Link href={getTrendingArticleHref(article.slug)} className="mt-3 inline-flex min-h-9 items-center text-xs font-black uppercase tracking-[0.14em] text-skardu-teal">
-                          Details
-                        </Link>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPage((current) => Math.max(0, current - 1))}
-                    disabled={page === 0}
-                    className="min-h-11 rounded-full border border-skardu-mist px-4 text-sm font-black uppercase tracking-[0.14em] text-skardu-ash disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
-                    disabled={page >= pageCount - 1}
-                    className="min-h-11 rounded-full border border-skardu-teal px-4 text-sm font-black uppercase tracking-[0.14em] text-skardu-teal disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            </aside>
+        <div className="mb-8 grid gap-4 rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5 sm:p-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(260px,0.3fr)] lg:items-end">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">Editorial standard</p>
+            <h2 id="verified-updates-heading" className="mt-2 font-display text-3xl font-bold text-skardu-snow sm:text-4xl">
+              Verified Skardu travel updates
+            </h2>
+            <p className="mt-3 max-w-3xl leading-7 text-skardu-ash">
+              We publish an update only after a named reviewer checks local field evidence, source links, search intent, and overlap with our existing destination and tour guides.
+            </p>
           </div>
-        ) : null}
+          <p className="text-sm leading-6 text-skardu-ash lg:text-right">
+            Conditions in the Karakoram can change quickly. Confirm time-sensitive route, permit, weather, and access details before departure.
+          </p>
+        </div>
+
+        {articles.length ? (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {articles.map((article) => (
+              <article key={article.id} className="flex h-full flex-col rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-5 sm:p-6">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-[0.14em]">
+                  <span className="rounded-full bg-skardu-gold px-3 py-1.5 text-skardu-void">{article.content_cluster}</span>
+                  <time dateTime={article.last_verified_at} className="text-skardu-ash">
+                    Verified {formatDate(article.last_verified_at)}
+                  </time>
+                </div>
+                <h3 className="mt-5 font-display text-2xl font-bold leading-tight text-skardu-snow sm:text-3xl">
+                  <Link href={`/trending/${article.slug}/`} className="transition hover:text-skardu-gold focus-visible:text-skardu-gold">
+                    {article.title}
+                  </Link>
+                </h3>
+                <p className="mt-3 flex-1 leading-7 text-skardu-ash">{article.excerpt}</p>
+                <div className="mt-5 border-t border-skardu-mist pt-4 text-sm text-skardu-ash">
+                  Reviewed by {article.reviewed_by} · {article.citations.length} cited {article.citations.length === 1 ? "source" : "sources"}
+                </div>
+                <Link
+                  href={`/trending/${article.slug}/`}
+                  className="mt-5 inline-flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-5 py-3 text-center text-sm font-black uppercase tracking-[0.12em] text-skardu-void"
+                >
+                  Read verified update
+                </Link>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <EmptyEditorialState />
+        )}
       </div>
-    </AnimatedSection>
+    </section>
   );
 }
 
-function LoadingState() {
+function EmptyEditorialState() {
   return (
-    <div className="glass-panel rounded-2xl p-6 md:p-8">
-      <p className="text-sm font-black uppercase tracking-[0.2em] text-skardu-gold">Loading trending articles</p>
-      <div className="mt-6 grid gap-4">
-        <div className="h-10 rounded-xl bg-skardu-mist/30" />
-        <div className="h-24 rounded-xl bg-skardu-mist/20" />
-        <div className="h-24 rounded-xl bg-skardu-mist/20" />
+    <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-6 sm:p-8">
+      <p className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">Editorial review in progress</p>
+      <h3 className="mt-3 font-display text-3xl font-bold leading-tight text-skardu-snow sm:text-4xl">
+        The first verified update is being prepared
+      </h3>
+      <p className="mt-4 max-w-3xl text-base leading-8 text-skardu-ash sm:text-lg">
+        We retired the automated daily archive so that route and trip-planning information is published only when it adds a distinct, evidence-backed answer for travelers.
+      </p>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <Link href="/destinations/" className="inline-flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-skardu-teal">
+          Explore destinations
+        </Link>
+        <Link href="/tours/" className="inline-flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-skardu-void">
+          Browse tours
+        </Link>
       </div>
-    </div>
-  );
-}
-
-function MissingConfigState() {
-  return (
-    <StatePanel
-      title="Supabase is not configured"
-      body="Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY to the site environment to show published trending articles."
-    />
-  );
-}
-
-function ErrorState({ message }: { message: string }) {
-  return <StatePanel title="Trending articles could not load" body={message || "Please check the Supabase table and public read policy."} />;
-}
-
-function EmptyState() {
-  return (
-    <StatePanel
-      title="No trending articles yet"
-      body="The page is ready. The first post will appear after the scheduled Supabase Edge Function publishes a daily article."
-    />
-  );
-}
-
-function StatePanel({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="glass-panel rounded-2xl p-6 md:p-8">
-      <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Trending articles</p>
-      <h2 className="font-display text-4xl font-bold leading-tight text-skardu-snow md:text-5xl">{title}</h2>
-      <p className="mt-4 max-w-3xl text-lg leading-8 text-skardu-ash">{body}</p>
     </div>
   );
 }
@@ -298,12 +92,4 @@ function StatePanel({ title, body }: { title: string; body: string }) {
 function formatDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : dateFormatter.format(date);
-}
-
-function getTrendingArticleHref(slug: string) {
-  if (staticTrendingSlugs.has(slug)) {
-    return `/trending/${slug}/`;
-  }
-
-  return `/trending/?article=${encodeURIComponent(slug)}`;
 }

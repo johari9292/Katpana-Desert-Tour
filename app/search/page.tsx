@@ -1,45 +1,100 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import { blogPages, pillarPages, trekPages } from "@/data/seo";
-import { createMetadata } from "@/lib/seo";
+import SiteSearch, { type SearchEntry } from "@/components/SiteSearch";
+import { reviewedArticles } from "@/data/articles";
+import { destinations } from "@/data/destinations";
+import { seoPages } from "@/data/seo";
+import { tourPackages } from "@/data/tours";
+import { staticTrendingArticles } from "@/data/trending-static";
+import { canonicalPath, createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Search Pakistan Travel Guides Worldwide | Katpana Desert Tour",
-  description: "Search Pakistan travel guides for international Skardu tours, K2 treks, Deosai routes, Hunza and Gilgit-Baltistan tourism.",
+  title: "Search Travel Guides | Katpana Desert Tour",
+  description:
+    "Search Katpana Desert Tour itineraries, destinations, treks, and practical northern Pakistan travel guides.",
   path: "/search",
-  imageAlt: "Search Pakistan travel guides and K2 trekking routes for international travelers",
-  keywords: ["Pakistan travel search", "Skardu search", "Skardu travel guide", "K2 trek search", "international Pakistan tours"]
+  imageAlt: "Katpana Desert dunes and Karakoram mountains near Skardu",
+  index: false
 });
 
-const searchPages = [...pillarPages, ...trekPages, ...blogPages];
+const searchEntries = deduplicateEntries([
+  ...tourPackages.map((tour) => ({
+    href: canonicalPath(tour.canonicalPath ?? `/tours/${tour.slug}`),
+    title: tour.title,
+    summary: tour.overview,
+    type: "Tour package",
+    searchText: [
+      tour.title,
+      tour.overview,
+      tour.region,
+      tour.category,
+      tour.bestSeason,
+      ...tour.activities,
+      ...tour.keywords
+    ].join(" ")
+  })),
+  ...destinations.map((destination) => ({
+    href: canonicalPath(destination.canonicalPath ?? `/destinations/${destination.slug}`),
+    title: destination.name,
+    summary: destination.overview,
+    type: "Destination",
+    searchText: [
+      destination.name,
+      destination.overview,
+      destination.region,
+      destination.type,
+      destination.bestSeason,
+      ...destination.activities,
+      ...destination.keywords
+    ].join(" ")
+  })),
+  ...seoPages.map((page) => ({
+    href: canonicalPath(page.path),
+    title: page.title,
+    summary: page.excerpt,
+    type: page.category === "trek" ? "Trek guide" : page.category === "blog" ? "Travel guide" : "Planning guide",
+    searchText: [page.title, page.excerpt, page.primaryKeyword, ...page.keywords].join(" ")
+  })),
+  ...reviewedArticles.map((article) => ({
+    href: canonicalPath(`/articles/${article.slug}`),
+    title: article.title,
+    summary: article.excerpt,
+    type: article.category,
+    searchText: [article.title, article.excerpt, article.location, article.primaryKeyword, ...article.keywords].join(" ")
+  })),
+  ...staticTrendingArticles.map((article) => ({
+    href: canonicalPath(`/trending/${article.slug}`),
+    title: article.title,
+    summary: article.excerpt,
+    type: "Verified travel update",
+    searchText: [article.title, article.excerpt, article.primary_query, article.content_cluster, ...article.keywords].join(" ")
+  }))
+]);
 
 export default function SearchPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Search</p>
+          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Site search</p>
           <h1 className="max-w-5xl font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-            Search Pakistan travel guides
+            Find a tour, destination, or travel guide
           </h1>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Find practical guides for international Pakistan tours, Skardu, K2 trekking, Deosai safari, Gilgit-Baltistan tourism, Karakoram Highway travel, and seasonal planning.
+            Search private tour itineraries, 4x4 routes, destination guides, and trekking advice across Skardu and the
+            Karakoram.
           </p>
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {searchPages.map((page) => (
-              <Link key={page.path} href={`${page.path}/`} className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5 transition hover:border-skardu-gold hover:bg-skardu-stone">
-                <span className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">{page.primaryKeyword}</span>
-                <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-skardu-snow">{page.title}</h2>
-                <p className="mt-4 line-clamp-3 text-sm leading-6 text-skardu-ash">{page.excerpt}</p>
-              </Link>
-            ))}
-          </div>
+
+          <SiteSearch entries={searchEntries} />
         </div>
       </section>
       <Footer />
     </main>
   );
+}
+
+function deduplicateEntries(entries: SearchEntry[]) {
+  return Array.from(new Map(entries.map((entry) => [entry.href, entry])).values());
 }

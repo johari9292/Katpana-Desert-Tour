@@ -5,9 +5,9 @@ import { blogPages, getSeoPageBySlug } from "@/data/seo";
 import { createSeoPageMetadata } from "@/lib/seo";
 
 interface BlogPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: BlogPageProps): Metadata {
-  const page = getSeoPageBySlug(params.slug, "blog");
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = getSeoPageBySlug(slug, "blog");
   return page
     ? createSeoPageMetadata(page)
     : {
@@ -26,8 +27,9 @@ export function generateMetadata({ params }: BlogPageProps): Metadata {
       };
 }
 
-export default function BlogPage({ params }: BlogPageProps) {
-  const page = getSeoPageBySlug(params.slug, "blog");
+export default async function BlogPage({ params }: BlogPageProps) {
+  const { slug } = await params;
+  const page = getSeoPageBySlug(slug, "blog");
 
   if (!page) {
     notFound();

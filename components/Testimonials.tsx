@@ -1,91 +1,48 @@
-"use client";
+import Link from "next/link";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import AnimatedSection from "./AnimatedSection";
-
-const testimonials = [
+const commitments = [
   {
-    quote: "The WhatsApp booking was fast, the TZ arrived on time, and Katpana sunset felt unreal.",
-    name: "Ayesha Khan",
-    place: "Lahore",
+    title: "A written scope before payment",
+    body: "Confirm the route, accommodation level, vehicle, inclusions, exclusions, payment schedule and cancellation terms in writing.",
   },
   {
-    quote: "Upper Kachura and Deosai were handled perfectly. The driver knew every photo stop.",
-    name: "Sarah Ahmed",
-    place: "Lahore",
+    title: "Current conditions over old promises",
+    body: "Weather, flights, roads and protected-area access can change. A current route check and safe alternative take priority.",
   },
   {
-    quote: "Skardu felt premium without losing its raw mountain soul. We booked everything from one chat.",
-    name: "Bilal Noor",
-    place: "Islamabad",
+    title: "Feedback published with context",
+    body: "Traveler feedback should identify the trip and date and be published only with permission. Anonymous marketing quotes are not used as verified proof.",
   },
 ];
 
 export default function Testimonials() {
-  const [active, setActive] = useState(0);
-
   return (
-    <AnimatedSection id="testimonials" className="relative overflow-hidden px-4 py-14 sm:px-5 sm:py-20 lg:px-8 lg:py-28">
+    <section id="traveler-assurance" aria-labelledby="traveler-assurance-heading" className="relative px-4 py-14 sm:px-5 sm:py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex flex-col justify-between gap-5 sm:mb-12 lg:flex-row lg:items-end">
-          <div className="max-w-3xl">
-            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Traveler voices</p>
-            <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
-              Stories from the roof of the world
-            </h2>
-          </div>
-          <div className="flex gap-3 sm:gap-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setActive(index)}
-                aria-label={`Show testimonial ${index + 1}`}
-                className="relative size-4 rounded-full bg-skardu-mist sm:size-3"
-              >
-                {active === index ? <motion.span layoutId="testimonial-dot" className="absolute inset-0 rounded-full bg-skardu-gold" /> : null}
-              </button>
-            ))}
-          </div>
+        <div className="max-w-4xl">
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">Traveler assurance</p>
+          <h2 id="traveler-assurance-heading" className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
+            Trust the written plan, not an unverifiable claim
+          </h2>
+          <p className="mt-5 text-base leading-8 text-skardu-ash sm:text-lg">
+            High-altitude travel needs transparent decisions. These are the standards travelers should ask for before confirming an itinerary.
+          </p>
         </div>
 
-        <motion.div
-          drag="x"
-          dragConstraints={{ left: -620, right: 0 }}
-          dragElastic={0.08}
-          dragTransition={{ bounceStiffness: 320, bounceDamping: 44 }}
-          className="flex cursor-grab gap-4 active:cursor-grabbing sm:gap-5"
-        >
-          {testimonials.map((item, index) => (
-            <motion.article
-              key={item.name}
-              onViewportEnter={() => setActive(index)}
-              whileHover={{ y: -4 }}
-              className="glass-panel min-w-[86vw] rounded-2xl p-5 sm:min-w-[420px] sm:p-6"
-            >
-              <div className="mb-5 flex gap-1 text-skardu-gold" aria-label="5 star rating">
-                {Array.from({ length: 5 }).map((_, star) => (
-                  <Star key={star} />
-                ))}
-              </div>
-              <p className="font-display text-2xl italic leading-tight text-skardu-snow sm:text-3xl">"{item.quote}"</p>
-              <div className="mt-7">
-                <strong className="block text-skardu-snow">{item.name}</strong>
-                <span className="text-sm text-skardu-ash">{item.place}</span>
-              </div>
-            </motion.article>
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          {commitments.map((commitment, index) => (
+            <article key={commitment.title} className="rounded-2xl border border-skardu-control bg-skardu-stone/65 p-5 sm:p-6">
+              <span className="text-xs font-black tracking-[0.18em] text-skardu-gold">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="mt-4 font-display text-2xl font-bold text-skardu-snow">{commitment.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-skardu-ash">{commitment.body}</p>
+            </article>
           ))}
-        </motion.div>
-      </div>
-    </AnimatedSection>
-  );
-}
+        </div>
 
-function Star() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="m12 2 3 6.4 7 .9-5.1 4.9 1.3 6.9L12 17.7l-6.2 3.4 1.3-6.9L2 9.3l7-.9L12 2Z" />
-    </svg>
+        <Link href="/testimonials/" className="mt-8 inline-flex min-h-12 items-center font-bold text-skardu-teal underline decoration-2 underline-offset-4">
+          Read our feedback publication standard
+        </Link>
+      </div>
+    </section>
   );
 }

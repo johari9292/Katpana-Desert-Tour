@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { BRAND_NAME } from "@/constants/brand";
 import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import AnimatedSection from "./AnimatedSection";
+import TrackedLink from "./TrackedLink";
 
 const servicePoints = [
   "Custom Skardu, Hunza, Deosai, Khaplu, Shigar, and K2-side plans",
@@ -78,14 +79,16 @@ export default function AboutTour() {
                 ))}
               </div>
             </div>
-            <a
+            <TrackedLink
               href={bookingUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-8 py-4 text-center font-black text-white"
+              eventName="whatsapp_click"
+              eventData={{ placement: "about_cta", context: "custom_itinerary" }}
+              className="flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-8 py-4 text-center font-black text-skardu-void"
             >
               Start on WhatsApp
-            </a>
+            </TrackedLink>
           </div>
         </div>
       </AnimatedSection>

@@ -44,13 +44,13 @@ export const SKARDU_GEO = {
   longitude: 75.6358,
 };
 
-export const seoAuthor = "Katpana Desert Tour Local Planning Team";
+export const seoAuthor = BRAND_NAME;
 export const lastUpdated = "June 2026";
 
 export const authorityLinks: RelatedLink[] = [
   {
-    label: "Alpine Club of Pakistan permit guidance",
-    href: "https://alpineclub.org.pk/",
+    label: "Government of Gilgit-Baltistan tourism and permit guidance",
+    href: "https://visitgilgitbaltistan.gov.pk/pages/faqs?page=2",
   },
   {
     label: "PTDC Pakistan travel information",
@@ -60,23 +60,27 @@ export const authorityLinks: RelatedLink[] = [
     label: "Pakistan Meteorological Department forecasts",
     href: "https://www.pmd.gov.pk/",
   },
+  {
+    label: "UK FCDO Pakistan travel advice (check your own government too)",
+    href: "https://www.gov.uk/foreign-travel-advice/pakistan",
+  },
 ];
 
 export const commonTravelFaqs: SEOFaq[] = [
   {
     question: "What is the best time to visit Skardu?",
     answer:
-      "The best time to visit Skardu is May to October for lake trips, jeep routes, and most family tours. June to August works best for K2 and Baltoro trekking. April brings blossom color, while September and October give clearer light, cooler roads, and strong autumn views.",
+      "Many lake and lower sightseeing routes are planned from May to October, while high trekking and plateau access has a shorter weather-dependent window. Confirm the specific road, trail and permit position close to departure rather than relying on a general season label.",
   },
   {
     question: "How do I get to Skardu from Islamabad?",
     answer:
-      "You can reach Skardu from Islamabad by direct flight when weather allows or by road through the Karakoram Highway and Jaglot-Skardu Road. Flights take about one hour after boarding. The road journey usually needs a long day or an overnight stop because mountain traffic and landslides can change timing.",
+      "You can reach Skardu from Islamabad by a weather-dependent flight or by a long mountain-road journey. Flight schedules and roads can change at short notice, so verify the current route against official travel advice, your airline and local authorities and keep a contingency day.",
   },
   {
     question: "Is a permit required for K2 base camp?",
     answer:
-      "Yes, foreign trekkers normally need trekking permits for the K2 base camp route because it enters restricted Central Karakoram areas. A licensed local operator helps with permits, guide documents, porter systems, and security paperwork. Domestic requirements can also change, so confirm before booking.",
+      "K2-side routes can require trekking permits, operator documents, insurance and other approvals. Requirements differ by route and traveler status and can change, so confirm them with the Government of Gilgit-Baltistan Tourism Department before booking.",
   },
   {
     question: "How many days do I need for the Baltoro Glacier trek?",
@@ -86,7 +90,7 @@ export const commonTravelFaqs: SEOFaq[] = [
   {
     question: "Is Skardu safe for foreign tourists?",
     answer:
-      "Skardu is generally welcoming for foreign tourists who travel with realistic plans, local guidance, and respect for village culture. Use registered hotels, confirm route conditions, carry passport copies, and avoid remote trekking routes without guides. Weather, altitude, and road safety matter more than city crime for most visitors.",
+      "No travel provider can guarantee that a destination or route is safe. Check your government's current Pakistan advice, Pakistani and Gilgit-Baltistan authority instructions, insurance restrictions, weather, road and security conditions before travel and again before each remote route.",
   },
 ];
 
@@ -109,9 +113,9 @@ export const pillarPages: SEOPage[] = [
     path: "/skardu-travel-guide",
     primaryKeyword: "Skardu travel guide",
     title: "Skardu travel guide for first-time visitors",
-    metaTitle: "Skardu Travel Guide 2026 | Katpana Desert Tour",
+    metaTitle: "Skardu Travel Guide | Katpana Desert Tour",
     metaDescription:
-      "Skardu travel guide 2026 with routes, costs, weather, hotels, jeeps and local tips for first-time visitors. Plan now.",
+      "Skardu travel guide with routes, cost factors, weather, accommodation, jeeps and practical tips for first-time visitors.",
     eyebrow: "Pillar guide",
     excerpt:
       "This Skardu travel guide gives a simple plan for lakes, cold desert sunsets, Balti culture, jeep tracks, weather, hotels, and day trips across the Karakoram.",
@@ -156,9 +160,9 @@ export const pillarPages: SEOPage[] = [
     path: "/international-pakistan-tours",
     primaryKeyword: "Pakistan tours for international travelers",
     title: "Pakistan tours for international travelers",
-    metaTitle: "Pakistan Tours for International Travelers 2026 | Katpana",
+    metaTitle: "Pakistan Tours for International Travelers | Katpana",
     metaDescription:
-      "Pakistan tours for international travelers in 2026 with Skardu, Hunza, K2, Deosai, visas, flights, hotels and private transport.",
+      "Pakistan tours for international travelers with Skardu, Hunza, K2, Deosai, arrival, accommodation and private transport planning.",
     eyebrow: "Global travel planning",
     excerpt:
       "Plan Pakistan tours from abroad with Skardu-based local support for airport transfers, hotel choices, private cars, Deosai jeep routes, Hunza extensions, and K2 trekking logistics.",
@@ -239,9 +243,9 @@ export const pillarPages: SEOPage[] = [
     path: "/gilgit-baltistan-tourism",
     primaryKeyword: "Gilgit-Baltistan tourism",
     title: "Gilgit-Baltistan tourism guide for mountain travel",
-    metaTitle: "Gilgit-Baltistan Tourism 2026 | Katpana Desert Tour",
+    metaTitle: "Gilgit-Baltistan Tourism | Katpana Desert Tour",
     metaDescription:
-      "Gilgit-Baltistan tourism 2026 guide to Skardu, Hunza, Deosai, K2 routes, culture and safe planning. Start here.",
+      "Gilgit-Baltistan tourism guide to Skardu, Hunza, Deosai, K2 routes, culture and safety-led travel planning.",
     eyebrow: "Destination hub",
     excerpt:
       "Gilgit-Baltistan tourism connects the Karakoram, Himalayas, cold deserts, glaciers, alpine lakes, and Balti culture into one of Asia's strongest mountain travel regions.",
@@ -287,9 +291,9 @@ export const pillarPages: SEOPage[] = [
     path: "/pakistan-mountain-tourism",
     primaryKeyword: "Pakistan mountain tourism",
     title: "Pakistan mountain tourism in the Karakoram",
-    metaTitle: "Pakistan Mountain Tourism 2026 | Katpana Desert Tour",
+    metaTitle: "Pakistan Mountain Tourism | Katpana Desert Tour",
     metaDescription:
-      "Pakistan mountain tourism 2026 guide to K2, Skardu, Hunza, Deosai, glaciers and cultural routes. Explore now.",
+      "Pakistan mountain tourism guide to K2, Skardu, Hunza, Deosai, glaciers and cultural routes in the north.",
     eyebrow: "Mountain tourism hub",
     excerpt:
       "Pakistan mountain tourism reaches its highest form in Skardu and the Karakoram, where glaciers, trekking permits, jeeps, porters, villages, and alpine lakes shape every route.",
@@ -335,9 +339,9 @@ export const pillarPages: SEOPage[] = [
     path: "/pakistan-trekking-guide",
     primaryKeyword: "best trekking in Pakistan",
     title: "Best trekking in Pakistan from Skardu",
-    metaTitle: "Best Trekking in Pakistan 2026 | Katpana Desert Tour",
+    metaTitle: "Best Trekking in Pakistan | Katpana Desert Tour",
     metaDescription:
-      "Best trekking in Pakistan 2026 guide to K2, Baltoro, Concordia, Fairy Meadows and Skardu routes. Plan today.",
+      "Trekking in Pakistan guide to K2, Baltoro, Concordia, Fairy Meadows and Skardu route logistics.",
     eyebrow: "Trekking pillar",
     excerpt:
       "The best trekking in Pakistan ranges from Fairy Meadows viewpoints to the demanding Baltoro Glacier and K2 base camp route from Skardu.",
@@ -387,9 +391,9 @@ export const pillarPages: SEOPage[] = [
     path: "/karakoram-highway-travel",
     primaryKeyword: "Karakoram Highway travel",
     title: "Karakoram Highway travel guide",
-    metaTitle: "Karakoram Highway Travel 2026 | Katpana Desert Tour",
+    metaTitle: "Karakoram Highway Travel | Katpana Desert Tour",
     metaDescription:
-      "Karakoram Highway travel 2026 guide for Hunza, Gilgit, Skardu road links, stops, safety and timing. Plan now.",
+      "Karakoram Highway travel guide for Hunza, Gilgit, Skardu road links, stops, safety and realistic timing.",
     eyebrow: "Road guide",
     excerpt:
       "Karakoram Highway travel links Islamabad with Gilgit-Baltistan through river valleys, mountain villages, Hunza viewpoints, and road connections toward Skardu.",
@@ -437,9 +441,9 @@ export const trekPages: SEOPage[] = [
     path: "/treks/k2-base-camp",
     primaryKeyword: "K2 base camp trek",
     title: "K2 base camp trek guide from Skardu",
-    metaTitle: "K2 Base Camp Trek Guide 2026 | Katpana Desert Tour",
+    metaTitle: "K2 Base Camp Trek Guide | Katpana Desert Tour",
     metaDescription:
-      "K2 base camp trek 2026 guide with itinerary, cost factors, permits, porters and Skardu logistics. Plan your trek.",
+      "K2 Base Camp trek guide with itinerary, cost factors, permits, porters and Skardu logistics.",
     eyebrow: "Karakoram trek",
     excerpt:
       "The K2 base camp trek reaches about 5,150m after days on the Baltoro Glacier, with Skardu, Shigar, Askole, Concordia, and porter planning shaping the route.",
@@ -489,9 +493,9 @@ export const trekPages: SEOPage[] = [
     path: "/treks/baltoro-glacier",
     primaryKeyword: "Baltoro Glacier expedition",
     title: "Baltoro Glacier expedition guide",
-    metaTitle: "Baltoro Glacier Expedition 2026 | Katpana Desert Tour",
+    metaTitle: "Baltoro Glacier Expedition | Katpana Desert Tour",
     metaDescription:
-      "Baltoro Glacier expedition 2026 guide to Skardu, Askole, porters, camps, permits and Concordia. Plan safely.",
+      "Baltoro Glacier expedition guide to Skardu, Askole, porters, camps, permits and Concordia logistics.",
     eyebrow: "Glacier expedition",
     excerpt:
       "A Baltoro Glacier expedition is the classic Karakoram approach to Concordia and K2 views, using Skardu logistics, Askole jeeps, porters, and high camp systems.",
@@ -536,9 +540,9 @@ export const trekPages: SEOPage[] = [
     path: "/treks/concordia-pakistan",
     primaryKeyword: "Concordia Pakistan trek",
     title: "Concordia Pakistan trek guide",
-    metaTitle: "Concordia Pakistan Trek 2026 | Katpana Desert Tour",
+    metaTitle: "Concordia Pakistan Trek | Katpana Desert Tour",
     metaDescription:
-      "Concordia Pakistan trek 2026 guide with route, camps, K2 views, permits and Skardu logistics. Plan today.",
+      "Concordia Pakistan trek guide with route, camps, K2 views, permits and Skardu logistics.",
     eyebrow: "High mountain trek",
     excerpt:
       "The Concordia Pakistan trek reaches one of the world's great mountain amphitheaters where K2, Broad Peak, Gasherbrum views, and Baltoro Glacier camps meet.",
@@ -583,9 +587,9 @@ export const trekPages: SEOPage[] = [
     path: "/treks/fairy-meadows",
     primaryKeyword: "Fairy Meadows Pakistan",
     title: "Fairy Meadows Pakistan trekking guide",
-    metaTitle: "Fairy Meadows Pakistan 2026 | Katpana Desert Tour",
+    metaTitle: "Fairy Meadows Pakistan Guide | Katpana Desert Tour",
     metaDescription:
-      "Fairy Meadows Pakistan 2026 guide to Nanga Parbat views, jeep track, hiking time, safety and route planning. Go.",
+      "Fairy Meadows Pakistan guide to Nanga Parbat views, the jeep track, hiking time, safety and route planning.",
     eyebrow: "Nanga Parbat trek",
     excerpt:
       "Fairy Meadows Pakistan gives close Nanga Parbat views with a dramatic jeep track, forest hike, wooden huts, and a shorter trekking option than the Baltoro route.",
@@ -636,9 +640,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/best-time-to-visit-skardu",
     primaryKeyword: "best time to visit Skardu Pakistan",
     title: "Best time to visit Skardu Pakistan",
-    metaTitle: "Best Time to Visit Skardu Pakistan 2026 | Katpana",
+    metaTitle: "Best Time to Visit Skardu Pakistan | Katpana",
     metaDescription:
-      "Best time to visit Skardu Pakistan in 2026 by month, weather, Deosai access, flights and hotel demand. Plan now.",
+      "Best time to visit Skardu Pakistan by month, weather pattern, Deosai access, flight buffers and accommodation demand.",
     eyebrow: "Season guide",
     excerpt:
       "The best time to visit Skardu Pakistan depends on whether you want Deosai, lake weather, blossom, autumn color, snow, or K2 trekking routes.",
@@ -689,9 +693,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/how-to-reach-skardu-from-islamabad",
     primaryKeyword: "how to reach Skardu from Islamabad",
     title: "How to reach Skardu from Islamabad",
-    metaTitle: "How to Reach Skardu from Islamabad 2026 | Katpana",
+    metaTitle: "How to Reach Skardu from Islamabad | Katpana",
     metaDescription:
-      "How to reach Skardu from Islamabad in 2026 by flight or road, with timing, buffers and route tips. Plan today.",
+      "How to reach Skardu from Islamabad by flight or road, with timing, contingency buffers and route tips.",
     eyebrow: "Transport guide",
     excerpt:
       "How to reach Skardu from Islamabad comes down to two choices: a weather-dependent mountain flight or a long road journey through northern Pakistan.",
@@ -738,9 +742,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/k2-base-camp-trek-cost-itinerary",
     primaryKeyword: "K2 base camp trek cost and itinerary",
     title: "K2 base camp trek cost and itinerary",
-    metaTitle: "K2 Base Camp Trek Cost and Itinerary 2026 | Katpana",
+    metaTitle: "K2 Base Camp Trek Cost and Itinerary | Katpana",
     metaDescription:
-      "K2 base camp trek cost and itinerary 2026 with permits, porters, camps, Skardu prep and buffers. Plan now.",
+      "K2 Base Camp trek cost factors and itinerary planning with permits, porters, camps, Skardu preparation and buffers.",
     eyebrow: "Cost guide",
     excerpt:
       "K2 base camp trek cost and itinerary planning must include permits, porters, food, camp gear, Skardu hotels, Askole jeeps, and weather buffers.",
@@ -785,9 +789,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/skardu-weather-month-by-month",
     primaryKeyword: "Skardu weather month by month",
     title: "Skardu weather month by month",
-    metaTitle: "Skardu Weather Month by Month 2026 | Katpana",
+    metaTitle: "Skardu Weather Month by Month | Katpana",
     metaDescription:
-      "Skardu weather month by month for 2026 travel, Deosai access, K2 trekking, snow and autumn color. Check now.",
+      "Skardu weather month by month for Deosai access, K2 trekking, snow conditions and autumn travel planning.",
     eyebrow: "Weather guide",
     excerpt:
       "Skardu weather month by month helps travelers choose between blossom, summer jeep routes, autumn colors, and snow-focused cold desert trips.",
@@ -838,9 +842,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/things-to-do-skardu-summer",
     primaryKeyword: "things to do in Skardu in summer",
     title: "Things to do in Skardu in summer",
-    metaTitle: "Things to Do in Skardu in Summer 2026 | Katpana",
+    metaTitle: "Things to Do in Skardu in Summer | Katpana",
     metaDescription:
-      "Things to do in Skardu in summer 2026: Deosai, Kachura, Shigar, Khaplu, jeeps and K2 trekking. Explore.",
+      "Things to do in Skardu in summer: Deosai, Kachura, Shigar, Khaplu, jeep routes and K2-side trekking.",
     eyebrow: "Summer guide",
     excerpt:
       "Things to do in Skardu in summer include Deosai safari, Kachura boating, Shigar and Khaplu culture, jeep tracks, and K2-side trekking logistics.",
@@ -891,12 +895,12 @@ export const blogPages: SEOPage[] = [
     path: "/blog/is-skardu-safe-for-tourists",
     primaryKeyword: "is Skardu safe for tourists",
     title: "Is Skardu safe for tourists?",
-    metaTitle: "Is Skardu Safe for Tourists 2026 | Katpana Desert Tour",
+    metaTitle: "Is Skardu Safe for Tourists? | Katpana Desert Tour",
     metaDescription:
-      "Is Skardu safe for tourists in 2026? Learn road, weather, altitude, culture and foreign visitor tips. Travel smart.",
+      "Is Skardu safe for tourists? Review road, weather, altitude, cultural and foreign-visitor planning considerations.",
     eyebrow: "Safety guide",
     excerpt:
-      "Is Skardu safe for tourists? Most trips go smoothly with local planning, respectful behavior, weather buffers, safe vehicles, and realistic high-altitude choices.",
+      "Safety in Skardu depends on current official advice, security conditions, roads, weather, altitude, insurance and the exact route—not a blanket assurance.",
     image: "/images/places/shigar-fort-valley.jpg",
     imageAlt:
       "is Skardu safe for tourists Shigar Valley family travel and mountain road Pakistan",
@@ -909,8 +913,8 @@ export const blogPages: SEOPage[] = [
     author: seoAuthor,
     sections: [
       {
-        heading: "Is Skardu safe for tourists in 2026",
-        body: "Skardu is generally safe for tourists who use reliable hotels, sensible transport, and local advice. Most risks come from weather, altitude, road conditions, and remote terrain rather than city crime. Foreign tourists should carry documents and follow local guidance.",
+        heading: "Is Skardu safe for tourists?",
+        body: "No website or operator can guarantee safety. Review your government's current Pakistan travel advice alongside Pakistani and Gilgit-Baltistan authority instructions, and check whether an advisory affects insurance. Security, demonstrations, official restrictions and route conditions can change after an article is published.",
       },
       {
         heading: "Road and altitude safety",
@@ -918,7 +922,7 @@ export const blogPages: SEOPage[] = [
       },
       {
         heading: "Cultural respect and comfort",
-        body: "Skardu is welcoming, but travelers should dress modestly in villages, ask before portraits, and respect mosques, farms, and family spaces. Families and solo travelers should keep hotel contacts and driver details saved offline.",
+        body: "Ask before portraits, respect mosques, farms, homes and family spaces, and follow local instructions. Travelers should keep accommodation, driver, insurer and emergency details available offline and share a realistic itinerary with an appropriate contact.",
       },
     ],
     faqs: commonTravelFaqs,
@@ -942,9 +946,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/skardu-packing-list",
     primaryKeyword: "Skardu packing list",
     title: "Skardu packing list for mountain travel",
-    metaTitle: "Skardu Packing List 2026 | Katpana Desert Tour",
+    metaTitle: "Skardu Packing List | Katpana Desert Tour",
     metaDescription:
-      "Skardu packing list 2026 for lakes, cold desert, Deosai, K2 treks, family tours and winter trips. Pack well.",
+      "Skardu packing list for lakes, cold desert, Deosai, K2 treks, family tours and winter trips.",
     eyebrow: "Packing guide",
     excerpt:
       "A Skardu packing list must cover warm layers, sun protection, road days, lake stops, high plateaus, village etiquette, and trekking gear if you continue toward K2.",
@@ -992,9 +996,9 @@ export const blogPages: SEOPage[] = [
     path: "/blog/cheapest-way-to-gilgit-baltistan",
     primaryKeyword: "cheapest way to travel to Gilgit-Baltistan",
     title: "Cheapest way to travel to Gilgit-Baltistan",
-    metaTitle: "Cheapest Way to Travel to Gilgit-Baltistan 2026",
+    metaTitle: "Cheapest Way to Travel to Gilgit-Baltistan",
     metaDescription:
-      "Cheapest way to travel to Gilgit-Baltistan in 2026 with buses, shared cars, budget hotels and smart routes. Save.",
+      "Compare lower-cost Gilgit-Baltistan travel using buses, shared cars, simple accommodation and efficient routes.",
     eyebrow: "Budget guide",
     excerpt:
       "The cheapest way to travel to Gilgit-Baltistan usually combines buses or shared cars, simple hotels, grouped day trips, and patient road timing.",

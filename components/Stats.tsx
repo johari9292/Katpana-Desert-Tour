@@ -1,62 +1,61 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { useCounter } from "@/hooks/useCounter";
 import AnimatedSection from "./AnimatedSection";
 
-const stats = [
-  { value: 5, suffix: "", label: "World-class peak routes nearby" },
-  { value: 200, suffix: "+", label: "Hotels and guesthouses" },
-  { value: 12, suffix: "+", label: "Heritage forts and valley stops" },
-  { value: 4500, suffix: "m", label: "Deosai Plateau height" }
+const planningFactors = [
+  {
+    title: "Altitude pacing",
+    body: "Keep the first day lighter and build high plateaus or trekking days into the route progressively."
+  },
+  {
+    title: "Vehicle fit",
+    body: "Match standard-road transfers and rough 4x4 tracks to different vehicles instead of treating every route alike."
+  },
+  {
+    title: "Seasonal access",
+    body: "Confirm high-road, plateau and trail conditions close to departure and retain a workable alternative."
+  },
+  {
+    title: "Written scope",
+    body: "Record accommodation, transport, inclusions, exclusions and quote assumptions before a trip is confirmed."
+  }
 ];
 
-const features = ["Halal Food", "Local Guides", "WiFi", "Medical Support", "24/7 Booking"];
+const standards = [
+  "Realistic driving days",
+  "Weather buffers",
+  "Itemized quote basis",
+  "Safety-first route changes",
+  "Responsible travel guidance"
+];
 
 export default function Stats() {
   return (
     <AnimatedSection id="why-skardu" className="relative px-5 py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 max-w-3xl">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Why Skardu</p>
+          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Why plan from Skardu</p>
           <h2 className="font-display text-5xl font-bold leading-none text-skardu-snow md:text-6xl">
-            Built for altitude, culture, and conversion
+            Mountain routes need more than a list of stops
           </h2>
         </div>
-        <div className="grid gap-5 md:grid-cols-4">
-          {stats.map((stat) => (
-            <StatCard key={stat.label} {...stat} />
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {planningFactors.map((factor) => (
+            <article key={factor.title} className="glass-panel rounded-2xl p-6">
+              <h3 className="font-display text-3xl font-bold text-skardu-gold">{factor.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-skardu-ash">{factor.body}</p>
+            </article>
           ))}
         </div>
-        <div className="mt-10 flex flex-wrap gap-3">
-          {features.map((feature, index) => (
-            <motion.span
-              key={feature}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ delay: index * 0.06, duration: 0.45 }}
-              className="rounded-full border border-skardu-mist bg-skardu-stone/75 px-5 py-3 text-sm font-bold text-skardu-ash"
+        <ul className="mt-10 flex flex-wrap gap-3" aria-label="Route planning standards">
+          {standards.map((standard) => (
+            <li
+              key={standard}
+              className="rounded-full border border-skardu-control bg-skardu-stone/75 px-5 py-3 text-sm font-bold text-skardu-ash"
             >
-              {feature}
-            </motion.span>
+              {standard}
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </AnimatedSection>
-  );
-}
-
-function StatCard({ value: target, suffix, label }: { value: number; suffix: string; label: string }) {
-  const { ref, value } = useCounter(target);
-
-  return (
-    <div ref={ref} className="glass-panel rounded-2xl p-6">
-      <span className="font-display text-6xl font-bold text-skardu-gold">
-        {value.toLocaleString()}
-        {suffix}
-      </span>
-      <p className="mt-3 text-sm font-bold uppercase tracking-[0.16em] text-skardu-ash">{label}</p>
-    </div>
   );
 }

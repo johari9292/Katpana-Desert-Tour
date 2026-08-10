@@ -3,14 +3,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { buildWhatsAppURL, WHATSAPP_CAR } from "@/constants/contact";
+import { trackConversion } from "@/lib/analytics";
 import AnimatedSection from "./AnimatedSection";
 import DateField from "./DateField";
 
 const cars = [
-  { name: "4x4 Jeep", detail: "Karakoram routes", seats: "4 seats" },
-  { name: "Corolla/Civic", detail: "City and lake drives", seats: "4 seats" },
-  { name: "Hiace Van", detail: "Groups and families", seats: "12 seats" },
-  { name: "Land Cruiser", detail: "Expeditions", seats: "5 seats" }
+  { name: "4x4 Jeep", detail: "Rough-road route option" },
+  { name: "Sedan", detail: "Standard-road transfers and lake drives" },
+  { name: "Passenger van", detail: "Group transport option" },
+  { name: "4x4 wagon", detail: "Remote-route luggage option" }
 ];
 
 export default function CarRental() {
@@ -21,6 +22,7 @@ export default function CarRental() {
 
   function requestCar() {
     const msg = `Hi! I need a *${selected.name}* for ${duration} day(s) in Skardu.\nPickup: ${pickup || "Not selected"}\nDate: ${date || "Flexible"}\n\nPlease confirm availability and pricing.`;
+    trackConversion("whatsapp_click", { placement: "car_rental_form", context: selected.name, duration });
     window.open(buildWhatsAppURL(WHATSAPP_CAR, msg), "_blank", "noopener,noreferrer");
   }
 
@@ -36,6 +38,7 @@ export default function CarRental() {
                   <motion.button
                     key={car.name}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => setSelected(car)}
                     whileHover={{ y: -2, borderColor: "#C9A84C" }}
                     transition={{ type: "spring", stiffness: 400, damping: 28 }}
@@ -46,7 +49,7 @@ export default function CarRental() {
                     <CarIcon active={active} />
                     <span className="min-w-0 flex-1">
                       <span className="block font-black text-skardu-snow">{car.name}</span>
-                      <span className="block text-sm text-skardu-ash">{car.detail} / {car.seats}</span>
+                      <span className="block text-sm text-skardu-ash">{car.detail}; confirm seats and luggage capacity</span>
                     </span>
                     <AnimatePresence>
                       {active ? (
@@ -66,12 +69,14 @@ export default function CarRental() {
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm font-bold text-skardu-snow">
+              <label htmlFor="car-pickup" className="grid gap-2 text-sm font-bold text-skardu-snow">
                 Pickup location
                 <input
+                  id="car-pickup"
+                  name="car_pickup"
                   value={pickup}
                   onChange={(event) => setPickup(event.target.value)}
-                  className="min-h-12 rounded-xl border border-skardu-mist bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/20"
+                  className="min-h-12 rounded-xl border border-skardu-control bg-skardu-void/70 px-4 py-3 text-skardu-snow outline-none focus:border-skardu-gold focus:ring-2 focus:ring-skardu-gold/40"
                 />
               </label>
               <DateField label="Travel date" value={date} onChange={setDate} />
@@ -84,7 +89,7 @@ export default function CarRental() {
                   type="button"
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setDuration((value) => Math.max(1, value - 1))}
-                  className="grid size-9 place-items-center rounded-full border border-skardu-mist text-skardu-snow"
+                  className="grid size-12 place-items-center rounded-full border border-skardu-control text-skardu-snow"
                   aria-label="Decrease rental duration"
                 >
                   -
@@ -100,8 +105,9 @@ export default function CarRental() {
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.9 }}
-                  onClick={() => setDuration((value) => value + 1)}
-                  className="grid size-9 place-items-center rounded-full border border-skardu-mist text-skardu-snow"
+                  onClick={() => setDuration((value) => Math.min(30, value + 1))}
+                  disabled={duration >= 30}
+                  className="grid size-12 place-items-center rounded-full border border-skardu-control text-skardu-snow"
                   aria-label="Increase rental duration"
                 >
                   +
@@ -114,7 +120,7 @@ export default function CarRental() {
               onClick={requestCar}
               whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(37,211,102,0.3)" }}
               whileTap={{ scale: 0.98 }}
-              className="mt-6 w-full rounded-xl bg-[#25D366] px-5 py-4 font-black text-white"
+              className="mt-6 min-h-12 w-full rounded-xl bg-[#25D366] px-5 py-4 font-black text-skardu-void"
             >
               Request Car via WhatsApp
             </motion.button>
@@ -124,11 +130,11 @@ export default function CarRental() {
         <div className="order-1 lg:order-2">
           <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Rent a car in Skardu</p>
           <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">
-            Choose the right vehicle for every altitude
+            Match the vehicle to the road and group
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            City transfers, lake days, cold-desert sunsets, and Deosai routes need different vehicles. Make the choice
-            simple before the traveler lands in Skardu.
+            City transfers, lake days, cold-desert sunsets and rough high tracks can need different vehicles. Confirm
+            the exact vehicle, seating, luggage space, driver scope and route suitability in the written quote.
           </p>
         </div>
       </div>

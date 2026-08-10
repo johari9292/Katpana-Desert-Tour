@@ -2,25 +2,21 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import MobileBookingBar from "@/components/MobileBookingBar";
 import PageHeader from "@/components/PageHeader";
+import TrackedLink from "@/components/TrackedLink";
+import TrustPanel from "@/components/TrustPanel";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
+import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import { destinations } from "@/data/destinations";
-import { createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
+import { imageAltFor } from "@/lib/image-alt";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: `Gilgit-Baltistan Destinations | ${BRAND_NAME}`,
-  description: "Gilgit-Baltistan destinations 2026 guide for international travelers visiting Skardu, Deosai, Hunza, Khaplu and K2.",
+  description: "Gilgit-Baltistan destination guides for international travelers visiting Skardu, Deosai, Hunza, Khaplu and K2.",
   path: "/destinations",
-  imageAlt: "Gilgit-Baltistan destinations for international Skardu Deosai Hunza and K2 travel",
-  keywords: [
-    "Pakistan destinations for international travelers",
-    "Skardu destinations",
-    "Katpana Desert",
-    "Deosai National Park",
-    "Hunza Valley",
-    "K2 Base Camp",
-    "Gilgit Baltistan destinations"
-  ]
+  imageAlt: "Gilgit-Baltistan destinations for international Skardu Deosai Hunza and K2 travel"
 });
 
 const destinationListSchema = {
@@ -61,13 +57,17 @@ const destinationFaqs = [
 ];
 
 export default function DestinationsPage() {
+  const whatsappUrl = buildWhatsAppURL(
+    WHATSAPP_MAIN,
+    `Hi ${BRAND_NAME}, help me choose destinations for a private Skardu and northern Pakistan itinerary.`
+  );
+
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(destinationListSchema)}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(destinationFaqs))} />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
@@ -80,6 +80,24 @@ export default function DestinationsPage() {
               Read destination overviews for international Skardu tourism, trekking, family trips, cultural travel,
               high plateaus, and adventure routes across Gilgit-Baltistan.
             </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <TrackedLink
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                eventName="whatsapp_click"
+                eventData={{ placement: "destinations_hero", context: "destination_selection" }}
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-6 py-3 text-sm font-black text-skardu-void"
+              >
+                Ask a route planner
+              </TrackedLink>
+              <Link
+                href="/tours/"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-skardu-teal px-6 py-3 text-sm font-black text-skardu-snow"
+              >
+                Compare matching tours
+              </Link>
+            </div>
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -92,8 +110,7 @@ export default function DestinationsPage() {
                 <div className="relative">
                   <Image
                     src={destination.image}
-                    alt={destination.imageAlt ?? `${destination.name} destination view in Gilgit-Baltistan Pakistan`}
-                    title={destination.imageTitle ?? `${destination.name} Skardu destination guide`}
+                    alt={imageAltFor(destination.image)}
                     width={640}
                     height={420}
                     sizes="(max-width: 768px) 100vw, 25vw"
@@ -153,9 +170,14 @@ export default function DestinationsPage() {
               ))}
             </div>
           </section>
+
+          <div className="mt-14">
+            <TrustPanel />
+          </div>
         </div>
       </section>
       <Footer />
+      <MobileBookingBar whatsappUrl={whatsappUrl} context="destinations_hub" customizeHref="/contact/" />
     </main>
   );
 }

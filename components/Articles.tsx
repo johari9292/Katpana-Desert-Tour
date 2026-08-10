@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { articleCategories, articles, type TravelArticle } from "@/data/articles";
+import { articleCategories, reviewedArticles as articles, type TravelArticle } from "@/data/articles";
 
 type ArticleCategoryFilter = (typeof articleCategories)[number];
 
 export default function Articles() {
   const [activeCategory, setActiveCategory] = useState<ArticleCategoryFilter>("All");
-  const [activeSlug, setActiveSlug] = useState(articles[0].slug);
+  const [activeSlug, setActiveSlug] = useState(articles[0]?.slug ?? "");
   const reduceMotion = useReducedMotion();
 
   const filteredArticles = useMemo(
@@ -19,9 +19,32 @@ export default function Articles() {
 
   useEffect(() => {
     if (!filteredArticles.some((article) => article.slug === activeSlug)) {
-      setActiveSlug(filteredArticles[0]?.slug ?? articles[0].slug);
+      setActiveSlug(filteredArticles[0]?.slug ?? articles[0]?.slug ?? "");
     }
   }, [activeSlug, filteredArticles]);
+
+  if (!articles.length) {
+    return (
+      <section id="articles" className="relative px-5 py-20 lg:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl rounded-2xl border border-skardu-control bg-skardu-stone/65 p-6 sm:p-8">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-skardu-gold">Route planning library</p>
+          <h2 className="mt-3 font-display text-4xl font-bold leading-tight text-skardu-snow sm:text-5xl">
+            Browse guides grouped by real travel decisions
+          </h2>
+          <p className="mt-4 max-w-3xl leading-7 text-skardu-ash">
+            Generated article drafts stay out of search until local review. The published library connects Skardu,
+            Katpana Desert, Deosai 4x4 and K2 planning to the most useful next step.
+          </p>
+          <Link
+            href="/travel-guides/"
+            className="mt-6 inline-flex min-h-12 items-center rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-void"
+          >
+            Open travel guide library
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   const selectedArticle = filteredArticles.find((article) => article.slug === activeSlug) ?? filteredArticles[0] ?? articles[0];
 
@@ -85,7 +108,7 @@ export default function Articles() {
             <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em]">
               <span className="rounded-full bg-skardu-gold px-3 py-1 text-skardu-void">{selectedArticle.category}</span>
               <span className="text-skardu-ash">{selectedArticle.readTime}</span>
-              <span className="text-skardu-ash">Updated May 22, 2026</span>
+              <span className="text-skardu-ash">Locally reviewed</span>
             </div>
             <h3 className="font-display text-4xl font-bold leading-tight text-skardu-snow md:text-5xl">{selectedArticle.title}</h3>
             <p className="mt-5 text-lg leading-8 text-skardu-ash">{selectedArticle.excerpt}</p>
@@ -103,14 +126,6 @@ export default function Articles() {
                 {selectedArticle.sections[0].heading}
               </h4>
               <p className="mt-3 text-base leading-8 text-skardu-ash">{selectedArticle.sections[0].body}</p>
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-2">
-              {selectedArticle.keywords.slice(0, 5).map((keyword) => (
-                <span key={keyword} className="rounded-full border border-skardu-mist px-3 py-1 text-xs font-bold text-skardu-ash">
-                  {keyword}
-                </span>
-              ))}
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">

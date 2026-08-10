@@ -1,19 +1,28 @@
-"use client";
+import CarRental from "./CarRental";
+import HotelBooking from "./HotelBooking";
+import Testimonials from "./Testimonials";
+import VideoShowcase from "./VideoShowcase";
 
-import dynamic from "next/dynamic";
-
-const VideoShowcase = dynamic(() => import("./VideoShowcase"), { ssr: false });
-const HotelBooking = dynamic(() => import("./HotelBooking"), { ssr: false });
-const CarRental = dynamic(() => import("./CarRental"), { ssr: false });
-const Testimonials = dynamic(() => import("./Testimonials"), { ssr: false });
-
+/**
+ * These sections are server-rendered so their content remains available to
+ * search engines and no placeholder collapses during hydration. CSS skips
+ * below-the-fold paint work until each stable-size wrapper approaches view.
+ */
 export default function DeferredLandingSections() {
   return (
     <>
-      <VideoShowcase />
-      <HotelBooking />
-      <CarRental />
-      <Testimonials />
+      <div className="deferred-section deferred-section-video">
+        <VideoShowcase />
+      </div>
+      <div className="deferred-section deferred-section-form">
+        <HotelBooking />
+      </div>
+      <div className="deferred-section deferred-section-rental">
+        <CarRental />
+      </div>
+      <div className="deferred-section deferred-section-testimonials">
+        <Testimonials />
+      </div>
     </>
   );
 }

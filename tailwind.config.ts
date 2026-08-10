@@ -8,6 +8,7 @@ const config: Config = {
         "skardu-void": "#080C10",
         "skardu-stone": "#1A1F26",
         "skardu-mist": "#2E3A47",
+        "skardu-control": "#5B6D80",
         "skardu-gold": "#C9A84C",
         "skardu-teal": "#3EADA7",
         "skardu-snow": "#F0EDE8",

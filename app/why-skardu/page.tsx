@@ -7,18 +7,9 @@ import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: "Why Visit Skardu | Katpana Desert Tour",
-  description: "Why visit Skardu in 2026? Compare lakes, Deosai, cold desert, hotels, cars and culture. Explore now.",
+  description: "Why visit Skardu? Compare lakes, Deosai, cold desert, transport, accommodation needs and cultural routes.",
   path: "/why-skardu",
-  imageAlt: "Why visit Skardu Gilgit-Baltistan tourism lakes deserts and Karakoram routes",
-  keywords: [
-    "why visit Skardu",
-    "Skardu tourism",
-    "Gilgit Baltistan tourism",
-    "places to visit in Skardu",
-    "Skardu hotels",
-    "Skardu rent a car",
-    "Skardu tour planning"
-  ]
+  imageAlt: "Why visit Skardu Gilgit-Baltistan tourism lakes deserts and Karakoram routes"
 });
 
 const destinationSchema = {
@@ -41,7 +32,7 @@ const destinationSchema = {
 
 export default function WhySkarduPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(destinationSchema)}

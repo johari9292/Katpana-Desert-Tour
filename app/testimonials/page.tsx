@@ -1,53 +1,46 @@
 import type { Metadata } from "next";
-import Footer from "@/components/Footer";
-import PageHeader from "@/components/PageHeader";
-import Testimonials from "@/components/Testimonials";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { createMetadata, jsonLdScript, organizationSchema } from "@/lib/seo";
+import InformationPage from "@/components/InformationPage";
+import { BRAND_NAME } from "@/constants/brand";
+import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: `Skardu Travel Reviews | ${BRAND_NAME}`,
-  description: "Skardu travel reviews for hotels, cars, Katpana Desert, Deosai and Kachura routes in 2026. Read now.",
+  title: `Traveler Feedback Standards | ${BRAND_NAME}`,
+  description: "See how Katpana Desert Tour verifies, contextualizes and publishes traveler feedback without invented ratings or anonymous marketing claims.",
   path: "/testimonials",
-  imageAlt: "Skardu travel reviews for Katpana Desert Tour and Gilgit-Baltistan routes",
-  keywords: [
-    "Skardu travel reviews",
-    "Katpana Desert tours reviews",
-    "Skardu tourism testimonials",
-    "Skardu rent a car reviews",
-    "Skardu hotel booking reviews",
-    "Gilgit Baltistan travel reviews"
-  ]
+  imageAlt: "Traveler feedback standards for northern Pakistan tours",
 });
-
-const reviewSchema = {
-  ...organizationSchema(),
-  "@type": "TravelAgency",
-  url: `${SITE_URL}/testimonials`
-};
 
 export default function TestimonialsPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript(reviewSchema)}
-      />
-      <PageHeader />
-      <section className="px-5 pb-4 pt-32 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Traveler reviews</p>
-          <h1 className="max-w-5xl font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-            Skardu travel reviews from real routes
-          </h1>
-          <p className="mt-6 max-w-4xl text-lg leading-8 text-skardu-ash">
-            Read feedback from travelers booking Skardu hotels, Katpana Desert visits, car rentals, Kachura lake days,
-            Deosai routes, Shigar tours, and wider Gilgit Baltistan travel plans.
-          </p>
-        </div>
-      </section>
-      <Testimonials />
-      <Footer />
-    </main>
+    <InformationPage
+      eyebrow="Traveler feedback"
+      title="How traveler feedback is published"
+      intro="Feedback can help travelers evaluate a route only when its source and context are clear. This page explains the publication standard used instead of presenting anonymous quotations as verified reviews."
+      sections={[
+        {
+          heading: "Required context",
+          items: [
+            "Permission from the traveler to publish the supplied wording and attribution.",
+            "The route or service used and an approximate travel date.",
+            "Editing limited to clarity or privacy, without changing the meaning.",
+            "Disclosure when an incentive was offered for feedback.",
+          ],
+        },
+        {
+          heading: "What is not presented as verified proof",
+          items: [
+            "Anonymous quotations without supporting booking context.",
+            "Ratings copied from another website without an appropriate, visible source link.",
+            "Review totals or star ratings that cannot be reconciled with their source.",
+          ],
+        },
+        {
+          heading: "Structured-data policy",
+          paragraphs: [
+            "Business-controlled testimonial pages are not marked up to seek self-serving LocalBusiness review stars. When genuine feedback about a specific trip is published, its visible wording and context must match any structured data exactly.",
+          ],
+        },
+      ]}
+    />
   );
 }

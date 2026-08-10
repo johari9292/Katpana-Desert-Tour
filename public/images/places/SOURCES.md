@@ -1,12 +1,14 @@
-# Place Image Sources
+# Place image sources and licenses
 
-Local travel images in this folder were downloaded from Wikimedia-hosted image files for use as destination and tour artwork.
+Local filenames differ from the Commons originals. Responsive derivatives under `public/images/responsive/` were resized and JPEG-compressed, and browser presentation may crop them. CC BY-SA derivatives are distributed under the same license as their source; no creator endorsement is implied. These credits are also published at `/image-credits/`.
 
-- `Katpana-desert.jpg`: https://upload.wikimedia.org/wikipedia/commons/b/be/Skardu_Katpana_Desert.jpg
-- `deosai-plains.jpg`: https://upload.wikimedia.org/wikipedia/commons/5/57/Green_Deosai_Plains.jpg
-- `kachura-lakes.jpg`: https://upload.wikimedia.org/wikipedia/commons/9/9e/Upper_Kachura_Lake.jpg
-- `shigar-fort-valley.jpg`: https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Shigar_Fort_by_ZILL_NIAZI_22.jpg/1920px-Shigar_Fort_by_ZILL_NIAZI_22.jpg
-- `khaplu-palace.jpg`: https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/View_of_main_entrance_of_Khaplu_Palace.jpg/1920px-View_of_main_entrance_of_Khaplu_Palace.jpg
-- `k2-base-camp.jpg`: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Chogori.jpg/1920px-Chogori.jpg
-- `hunza-valley.jpg`: https://upload.wikimedia.org/wikipedia/commons/9/95/Hunza_Valley%2C_Hunza.jpg
-- `astore-rama-meadows.jpg`: https://upload.wikimedia.org/wikipedia/commons/6/6b/Rama_meadows_in_Astore_Valley.jpg
+| Local file | Work and creator | Source | License |
+| --- | --- | --- | --- |
+| `katapana-desert.jpg` | *Skardu Katpana Desert* — Abdullah Shakoor | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Skardu_Katpana_Desert.jpg) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| `deosai-plains.jpg` | *Green Deosai Plains* — Moiz Ismaili | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Green_Deosai_Plains.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `kachura-lakes.jpg` | *Upper Kachura Lake* — Muhammad Awais | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Upper_Kachura_Lake.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `shigar-fort-valley.jpg` | *Shigar Fort by ZILL NIAZI 22* — ZILL NIAZI | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Shigar_Fort_by_ZILL_NIAZI_22.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `khaplu-palace.jpg` | *View of main entrance of Khaplu Palace* — Muhammad Ashar | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:View_of_main_entrance_of_Khaplu_Palace.jpg) | [CC BY-SA 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/) |
+| `k2-base-camp.jpg` | *Chogori* — Zacharie Grossen | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Chogori.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `hunza-valley.jpg` | *Hunza Valley, Hunza* — Muhammad Amjad Jamal | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Hunza_Valley,_Hunza.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `astore-rama-meadows.jpg` | *Rama meadows in Astore Valley* — Faisal Iqbal | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rama_meadows_in_Astore_Valley.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |

@@ -7,28 +7,34 @@
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
     "prebuild": "node scripts/sync-trending-archive.cjs",
     "build": "next build",
+    "postbuild": "node scripts/check-static-export.cjs",
     "start": "next start",
-    "lint": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "lint": "next typegen && tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
+    "check:seo": "node scripts/check-seo-integrity.cjs && node scripts/check-trending-review-gate.cjs",
+    "check:export": "node scripts/check-static-export.cjs",
+    "check": "npm run typecheck && npm run check:seo && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
     "framer-motion": "^11.18.2",
-    "next": "^14.2.33",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "next": "16.3.0",
+    "pg": "8.23.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-intersection-observer": "^9.16.0"
   },
   "devDependencies": {
     "@types/node": "^20.19.25",
-    "@types/react": "^18.3.27",
-    "@types/react-dom": "^18.3.7",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.4.23",
-    "postcss": "^8.5.15",
+    "postcss": "8.5.26",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "postcss": "^8.5.15"
+    "postcss": "8.5.26",
+    "nanoid": "3.3.18"
   }
 }

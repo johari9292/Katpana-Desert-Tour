@@ -1,23 +1,31 @@
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
+import MobileBookingBar from "@/components/MobileBookingBar";
 import PageHeader from "@/components/PageHeader";
+import TrustPanel from "@/components/TrustPanel";
+import { BRAND_NAME } from "@/constants/brand";
+import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import { authorityLinks, type SEOPage } from "@/data/seo";
-import { breadcrumbSchema, faqSchema, jsonLdScript, seoArticleSchema, seoDestinationSchema } from "@/lib/seo";
+import { breadcrumbSchema, jsonLdScript, seoArticleSchema, seoDestinationSchema } from "@/lib/seo";
 
 export default function SEOGuidePage({ page }: { page: SEOPage }) {
+  const parentHref = page.category === "trek" ? "/pakistan-trekking-guide/" : "/travel-guides/";
   const breadcrumbs = [
     { label: "Home", href: "/" },
-    { label: page.category === "trek" ? "Treks" : page.category === "blog" ? "Blog" : "Guides", href: page.category === "trek" ? "/pakistan-trekking-guide/" : page.category === "blog" ? "/articles/" : page.path },
+    { label: page.category === "trek" ? "Treks" : "Travel guides", href: parentHref },
     { label: page.primaryKeyword, href: page.path }
   ];
   const pageSchema = page.schemaType === "TouristDestination" ? seoDestinationSchema(page) : seoArticleSchema(page);
+  const whatsappUrl = buildWhatsAppURL(
+    WHATSAPP_MAIN,
+    `Hi ${BRAND_NAME}, I am reading ${page.title} and want a route matched to my dates and group.`
+  );
 
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(pageSchema)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumbSchema(breadcrumbs))} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(page.faqs))} />
       <PageHeader />
       <article className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.7fr)_minmax(280px,0.3fr)]">
@@ -27,16 +35,13 @@ export default function SEOGuidePage({ page }: { page: SEOPage }) {
             <h1 className="max-w-5xl font-display text-5xl font-bold leading-none text-skardu-snow md:text-7xl">
               {page.title}
             </h1>
-            <p className="mt-5 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
-              Last updated: {page.lastUpdated} / Written by {page.author}
-            </p>
             <p className="mt-6 text-xl leading-9 text-skardu-ash">{page.excerpt}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/#tours" className="rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
+              <Link href="/contact/" className="flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
                 {page.cta}
               </Link>
-              <Link href="/trending/" className="rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-teal">
-                Read travel trends
+              <Link href="/travel-guides/" className="flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-teal">
+                Browse related guides
               </Link>
             </div>
 
@@ -48,8 +53,8 @@ export default function SEOGuidePage({ page }: { page: SEOPage }) {
                   </h2>
                   <p className="mt-4 text-lg leading-9 text-skardu-ash">{section.body}</p>
                   {(index + 1) % 3 === 0 ? (
-                    <Link href="/#tours" className="mt-6 inline-flex rounded-full bg-skardu-gold px-5 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
-                      Talk to a Local Expert
+                    <Link href="/contact/" className="mt-6 inline-flex min-h-12 items-center rounded-full bg-skardu-gold px-5 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
+                      Customize this route
                     </Link>
                   ) : null}
                 </section>
@@ -82,7 +87,7 @@ export default function SEOGuidePage({ page }: { page: SEOPage }) {
             </div>
 
             <div className="mt-5 rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
-              <h2 className="font-display text-3xl font-bold text-skardu-snow">Authority sources</h2>
+              <h2 className="font-display text-3xl font-bold text-skardu-snow">Official planning references</h2>
               <div className="mt-5 grid gap-4">
                 {authorityLinks.map((link) => (
                   <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="block border-t border-skardu-mist pt-4 text-sm font-bold leading-6 text-skardu-teal first:border-t-0 first:pt-0">
@@ -92,24 +97,18 @@ export default function SEOGuidePage({ page }: { page: SEOPage }) {
               </div>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
-              <h2 className="font-display text-3xl font-bold text-skardu-snow">Topic keywords</h2>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {page.keywords.map((keyword) => (
-                  <span key={keyword} className="rounded-full border border-skardu-mist px-3 py-1 text-xs font-bold text-skardu-ash">
-                    {keyword}
-                  </span>
-                ))}
-              </div>
+            <div className="mt-5">
+              <TrustPanel />
             </div>
 
-            <Link href="/#tours" className="mt-5 block rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
-              Get a Free Trip Quote
+            <Link href="/contact/" className="mt-5 flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-void">
+              Request itinerary options
             </Link>
           </aside>
         </div>
       </article>
       <Footer />
+      <MobileBookingBar whatsappUrl={whatsappUrl} context={`guide_${page.slug}`} customizeHref="/contact/" />
     </main>
   );
 }

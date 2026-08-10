@@ -5,10 +5,13 @@
 :root {
   --background: #080c10;
   --foreground: #f0ede8;
+  --focus-ring: #f2c95c;
+  color-scheme: dark;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -26,9 +29,87 @@ textarea {
   font: inherit;
 }
 
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  min-height: 2.75rem;
+  transform: translateY(calc(-100% - 2rem));
+  border-radius: 0.75rem;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 0.75rem 1rem;
+  font-weight: 800;
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+.deferred-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--deferred-section-size, 760px);
+}
+
+.deferred-section-form {
+  --deferred-section-size: 940px;
+}
+
+.deferred-section-rental {
+  --deferred-section-size: 1040px;
+}
+
+.deferred-section-testimonials {
+  --deferred-section-size: 640px;
+}
+
+@media (min-width: 1024px) {
+  .deferred-section-form,
+  .deferred-section-rental {
+    --deferred-section-size: 760px;
+  }
+}
+
+.destination-marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: destination-marquee 42s linear infinite;
+}
+
+.destination-marquee-track[data-paused="true"] {
+  animation-play-state: paused;
+}
+
+.destination-marquee-viewport:hover .destination-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes destination-marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 ::selection {
   background: #c9a84c;
   color: #080c10;
+}
+
+/* Keep form and card boundaries perceivable against both dark surfaces. */
+.border-skardu-mist {
+  border-color: #637487;
 }
 
 @layer utilities {
@@ -45,7 +126,7 @@ textarea {
   }
 
   .glass-panel {
-    border: 1px solid rgb(46 58 71 / 0.78);
+    border: 1px solid rgb(99 116 135 / 0.9);
     background: rgb(26 31 38 / 0.78);
     box-shadow: 0 24px 80px rgb(0 0 0 / 0.32);
     backdrop-filter: blur(18px);
@@ -57,5 +138,38 @@ textarea {
       box-shadow: 0 16px 44px rgb(0 0 0 / 0.26);
       backdrop-filter: blur(10px);
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .destination-marquee-viewport {
+    overflow-x: auto;
+  }
+
+  .destination-marquee-track {
+    transform: none;
+  }
+
+  .destination-marquee-duplicate {
+    display: none;
+  }
+
+  .destination-marquee-control {
+    display: none;
   }
 }

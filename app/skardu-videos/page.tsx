@@ -2,52 +2,19 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import VideoShowcase from "@/components/VideoShowcase";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { KATPANA_VIDEO_URL, SKARDU_HERO_VIDEO_URL } from "@/constants/media";
-import { createMetadata, jsonLdScript } from "@/lib/seo";
+import { BRAND_NAME } from "@/constants/brand";
+import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: `Skardu Videos | ${BRAND_NAME}`,
-  description: "Skardu videos for Katpana Desert, lakes, Deosai, hotels, cars and Gilgit-Baltistan routes in 2026. Watch.",
+  description: "Skardu videos for Katpana Desert, lakes, Deosai and Gilgit-Baltistan route planning. Watch the landscape preview.",
   path: "/skardu-videos",
-  imageAlt: "Skardu videos for Katpana Desert lakes and Gilgit-Baltistan travel",
-  keywords: [
-    "Skardu videos",
-    "Katpana Desert video",
-    "Skardu tourism video",
-    "Gilgit Baltistan travel video",
-    "Skardu travel preview",
-    "Skardu tour packages"
-  ]
+  imageAlt: "Skardu videos for Katpana Desert lakes and Gilgit-Baltistan travel"
 });
-
-const videoSchema = {
-  "@context": "https://schema.org",
-  "@type": "VideoObject",
-  name: "Skardu and Katpana Desert travel videos",
-  description:
-    "Skardu tourism videos featuring Katpana Desert, mountain valleys, lakes, cold desert scenery, and Gilgit Baltistan travel planning.",
-  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
-  uploadDate: "2026-05-22T00:00:00+05:00",
-  contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
-  associatedMedia: {
-    "@type": "VideoObject",
-    name: "Katpana Desert Skardu video",
-    description:
-      "Katpana Desert Skardu video showing cold desert scenery, dunes, mountain views, and Gilgit Baltistan travel highlights.",
-    thumbnailUrl: `${SITE_URL}/images/places/katapana-desert.jpg`,
-    uploadDate: "2026-05-22T00:00:00+05:00",
-    contentUrl: KATPANA_VIDEO_URL
-  }
-};
 
 export default function SkarduVideosPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript(videoSchema)}
-      />
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <PageHeader />
       <section className="px-5 pb-6 pt-32 lg:px-8">
         <div className="mx-auto max-w-7xl">

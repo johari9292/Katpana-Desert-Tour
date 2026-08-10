@@ -4,14 +4,14 @@ import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { articles, getArticleBySlug, getRelatedArticles } from "@/data/articles";
-import { absoluteUrl, breadcrumbSchema, createMetadata, faqSchema, jsonLdScript, organizationSchema } from "@/lib/seo";
+import { BRAND_NAME } from "@/constants/brand";
+import { articles, getArticleBySlug, getRelatedArticles, isReviewedArticle } from "@/data/articles";
+import { absoluteUrl, breadcrumbSchema, createMetadata, jsonLdScript, organizationEntity, WEBSITE_ID } from "@/lib/seo";
 
 interface ArticlePageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {
@@ -20,28 +20,33 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: ArticlePageProps): Metadata {
-  const article = getArticleBySlug(params.slug);
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const article = getArticleBySlug(slug);
 
   if (!article) {
-    return {
-      title: "Skardu Travel Article",
-      description: "Skardu and Gilgit Baltistan travel article."
-    };
+    return createMetadata({
+      title: `Travel Article Not Found | ${BRAND_NAME}`,
+      description: "This travel article is unavailable. Browse the reviewed Skardu and Karakoram guide library.",
+      path: "/articles",
+      imageAlt: "Katpana Desert dunes beneath the Karakoram mountains near Skardu",
+      index: false
+    });
   }
 
   return createMetadata({
     title: `${article.primaryKeyword} | ${BRAND_NAME}`,
     description: article.excerpt.slice(0, 152),
     path: `/articles/${article.slug}`,
-    imageAlt: `${article.title} in Skardu and Gilgit-Baltistan Pakistan`,
-    keywords: article.keywords,
-    type: "article"
+    imageAlt: "Katpana Desert dunes beneath the Karakoram mountains near Skardu",
+    type: "article",
+    index: isReviewedArticle(article)
   });
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
-  const article = getArticleBySlug(params.slug);
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { slug } = await params;
+  const article = getArticleBySlug(slug);
 
   if (!article) {
     notFound();
@@ -55,35 +60,37 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     { label: article.primaryKeyword, href: `/articles/${article.slug}/` }
   ];
 
-  const articleSchema = {
+  const reviewed = isReviewedArticle(article);
+  const articleSchema = reviewed ? {
     "@context": "https://schema.org",
     "@type": "Article",
+    "@id": `${articleUrl}#article`,
     headline: article.title,
     description: article.excerpt,
-    image: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
-    datePublished: "2026-05-22",
-    dateModified: article.updatedAt,
+    dateModified: article.reviewedAt,
     author: {
       "@type": "Organization",
-      name: "Katpana Desert Tour Local Planning Team",
-      url: SITE_URL
+      name: BRAND_NAME,
+      url: absoluteUrl("/about")
     },
-    publisher: organizationSchema(),
-    mainEntityOfPage: articleUrl,
+    publisher: organizationEntity(),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": articleUrl
+    },
+    isPartOf: {
+      "@id": WEBSITE_ID
+    },
+    inLanguage: "en",
+    isAccessibleForFree: true,
     articleSection: article.category,
-    keywords: article.keywords.join(", "),
-    wordCount: [article.excerpt, ...article.sections.map((section) => section.body)].join(" ").split(/\s+/).length,
-    speakable: {
-      "@type": "SpeakableSpecification",
-      cssSelector: ["h1", "article p:first-of-type"]
-    }
-  };
+    wordCount: [article.excerpt, ...article.sections.map((section) => section.body)].join(" ").trim().split(/\s+/).length
+  } : null;
 
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(articleSchema)} />
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+      {articleSchema ? <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(articleSchema)} /> : null}
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumbSchema(breadcrumbs))} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(article.faqs))} />
       <PageHeader />
       <article className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.28fr)]">
@@ -92,12 +99,25 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             <div className="mt-8 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em]">
               <span className="rounded-full bg-skardu-gold px-3 py-1 text-skardu-void">{article.category}</span>
               <span className="text-skardu-ash">{article.readTime}</span>
-              <span className="text-skardu-ash">Updated May 22, 2026</span>
+              {reviewed && article.reviewedAt ? (
+                <time className="text-skardu-ash" dateTime={article.reviewedAt}>
+                  Locally reviewed {formatArticleDate(article.reviewedAt)}
+                </time>
+              ) : (
+                <span className="text-skardu-ash">Editorial draft</span>
+              )}
             </div>
             <h1 className="mt-5 font-display text-5xl font-bold leading-none text-skardu-snow md:text-7xl">{article.title}</h1>
-            <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
-              Written by Katpana Desert Tour Local Planning Team
-            </p>
+            {reviewed ? (
+              <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
+                Reviewed by {article.reviewedBy}
+              </p>
+            ) : (
+              <p className="mt-5 rounded-2xl border border-skardu-gold/70 bg-skardu-gold/10 p-4 text-sm leading-6 text-skardu-snow">
+                This planning draft is excluded from search results until a named local route specialist verifies its
+                access, season, safety and logistics claims.
+              </p>
+            )}
             <p className="mt-6 text-xl leading-9 text-skardu-ash">{article.excerpt}</p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -132,17 +152,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
-              <h2 className="font-display text-3xl font-bold text-skardu-snow">Article keywords</h2>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {article.keywords.map((keyword) => (
-                  <span key={keyword} className="rounded-full border border-skardu-mist px-3 py-1 text-xs font-bold text-skardu-ash">
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
               <h2 className="font-display text-3xl font-bold text-skardu-snow">Related guides</h2>
               <div className="mt-5 grid gap-4">
                 {relatedArticles.map((related) => (
@@ -166,4 +175,13 @@ export default function ArticlePage({ params }: ArticlePageProps) {
       <Footer />
     </main>
   );
+}
+
+function formatArticleDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(`${value}T00:00:00Z`));
 }

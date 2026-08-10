@@ -7,7 +7,9 @@ import { useMemo, useState } from "react";
 import { BRAND_NAME } from "@/constants/brand";
 import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import { tourPackages } from "@/data/tours";
+import { imageAltFor } from "@/lib/image-alt";
 import AnimatedSection from "./AnimatedSection";
+import TrackedLink from "./TrackedLink";
 
 export default function TourPackages() {
   const [activeSlug, setActiveSlug] = useState(tourPackages[0].slug);
@@ -49,6 +51,8 @@ export default function TourPackages() {
                 <motion.button
                   key={tour.slug}
                   type="button"
+                  aria-pressed={active}
+                  aria-controls="featured-tour-panel"
                   onClick={() => setActiveSlug(tour.slug)}
                   whileHover={reduceMotion ? undefined : { y: -4, borderColor: "#C9A84C" }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
@@ -69,6 +73,8 @@ export default function TourPackages() {
           </div>
 
           <motion.article
+            id="featured-tour-panel"
+            aria-live="polite"
             key={activeTour.slug}
             initial={reduceMotion ? false : { opacity: 0, x: 42 }}
             animate={{ opacity: 1, x: 0 }}
@@ -78,8 +84,7 @@ export default function TourPackages() {
             <div className="relative overflow-hidden rounded-xl border border-skardu-mist bg-skardu-void/60">
               <Image
                 src={activeTour.image}
-                alt={activeTour.imageAlt ?? `${activeTour.title} package view in Skardu Gilgit-Baltistan Pakistan`}
-                title={activeTour.imageTitle ?? `${activeTour.title} Skardu tour package route`}
+                alt={imageAltFor(activeTour.image)}
                 width={960}
                 height={540}
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -101,6 +106,7 @@ export default function TourPackages() {
 
             <h3 className="mt-5 font-display text-3xl font-bold leading-tight text-skardu-snow sm:text-4xl md:text-5xl">{activeTour.title}</h3>
             <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-5 sm:text-lg sm:leading-8">{activeTour.overview}</p>
+            <p className="mt-4 text-sm font-bold text-skardu-snow">Pricing basis: {activeTour.priceFrom}</p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               {activeTour.highlights.slice(0, 4).map((highlight) => (
@@ -117,14 +123,16 @@ export default function TourPackages() {
               >
                 View itinerary
               </Link>
-              <a
+              <TrackedLink
                 href={requestUrl}
                 target="_blank"
                 rel="noreferrer"
+                eventName="whatsapp_click"
+                eventData={{ placement: "homepage_tour_packages", context: activeTour.slug }}
                 className="flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-teal sm:tracking-[0.16em]"
               >
                 Ask on WhatsApp
-              </a>
+              </TrackedLink>
             </div>
           </motion.article>
         </div>

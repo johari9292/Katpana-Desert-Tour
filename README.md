@@ -1,86 +1,97 @@
 # Katpana Desert Tour
 
-Next.js tourism website for northern Pakistan travel services focused on:
+Static Next.js travel website for private Skardu, Deosai, Karakoram and northern Pakistan route planning.
 
-- Tour package pages for Skardu, Hunza, Deosai, Khaplu, Shigar, Astore, and K2-side trekking
-- Destination pages with local images, overviews, activities, and route notes
-- Skardu hotel and rent a car services
-- Suggested routes for Katpana Desert, Kachura Lakes, Deosai, Shigar Fort, Khaplu Palace, Hunza, and Astore
-- Downloaded local Skardu hero video with animated destination-point routing
-- Clean lower-page Katpana Desert video preview
+## What is implemented
 
-## Local Development
+- Mobile-first tour, destination and intent-led travel-guide architecture
+- Canonical metadata, robots controls and XML sitemap generation
+- Truthful `Organization`, `WebSite`, `WebPage`, `TouristDestination`, `TouristTrip`, `Article`, `ItemList` and `BreadcrumbList` structured data
+- Responsive local imagery for static export, a prioritized LCP hero and user-triggered video
+- Keyboard skip targets, visible focus styles, reduced-motion behavior and 48px primary controls
+- Persistent mobile WhatsApp and custom-itinerary actions with conversion events
+- Booking, privacy, safety, responsible-travel, about and contact pages
+- Human approval gates for generated articles and SEO-led travel updates
+
+The implementation intentionally does not invent an address, prices, availability, opening hours, reviews, ratings, credentials or publication dates. Add those only when the business can verify and maintain them.
+
+## Local development
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 Open `http://localhost:3000`.
 
-## Publish
-
-The project is configured for static export with Next.js, so it can be deployed to Vercel, Netlify, Cloudflare Pages, or GitHub Pages.
+## Quality checks
 
 ```bash
+npm run typecheck
+npm run check:seo
 npm run build
+npm run check:export
 ```
 
-The static output is generated in `out/`.
+Run the complete sequence with:
 
-## SEO Notes
+```bash
+npm run check
+```
 
-The homepage includes Next.js metadata, canonical URL, Open Graph tags, generated `robots.txt`, generated `sitemap.xml`, TravelAgency schema, WebSite schema, FAQ schema, VideoObject schema, descriptive headings, route content, and long-tail Skardu tourism search intent.
+The production build creates `out/` and automatically runs the final export check. That check scans exported HTML for broken internal links, duplicate IDs, metadata/schema defects, sitemap/indexing conflicts and asset-budget regressions.
+Release thresholds and field-measurement guidance are in [PERFORMANCE_BUDGET.md](./PERFORMANCE_BUDGET.md).
 
-## Trending AI Articles
+## Content publication gate
 
-The `/trending/` page reads published daily articles from Supabase in the browser, so new posts appear without rebuilding the static site. Apply the migrations in `supabase/migrations/`, then deploy the Edge Function:
+The generated `/articles/` inventory is an editorial workspace. Draft URLs remain accessible for review and existing bookmarks, but use `noindex,follow`, emit no Article schema, receive no internal promotion and stay outside the sitemap until every required review field is present. See [CONTENT_EDITORIAL_WORKFLOW.md](./CONTENT_EDITORIAL_WORKFLOW.md).
+
+The indexable guide architecture starts at `/travel-guides/` and connects the strongest existing destination, tour, trekking and logistics resources by search intent.
+Cluster ownership and semantic coverage are documented in [SEO_CONTENT_MAP.md](./SEO_CONTENT_MAP.md). Production-only tasks are in [SEO_LAUNCH_OPERATIONS.md](./SEO_LAUNCH_OPERATIONS.md).
+
+## SEO-led travel updates
+
+The trending workflow no longer follows arbitrary news or auto-publishes daily pages. A bounded catalog creates at most one weekly SEO draft for distinct demand such as Deosai access, Katpana conditions, Skardu 4x4 routes or K2 logistics.
+
+Apply the two August 2026 workflow migrations in order, then deploy the Edge Function:
 
 ```bash
 supabase functions deploy generate-trending-article
 ```
 
-The function is configured in `supabase/config.toml` with JWT verification disabled because it is protected by the `x-cron-secret` header.
-
-Set the required Supabase function secrets:
+Required function secrets:
 
 ```bash
-supabase secrets set GEMINI_API_KEY=your-gemini-key
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-jwt-or-sb_secret-key
+supabase secrets set GEMINI_API_KEY=your-key
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 supabase secrets set CRON_SECRET=your-long-random-secret
-supabase secrets set GEMINI_MODEL=gemini-2.5-flash
-supabase secrets set MAKE_FACEBOOK_WEBHOOK_URL=your-make-facebook-webhook-url
-supabase secrets set SITE_URL=https://www.katpanadesert.com
+supabase secrets set GEMINI_MODEL=your-approved-model
 ```
 
-Do not reuse the publishable or anon key for `SUPABASE_SERVICE_ROLE_KEY`; the function needs an admin-capable key to insert daily articles.
-When `MAKE_FACEBOOK_WEBHOOK_URL` is configured, each newly published trending article is also sent to Make.com for Facebook publishing. Map Facebook links to `link`, `url`, `article_url`, `public_url`, `canonical_url`, or `article.url`; all of those use the live `/trending/?article=<slug>` page, which loads the article from Supabase immediately and will not 404 before the next static build. The build-generated `/trending/<slug>/` path is still included separately as `static_url` for archive use after deployment.
-If your Make webhook requires authentication, set either `MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN` or `MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER` such as `X-Webhook-Token: your-token`.
+Set the Edge Function base URL and the same cron secret as database settings before enabling the weekly job. The generator can write only `draft`; a service-role-only SQL approval function enforces sources, named local evidence, substantive copy and a review date before publication.
 
-Static `/trending/[slug]/` article pages are generated from `data/trending-static.ts`. The build runs `npm run sync:trending-archive` first, which pulls published Supabase rows into that archive so newly generated articles get real static links after the next deploy/build.
-
-The cron migration schedules the function at `04:00 UTC` daily, which is `09:00 Asia/Karachi`. Before relying on the schedule, set these database settings in Supabase SQL editor:
-
-```sql
-alter database postgres set app.settings.edge_function_base_url = 'https://<project-ref>.functions.supabase.co';
-alter database postgres set app.settings.cron_secret = '<same CRON_SECRET>';
-```
-
-Manual function test:
+Approved rows are exported during `prebuild`:
 
 ```bash
-curl -X POST "https://<project-ref>.functions.supabase.co/generate-trending-article" \
-  -H "x-cron-secret: <CRON_SECRET>" \
-  -H "Content-Type: application/json" \
-  -d '{"source":"manual-test"}'
+npm run sync:trending-archive
 ```
 
-Replay the latest saved trending posts to Make.com for Facebook testing:
+Social publishing is a separate editor-triggered step. Preview it first:
 
 ```bash
-MAKE_FACEBOOK_WEBHOOK_URL="https://hook.example" node scripts/publish-trending-to-facebook.cjs --limit 3
+node scripts/publish-trending-to-facebook.cjs --dry-run --limit 3
 ```
 
-Use `--dry-run` to preview payloads without sending them, or `--include-posted` to resend posts already marked as sent.
+See [supabase/TRENDING_EDITORIAL_WORKFLOW.md](./supabase/TRENDING_EDITORIAL_WORKFLOW.md) for the request format, approval SQL and withdrawal process.
 
-Note: the requested stack uses Next.js 14. npm audit currently flags known advisories across the Next.js 14 line. This project is configured as a static export, but a production server-rendered deployment should upgrade to a patched Next.js release when possible.
+## Deployment
+
+The project uses `output: "export"` and trailing-slash URLs. Deploy `out/` to a static host. Preserve `public/_headers` and `public/_redirects`; Vercel-specific redirects are also recorded in `vercel.json`.
+
+After deployment:
+
+1. Verify the canonical host redirect and HTTPS headers.
+2. Submit `/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+3. Validate representative rich results and inspect rendered canonicals/robots.
+4. Measure mobile field data in Search Console and CrUX; lab tests alone do not prove Core Web Vitals.
+5. Add verified business identity details and genuine sourced feedback only when documentation is available.

@@ -53,7 +53,7 @@ async function main() {
     const job = await db.query(`
       select jobid, jobname, schedule, active
       from cron.job
-      where jobname = 'generate-trending-article-daily'
+      where jobname = 'generate-trending-seo-draft-weekly'
       order by jobid desc
       limit 1
     `);
@@ -63,7 +63,7 @@ async function main() {
       where jobid = (
         select jobid
         from cron.job
-        where jobname = 'generate-trending-article-daily'
+        where jobname = 'generate-trending-seo-draft-weekly'
         order by jobid desc
         limit 1
       )
@@ -74,7 +74,12 @@ async function main() {
       select
         generation_date,
         published_at,
+        status,
         title,
+        intent_key,
+        reviewed_by,
+        reviewed_at,
+        next_review_at,
         facebook_posted_at,
         facebook_webhook_status,
         facebook_webhook_error

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { destinations } from "@/data/destinations";
+import { imageAltFor } from "@/lib/image-alt";
 import AnimatedSection from "./AnimatedSection";
 
 export default function DestinationShowcase() {
@@ -37,8 +38,7 @@ export default function DestinationShowcase() {
               <div className="relative">
                 <Image
                   src={destination.image}
-                  alt={destination.imageAlt ?? `${destination.name} destination view in Gilgit-Baltistan Pakistan`}
-                  title={destination.imageTitle ?? `${destination.name} Skardu destination guide`}
+                  alt={imageAltFor(destination.image)}
                   width={640}
                   height={420}
                   sizes="(max-width: 768px) 100vw, 25vw"

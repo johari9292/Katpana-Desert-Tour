@@ -2,26 +2,22 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import MobileBookingBar from "@/components/MobileBookingBar";
 import PageHeader from "@/components/PageHeader";
+import QuoteTransparency from "@/components/QuoteTransparency";
+import TrackedLink from "@/components/TrackedLink";
+import TrustPanel from "@/components/TrustPanel";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
+import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import { tourPackages } from "@/data/tours";
-import { createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
+import { imageAltFor } from "@/lib/image-alt";
+import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: `Pakistan and Skardu Tour Packages | ${BRAND_NAME}`,
-  description: "Pakistan and Skardu tour packages 2026 for international travelers visiting K2, Deosai, Hunza, Shigar and Khaplu.",
+  description: "Pakistan and Skardu tour packages for international travelers visiting K2, Deosai, Hunza, Shigar and Khaplu.",
   path: "/tours",
-  imageAlt: "Pakistan and Skardu tour packages for international travelers to K2 Deosai Hunza and Karakoram",
-  keywords: [
-    "Katpana Desert Tour packages",
-    "Pakistan tour packages",
-    "Pakistan tours for international travelers",
-    "Skardu tour packages",
-    "Hunza Skardu tour",
-    "Deosai 4x4 tour",
-    "K2 Base Camp trek",
-    "Gilgit Baltistan tours"
-  ]
+  imageAlt: "Pakistan and Skardu tour packages for international travelers to K2 Deosai Hunza and Karakoram"
 });
 
 const itemListSchema = {
@@ -62,13 +58,17 @@ const toursFaqs = [
 ];
 
 export default function ToursPage() {
+  const whatsappUrl = buildWhatsAppURL(
+    WHATSAPP_MAIN,
+    `Hi ${BRAND_NAME}, I want help choosing a private Skardu, Deosai or Karakoram itinerary. Please ask for my dates and group details.`
+  );
+
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(itemListSchema)}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(toursFaqs))} />
       <PageHeader />
       <section className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto max-w-7xl">
@@ -81,6 +81,24 @@ export default function ToursPage() {
               Compare realistic northern Pakistan itineraries for local and international travelers with durations,
               route notes, destination overviews, highlights, inclusions, exclusions, and direct planning support from {BRAND_NAME}.
             </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <TrackedLink
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                eventName="whatsapp_click"
+                eventData={{ placement: "tours_hero", context: "package_selection" }}
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-6 py-3 text-sm font-black text-skardu-void"
+              >
+                Book via WhatsApp
+              </TrackedLink>
+              <Link
+                href="/contact/"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-skardu-teal px-6 py-3 text-sm font-black text-skardu-snow"
+              >
+                Customize itinerary
+              </Link>
+            </div>
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -93,8 +111,7 @@ export default function ToursPage() {
                 <div className="relative">
                   <Image
                     src={tour.image}
-                    alt={tour.imageAlt ?? `${tour.title} package view in Skardu Gilgit-Baltistan Pakistan`}
-                    title={tour.imageTitle ?? `${tour.title} Skardu tour package route`}
+                    alt={imageAltFor(tour.image)}
                     width={720}
                     height={420}
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -112,6 +129,7 @@ export default function ToursPage() {
                   </div>
                   <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-skardu-snow">{tour.title}</h2>
                   <p className="mt-4 line-clamp-3 text-sm leading-6 text-skardu-ash">{tour.overview}</p>
+                  <p className="mt-4 text-sm font-bold text-skardu-snow">Pricing basis: {tour.priceFrom}</p>
                   <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.16em] text-skardu-teal">
                     View itinerary
                   </span>
@@ -161,9 +179,15 @@ export default function ToursPage() {
               ))}
             </div>
           </section>
+
+          <section className="mt-14 grid gap-6 lg:grid-cols-2">
+            <QuoteTransparency />
+            <TrustPanel />
+          </section>
         </div>
       </section>
       <Footer />
+      <MobileBookingBar whatsappUrl={whatsappUrl} context="tours_hub" customizeHref="/contact/" />
     </main>
   );
 }

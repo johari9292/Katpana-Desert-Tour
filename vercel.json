@@ -1,5 +1,40 @@
 {
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+      ]
+    },
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/images/responsive/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/videos/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }]
+    }
+  ],
   "redirects": [
+    {
+      "source": "/trending/__editorial-archive-empty",
+      "destination": "/trending/",
+      "permanent": false
+    },
+    {
+      "source": "/trending/__editorial-archive-empty/",
+      "destination": "/trending/",
+      "permanent": false
+    },
     {
       "source": "/destinations/Katpana-desert-skardu",
       "destination": "/destinations/katpana-desert-skardu/",
@@ -78,6 +113,56 @@
     {
       "source": "/articles/hotels-near-katapana-desert-guide/",
       "destination": "/articles/hotels-near-katpana-desert-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(navigating-thunderstorms-your-guide-to-skardu-and-northern-pakistan-trav-2026-06-08|beyond-weather-today-essential-climate-tips-for-your-skardu-and-northern-2026-05-30|planning-your-skardu-adventure-why-weather-is-your-essential-travel-guid-2026-05-29)",
+      "destination": "/blog/skardu-weather-month-by-month/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(navigating-thunderstorms-your-guide-to-skardu-and-northern-pakistan-trav-2026-06-08|beyond-weather-today-essential-climate-tips-for-your-skardu-and-northern-2026-05-30|planning-your-skardu-adventure-why-weather-is-your-essential-travel-guid-2026-05-29)/",
+      "destination": "/blog/skardu-weather-month-by-month/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(skardu-s-seasons-unveiled-the-best-time-for-your-northern-pakistan-tour-2026-06-07|seasonal-guide-to-northern-pakistan-best-times-for-skardu-hunza-and-deos-2026-05-31|skardu-seasons-guide-best-time-to-visit-for-every-adventure-2026-05-28)",
+      "destination": "/blog/best-time-to-visit-skardu/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(skardu-s-seasons-unveiled-the-best-time-for-your-northern-pakistan-tour-2026-06-07|seasonal-guide-to-northern-pakistan-best-times-for-skardu-hunza-and-deos-2026-05-31|skardu-seasons-guide-best-time-to-visit-for-every-adventure-2026-05-28)/",
+      "destination": "/blog/best-time-to-visit-skardu/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(summer-in-skardu-your-ultimate-guide-to-gilgit-baltistan-s-mountain-para-2026-06-06|trade-the-roar-of-the-crowd-for-mountain-majesty-skardu-adventures-durin-2026-06-05)",
+      "destination": "/blog/things-to-do-skardu-summer/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(summer-in-skardu-your-ultimate-guide-to-gilgit-baltistan-s-mountain-para-2026-06-06|trade-the-roar-of-the-crowd-for-mountain-majesty-skardu-adventures-durin-2026-06-05)/",
+      "destination": "/blog/things-to-do-skardu-summer/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(eid-al-adha-2026-in-skardu-celebrate-family-and-culture-amidst-northern--2026-05-27|celebrate-eid-ul-azha-2026-in-skardu-your-ultimate-northern-pakistan-esc-2026-05-25|eid-ul-azha-2026-in-skardu-the-ultimate-guide-to-planning-your-festive-e-2026-05-24)",
+      "destination": "/gilgit-baltistan-tourism/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(eid-al-adha-2026-in-skardu-celebrate-family-and-culture-amidst-northern--2026-05-27|celebrate-eid-ul-azha-2026-in-skardu-your-ultimate-northern-pakistan-esc-2026-05-25|eid-ul-azha-2026-in-skardu-the-ultimate-guide-to-planning-your-festive-e-2026-05-24)/",
+      "destination": "/gilgit-baltistan-tourism/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(beyond-karachi-s-heat-planning-your-skardu-adventure-with-northern-pakis-2026-06-03|skardu-unveiled-your-ultimate-guide-to-northern-pakistan-s-jewel-2026-05-26|karachi-to-skardu-northern-pakistan-escape-2026-05-23)",
+      "destination": "/skardu-travel-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/trending/:slug(beyond-karachi-s-heat-planning-your-skardu-adventure-with-northern-pakis-2026-06-03|skardu-unveiled-your-ultimate-guide-to-northern-pakistan-s-jewel-2026-05-26|karachi-to-skardu-northern-pakistan-escape-2026-05-23)/",
+      "destination": "/skardu-travel-guide/",
       "permanent": true
     }
   ]

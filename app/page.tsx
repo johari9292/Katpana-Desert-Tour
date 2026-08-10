@@ -1,75 +1,69 @@
 import type { Metadata } from "next";
 import SkarduLanding from "@/components/SkarduLanding";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { KATPANA_VIDEO_URL, SKARDU_HERO_VIDEO_URL } from "@/constants/media";
-import { commonTravelFaqs, homepageAttractions, SKARDU_GEO } from "@/data/seo";
-import { createMetadata, faqSchema, jsonLdScript, organizationSchema, websiteSearchSchema } from "@/lib/seo";
+import { SITE_URL } from "@/constants/brand";
+import { homepageAttractions, SKARDU_GEO } from "@/data/seo";
+import {
+  absoluteUrl,
+  createMetadata,
+  jsonLdScript,
+  ORGANIZATION_ID,
+  organizationEntity,
+  WEBSITE_ID,
+  websiteEntity
+} from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
   title: "Katpana Desert Tour | Pakistan Tours for Global Travelers",
   description:
-    "Plan Skardu, K2, Deosai, Hunza and Gilgit-Baltistan tours from anywhere in the world with local Pakistan travel experts.",
+    "Plan private Skardu, K2, Deosai, Hunza and Gilgit-Baltistan routes with itinerary, vehicle and accommodation coordination.",
   path: "/",
-  imageAlt: "Katpana Desert Tour Skardu cold desert and Karakoram travel Pakistan",
-  keywords: [
-    "Katpana Desert Tour",
-    "Pakistan tours for international travelers",
-    "Pakistan travel agency",
-    "Skardu tours for foreigners",
-    "Skardu travel guide",
-    "Gilgit-Baltistan tourism",
-    "K2 base camp trek"
-  ]
+  imageAlt: "Katpana Desert dunes beneath the Karakoram mountains near Skardu"
 });
 
 const touristDestinationSchema = {
-  "@context": "https://schema.org",
   "@type": "TouristDestination",
+  "@id": `${SITE_URL}/#skardu-destination`,
   name: "Skardu, Gilgit-Baltistan, Pakistan",
   description:
     "Skardu is a Karakoram travel base for international Pakistan tours to Katpana Desert, Deosai National Park, Upper Kachura Lake, Shigar Valley, Khaplu and K2 trekking routes.",
   url: SITE_URL,
   geo: SKARDU_GEO,
   image: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
-  touristType: ["Adventure", "Cultural", "Eco", "International"],
+  touristType: ["Adventure travellers", "Cultural travellers", "Nature travellers"],
   includesAttraction: homepageAttractions.map((attraction) => ({
     "@type": "TouristAttraction",
+    "@id": `${absoluteUrl(new URL(attraction.url).pathname)}#attraction`,
     name: attraction.name,
-    url: attraction.url,
+    url: absoluteUrl(new URL(attraction.url).pathname),
     image: attraction.image
   }))
 };
 
-const videoSchema = {
+const homepageSchema = {
   "@context": "https://schema.org",
-  "@type": "VideoObject",
-  name: "Skardu destination travel video",
-  description:
-    "Skardu tourism video for worldwide visitors featuring valleys, mountains, rivers, Katpana Desert, Kachura, Deosai, Shigar, and Satpara routes.",
-  thumbnailUrl: `${SITE_URL}/images/katpana-skardu-hero.jpg`,
-  uploadDate: "2026-05-22T00:00:00+05:00",
-  contentUrl: `${SITE_URL}${SKARDU_HERO_VIDEO_URL}`,
-  embedUrl: "https://www.pexels.com/video/pakistan-beautiful-view-lake-and-mountain-19150354/",
-  associatedMedia: {
-    "@type": "VideoObject",
-    name: "Katpana Desert Skardu travel video",
-    description:
-      "Katpana Desert travel video showing the cold desert landscape, dunes, and mountain views near Skardu.",
-    thumbnailUrl: `${SITE_URL}/images/places/katapana-desert.jpg`,
-    uploadDate: "2026-05-22T00:00:00+05:00",
-    contentUrl: KATPANA_VIDEO_URL,
-    embedUrl: "https://www.pexels.com/video/pakistan-katpana-desert-19150358/"
-  }
+  "@graph": [
+    organizationEntity(),
+    websiteEntity(),
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/#webpage`,
+      url: SITE_URL,
+      name: "Katpana Desert Tour | Pakistan Tours for Global Travelers",
+      description:
+        "Plan private Skardu, K2, Deosai, Hunza and Gilgit-Baltistan routes with itinerary, vehicle and accommodation coordination.",
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": `${SITE_URL}/#skardu-destination` },
+      publisher: { "@id": ORGANIZATION_ID },
+      inLanguage: "en"
+    },
+    touristDestinationSchema
+  ]
 };
 
 export default function Page() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(touristDestinationSchema)} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(websiteSearchSchema())} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(organizationSchema())} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(commonTravelFaqs))} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(videoSchema)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(homepageSchema)} />
       <SkarduLanding />
     </>
   );

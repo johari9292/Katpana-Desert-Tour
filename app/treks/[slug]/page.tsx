@@ -5,9 +5,9 @@ import { getSeoPageBySlug, trekPages } from "@/data/seo";
 import { createSeoPageMetadata } from "@/lib/seo";
 
 interface TrekPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: TrekPageProps): Metadata {
-  const page = getSeoPageBySlug(params.slug, "trek");
+export async function generateMetadata({ params }: TrekPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = getSeoPageBySlug(slug, "trek");
   return page
     ? createSeoPageMetadata(page)
     : {
@@ -26,8 +27,9 @@ export function generateMetadata({ params }: TrekPageProps): Metadata {
       };
 }
 
-export default function TrekPage({ params }: TrekPageProps) {
-  const page = getSeoPageBySlug(params.slug, "trek");
+export default async function TrekPage({ params }: TrekPageProps) {
+  const { slug } = await params;
+  const page = getSeoPageBySlug(slug, "trek");
 
   if (!page) {
     notFound();

@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/", "/studio/"]
       }
     ],
-    sitemap: "https://www.katpanadesert.com/sitemap.xml"
+    sitemap: "https://www.katpanadesert.com/sitemap.xml",
+    host: "https://www.katpanadesert.com"
   };
 }

@@ -1,4 +1,4 @@
-import { articles } from "@/data/articles";
+import { reviewedArticles } from "@/data/articles";
 import { destinations } from "@/data/destinations";
 import { seoPages } from "@/data/seo";
 import { tourPackages } from "@/data/tours";
@@ -7,82 +7,68 @@ import { absoluteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
-type SitemapEntry = {
+interface SitemapEntry {
   url: string;
-  lastModified: Date;
-  changeFrequency: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
-  priority: number;
+  lastModified?: string;
   images?: string[];
-};
+}
 
-function entry(
-  path: string,
-  priority: SitemapEntry["priority"],
-  changeFrequency: SitemapEntry["changeFrequency"],
-  image?: string,
-): SitemapEntry {
+function entry(path: string, options: { image?: string; lastModified?: string } = {}): SitemapEntry {
+  const lastModified = options.lastModified ? validDate(options.lastModified) : undefined;
+
   return {
     url: absoluteUrl(path),
-    lastModified: new Date("2026-06-10"),
-    changeFrequency,
-    priority,
-    images: image ? [absoluteUrl(image)] : undefined,
+    ...(lastModified ? { lastModified } : {}),
+    ...(options.image ? { images: [absoluteUrl(options.image)] } : {})
   };
 }
 
 function sitemapEntries(): SitemapEntry[] {
-  return [
-    entry("/", 1, "daily", "/images/katpana-skardu-hero.jpg"),
-    entry("/tours", 0.9, "weekly", "/images/katpana-skardu-hero.jpg"),
-    entry("/destinations", 0.9, "weekly", "/images/katpana-skardu-hero.jpg"),
-    entry("/articles", 0.7, "monthly", "/images/katpana-skardu-hero.jpg"),
-    entry("/trending", 0.82, "daily", "/images/places/katapana-desert.jpg"),
-    entry("/search", 0.55, "monthly", "/images/katpana-skardu-hero.jpg"),
-    ...seoPages.map((page) =>
-      entry(
-        page.path,
-        page.category === "blog" ? 0.7 : 0.9,
-        page.category === "blog" ? "monthly" : "weekly",
-        page.image,
-      ),
-    ),
+  const entries = [
+    entry("/", { image: "/images/katpana-skardu-hero.jpg" }),
+    entry("/tours", { image: "/images/katpana-skardu-hero.jpg" }),
+    entry("/destinations", { image: "/images/katpana-skardu-hero.jpg" }),
+    ...(reviewedArticles.length ? [entry("/articles")] : []),
+    entry("/travel-guides"),
+    entry("/why-skardu", { image: "/images/katpana-skardu-hero.jpg" }),
+    entry("/skardu-videos"),
+    entry("/testimonials"),
+    entry("/about"),
+    entry("/contact"),
+    entry("/booking-terms"),
+    entry("/privacy"),
+    entry("/travel-safety"),
+    entry("/responsible-travel"),
+    ...(staticTrendingArticles.length ? [entry("/trending")] : []),
+    ...seoPages.map((page) => entry(page.path)),
     ...tourPackages.map((tour) =>
-      entry(
-        tour.canonicalPath ?? `/tours/${tour.slug}`,
-        0.9,
-        "weekly",
-        tour.image,
-      ),
+      entry(tour.canonicalPath ?? `/tours/${tour.slug}`, {
+        image: tour.image
+      })
     ),
     ...destinations.map((destination) =>
-      entry(
-        destination.canonicalPath ?? `/destinations/${destination.slug}`,
-        0.9,
-        "weekly",
-        destination.image,
-      ),
+      entry(destination.canonicalPath ?? `/destinations/${destination.slug}`, {
+        image: destination.image
+      })
     ),
-    ...articles.map((article) => ({
-      ...entry(
-        `/articles/${article.slug}`,
-        article.category === "Travel Guide" || article.category === "Attractions"
-          ? 0.72
-          : 0.68,
-        "monthly",
-        "/images/katpana-skardu-hero.jpg",
-      ),
-      lastModified: new Date(article.updatedAt),
-    })),
-    ...staticTrendingArticles.map((article) => ({
-      ...entry(
-        `/trending/${article.slug}`,
-        0.72,
-        "weekly",
-        "/images/places/katapana-desert.jpg",
-      ),
-      lastModified: new Date(article.published_at),
-    })),
+    ...reviewedArticles.map((article) =>
+      entry(`/articles/${article.slug}`, {
+        lastModified: article.reviewedAt
+      })
+    ),
+    ...staticTrendingArticles.map((article) =>
+      entry(`/trending/${article.slug}`, {
+        lastModified: article.updated_at || article.published_at
+      })
+    )
   ];
+
+  return Array.from(new Map(entries.map((item) => [item.url, item])).values());
+}
+
+function validDate(value: string) {
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? undefined : new Date(timestamp).toISOString();
 }
 
 function escapeXml(value: string) {
@@ -94,8 +80,8 @@ function escapeXml(value: string) {
     .replace(/'/g, "&apos;");
 }
 
-function formatDate(value: Date) {
-  return value.toISOString().split("T")[0];
+function formatDate(value: string) {
+  return value.split("T")[0];
 }
 
 function sitemapXml(entries: SitemapEntry[]) {
@@ -108,11 +94,9 @@ function sitemapXml(entries: SitemapEntry[]) {
       return [
         "  <url>",
         `    <loc>${escapeXml(item.url)}</loc>`,
-        `    <lastmod>${formatDate(item.lastModified)}</lastmod>`,
-        `    <changefreq>${item.changeFrequency}</changefreq>`,
-        `    <priority>${item.priority.toFixed(2)}</priority>`,
+        item.lastModified ? `    <lastmod>${formatDate(item.lastModified)}</lastmod>` : undefined,
         images,
-        "  </url>",
+        "  </url>"
       ]
         .filter(Boolean)
         .join("\n");
@@ -129,6 +113,7 @@ export function GET() {
   return new Response(sitemapXml(sitemapEntries()), {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-    },
+      "Cache-Control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    }
   });
 }

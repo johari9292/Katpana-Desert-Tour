@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
-import { useEffect } from "react";
+import { useState } from "react";
 
 const destinations = [
   "Katpana Desert",
@@ -14,42 +13,55 @@ const destinations = [
   "Kachura Lakes"
 ];
 
-export default function Marquee() {
-  const items = [...destinations, ...destinations, ...destinations];
-  const controls = useAnimationControls();
-  const reduceMotion = useReducedMotion();
+function DestinationList({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <ul
+      aria-hidden={duplicate || undefined}
+      className={`flex shrink-0 items-center gap-7 whitespace-nowrap px-4 font-display text-2xl italic text-skardu-snow sm:gap-10 sm:px-5 sm:text-3xl ${
+        duplicate ? "destination-marquee-duplicate" : ""
+      }`}
+    >
+      {destinations.map((destination) => (
+        <li key={destination} className="inline-flex items-center gap-4">
+          <span aria-hidden="true" className="text-skardu-gold">
+            •
+          </span>
+          {destination}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
-  useEffect(() => {
-    if (reduceMotion) return;
-    controls.start({
-      x: ["0%", "-50%"],
-      transition: { repeat: Infinity, ease: "linear", duration: 42 }
-    });
-  }, [controls, reduceMotion]);
+export default function Marquee() {
+  const [paused, setPaused] = useState(false);
 
   return (
-    <section role="marquee" aria-label="Popular northern Pakistan destinations" className="overflow-hidden border-y border-skardu-mist/60 bg-skardu-stone/30 py-4 sm:py-6">
-      <motion.div
-        animate={controls}
-        onHoverStart={() => controls.stop()}
-        onHoverEnd={() => {
-          if (!reduceMotion) {
-            controls.start({
-              x: ["0%", "-50%"],
-              transition: { repeat: Infinity, ease: "linear", duration: 42 }
-            });
-          }
-        }}
-        whileHover={reduceMotion ? undefined : { scale: 1.01 }}
-        className="flex w-max gap-7 whitespace-nowrap px-4 font-display text-2xl italic text-skardu-snow/80 sm:gap-10 sm:px-5 sm:text-3xl"
-      >
-        {items.map((destination, index) => (
-          <span key={`${destination}-${index}`} className="inline-flex items-center gap-4">
-            <span className="text-skardu-gold">*</span>
-            {destination}
-          </span>
-        ))}
-      </motion.div>
+    <section
+      aria-labelledby="popular-destinations-heading"
+      className="border-y border-white/20 bg-skardu-stone/40 py-4 sm:py-5"
+    >
+      <h2 id="popular-destinations-heading" className="sr-only">
+        Popular northern Pakistan destinations
+      </h2>
+
+      <div className="mb-2 flex justify-end px-4 sm:px-5">
+        <button
+          type="button"
+          aria-pressed={paused}
+          onClick={() => setPaused((current) => !current)}
+          className="destination-marquee-control min-h-11 rounded-full border border-skardu-mist bg-skardu-void px-4 py-2 text-xs font-bold text-skardu-snow transition-colors hover:border-skardu-gold hover:text-skardu-gold"
+        >
+          {paused ? "Resume destinations" : "Pause destinations"}
+        </button>
+      </div>
+
+      <div className="destination-marquee-viewport overflow-hidden">
+        <div className="destination-marquee-track" data-paused={paused}>
+          <DestinationList />
+          <DestinationList duplicate />
+        </div>
+      </div>
     </section>
   );
 }

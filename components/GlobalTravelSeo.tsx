@@ -31,9 +31,8 @@ export default function GlobalTravelSeo() {
               Skardu travel planning for visitors worldwide
             </h2>
             <p className="mt-5 max-w-4xl text-base leading-8 text-skardu-ash sm:text-lg">
-              Katpana Desert Tour helps international travelers plan Pakistan tours with Skardu-based local support,
-              English and Urdu communication, private transport, hotel guidance, Deosai safari planning, Hunza extensions,
-              and K2 trekking logistics.
+              Katpana Desert Tour coordinates itinerary planning, private transport, hotel requirements, Deosai route
+              options, Hunza extensions and K2-side logistics for travelers preparing before arrival.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
@@ -44,7 +43,7 @@ export default function GlobalTravelSeo() {
               International guide
             </Link>
             <Link
-              href="/#tours"
+              href="/contact/"
               className="flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.14em] text-skardu-teal"
             >
               Plan private tour

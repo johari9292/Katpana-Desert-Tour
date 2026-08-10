@@ -4,18 +4,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
+import MobileBookingBar from "@/components/MobileBookingBar";
 import PageHeader from "@/components/PageHeader";
+import QuoteTransparency from "@/components/QuoteTransparency";
+import TrackedLink from "@/components/TrackedLink";
 import TourInquiryForm from "@/components/TourInquiryForm";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
+import TrustPanel from "@/components/TrustPanel";
+import { BRAND_NAME } from "@/constants/brand";
 import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
-import { commonTravelFaqs } from "@/data/seo";
 import { getRelatedTours, getTourBySlug, tourPackages } from "@/data/tours";
-import { absoluteUrl, breadcrumbSchema, createMetadata, faqSchema, jsonLdScript } from "@/lib/seo";
+import { imageAltFor } from "@/lib/image-alt";
+import { absoluteUrl, breadcrumbSchema, createMetadata, jsonLdScript, organizationEntity } from "@/lib/seo";
 
 interface TourPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {
@@ -24,8 +28,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: TourPageProps): Metadata {
-  const tour = getTourBySlug(params.slug);
+export async function generateMetadata({ params }: TourPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const tour = getTourBySlug(slug);
 
   if (!tour) {
     return {
@@ -40,21 +45,21 @@ export function generateMetadata({ params }: TourPageProps): Metadata {
     path: tour.canonicalPath ?? `/tours/${tour.slug}`,
     image: tour.image,
     imageAlt: tour.imageAlt ?? `${tour.title} tour package in Skardu and Gilgit-Baltistan Pakistan`,
-    keywords: tour.keywords,
     type: "article"
   });
 }
 
-export default function TourPage({ params }: TourPageProps) {
-  const tour = getTourBySlug(params.slug);
+export default async function TourPage({ params }: TourPageProps) {
+  const { slug } = await params;
+  const tour = getTourBySlug(slug);
 
   if (!tour) {
     notFound();
   }
 
   const relatedTours = getRelatedTours(tour, 3);
-  const tourUrl = `${SITE_URL}/tours/${tour.slug}/`;
   const canonicalTourUrl = absoluteUrl(tour.canonicalPath ?? `/tours/${tour.slug}`);
+  const schemaDuration = durationToIso(tour.duration);
   const tourFaqs = tour.faqs ?? buildTourFaqs(tour);
   const breadcrumbs = [
     { label: "Home", href: "/" },
@@ -63,30 +68,25 @@ export default function TourPage({ params }: TourPageProps) {
   ];
   const whatsappUrl = buildWhatsAppURL(
     WHATSAPP_MAIN,
-    `Hi! I want to book ${tour.title} with ${BRAND_NAME}. Please send pricing, hotel options, and available dates.`
+    `Hi! I want to plan ${tour.title} with ${BRAND_NAME}. Please send the quote basis, hotel options, inclusions, exclusions and possible dates.`
   );
 
   const tourSchema = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
+    "@id": `${canonicalTourUrl}#trip`,
     name: tour.title,
     description: tour.overview,
-    image: `${SITE_URL}${tour.image}`,
+    image: absoluteUrl(tour.image),
     url: canonicalTourUrl,
-    provider: {
-      "@type": "TravelAgency",
-      name: BRAND_NAME,
-      url: SITE_URL
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonicalTourUrl
     },
-    offers: {
-      "@type": "Offer",
-      url: canonicalTourUrl,
-      priceCurrency: "PKR",
-      availability: "https://schema.org/InStock",
-      description: tour.priceFrom
-    },
+    provider: organizationEntity(),
     itinerary: {
       "@type": "ItemList",
+      "@id": `${canonicalTourUrl}#itinerary`,
       itemListElement: tour.itinerary.map((day, index) => ({
         "@type": "ListItem",
         position: index + 1,
@@ -94,16 +94,14 @@ export default function TourPage({ params }: TourPageProps) {
         description: day.body
       }))
     },
-    duration: durationToIso(tour.duration),
-    availableLanguage: ["English", "Urdu"],
-    touristType: [tour.category, "Adventure", "Cultural"]
+    ...(schemaDuration ? { duration: schemaDuration } : {}),
+    touristType: tour.category
   };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
+    <main id="main-content" tabIndex={-1} className="min-h-screen overflow-hidden bg-skardu-void text-skardu-snow">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(tourSchema)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(breadcrumbSchema(breadcrumbs))} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqSchema(tourFaqs))} />
       <PageHeader />
       <article className="px-5 pb-20 pt-32 lg:px-8 lg:pb-28">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.28fr)]">
@@ -113,27 +111,24 @@ export default function TourPage({ params }: TourPageProps) {
               <span className="rounded-full bg-skardu-gold px-3 py-1 text-skardu-void">{tour.category}</span>
               <span className="text-skardu-ash">{tour.duration}</span>
               <span className="text-skardu-ash">{tour.difficulty}</span>
-              <span className="text-skardu-ash">Last updated: {tour.lastUpdated ?? "May 2026"}</span>
             </div>
             <h1 className="mt-5 font-display text-5xl font-bold leading-none text-skardu-snow md:text-7xl">{tour.title}</h1>
-            <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
-              Written by {tour.author ?? "Katpana Desert Tour Local Planning Team"}
-            </p>
             <p className="mt-6 text-xl leading-9 text-skardu-ash">{tour.overview}</p>
-            <a
+            <TrackedLink
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-8 inline-flex rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-void"
+              eventName="whatsapp_click"
+              eventData={{ placement: "tour_hero", context: tour.slug }}
+              className="mt-8 inline-flex min-h-12 items-center rounded-full bg-[#25D366] px-6 py-3 text-sm font-black uppercase tracking-[0.16em] text-skardu-void"
             >
-              Check Availability
-            </a>
+              Ask via WhatsApp
+            </TrackedLink>
 
             <div className="mt-10 overflow-hidden rounded-2xl border border-skardu-mist bg-skardu-stone/65">
               <Image
                 src={tour.image}
-                alt={tour.imageAlt ?? `${tour.title} tour package in Skardu Karakoram Pakistan`}
-                title={tour.imageTitle ?? `${tour.title} travel route and package view`}
+                alt={imageAltFor(tour.image)}
                 width={1536}
                 height={864}
                 sizes="(max-width: 768px) 100vw, 70vw"
@@ -196,6 +191,14 @@ export default function TourPage({ params }: TourPageProps) {
               </div>
             </section>
 
+            <div className="mt-12">
+              <QuoteTransparency />
+            </div>
+
+            <div className="mt-8">
+              <TrustPanel />
+            </div>
+
             <section className="mt-12 border-t border-skardu-mist pt-10">
               <h2 className="font-display text-4xl font-bold text-skardu-snow">Frequently asked questions</h2>
               <div className="mt-6 grid gap-4">
@@ -216,7 +219,7 @@ export default function TourPage({ params }: TourPageProps) {
                 <p><strong className="text-skardu-snow">Duration:</strong> {tour.duration}</p>
                 <p><strong className="text-skardu-snow">Region:</strong> {tour.region}</p>
                 <p><strong className="text-skardu-snow">Best season:</strong> {tour.bestSeason}</p>
-                <p><strong className="text-skardu-snow">Pricing:</strong> {tour.priceFrom}</p>
+                <p><strong className="text-skardu-snow">Pricing:</strong> {tour.priceFrom}; itemized after dates, group, accommodation and vehicle are confirmed.</p>
               </div>
             </div>
 
@@ -241,26 +244,28 @@ export default function TourPage({ params }: TourPageProps) {
               </div>
             </div>
 
-            <a
+            <TrackedLink
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 block rounded-full bg-[#25D366] px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-white"
+              eventName="whatsapp_click"
+              eventData={{ placement: "tour_sidebar", context: tour.slug }}
+              className="mt-5 flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-6 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-skardu-void"
             >
-              Request quote
-            </a>
+              Request itemized quote
+            </TrackedLink>
           </aside>
         </div>
       </article>
       <Footer />
+      <MobileBookingBar whatsappUrl={whatsappUrl} context={tour.slug} />
     </main>
   );
 }
 
 function durationToIso(duration: string) {
-  const matches = [...duration.matchAll(/(\d+)/g)].map((match) => Number(match[1]));
-  const days = matches.length ? Math.max(...matches) : 1;
-  return `P${days}D`;
+  const exactDuration = duration.match(/^(\d+)\s+days?\s*\/\s*\d+\s+nights?$/i);
+  return exactDuration ? `P${exactDuration[1]}D` : undefined;
 }
 
 function buildTourFaqs(tour: NonNullable<ReturnType<typeof getTourBySlug>>) {
@@ -288,7 +293,7 @@ function buildTourFaqs(tour: NonNullable<ReturnType<typeof getTourBySlug>>) {
     {
       question: `How do I book ${tour.title}?`,
       answer:
-        `Send your dates, group size, hotel preference, arrival city, and route interests through WhatsApp. A local Skardu planning team can then match the itinerary with realistic drive times, route status, vehicle type, and seasonal conditions before confirming availability.`
+        `Send your dates, group size, hotel preference, arrival city, and route interests through WhatsApp. The planning team can then match the itinerary with realistic drive times, route status, vehicle type, and seasonal conditions before confirming availability.`
     }
   ];
 }

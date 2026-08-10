@@ -4,8 +4,10 @@ const nextConfig = {
   output: "export",
   poweredByHeader: false,
   images: {
-    domains: ["images.pexels.com", "images.unsplash.com", "upload.wikimedia.org"],
-    unoptimized: true
+    loader: "custom",
+    loaderFile: "./lib/static-image-loader.ts",
+    deviceSizes: [480, 768, 1280, 1536],
+    imageSizes: [320]
   },
   trailingSlash: true
 };

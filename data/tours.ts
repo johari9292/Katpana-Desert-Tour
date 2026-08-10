@@ -117,6 +117,7 @@ export const tourPackages: TourPackage[] = [
   {
     slug: "deosai-sheosar-lake-4x4-adventure",
     title: "Deosai Plains and Sheosar Lake 4x4 Adventure",
+    metaTitle: "Deosai 4x4 and Sheosar Lake Tour | Katpana Desert Tour",
     duration: "5 days / 4 nights",
     category: "Adventure and wildlife",
     region: "Skardu, Satpara, Deosai and Sheosar Lake",
@@ -293,7 +294,7 @@ export const tourPackages: TourPackage[] = [
     image: "/images/places/k2-base-camp.jpg",
     badge: "Trek support",
     overview:
-      "A serious Karakoram trekking plan for experienced hikers who need pre-trek Skardu logistics, Askole jeep coordination, licensed guiding, porter planning, food systems, and buffer days.",
+      "A serious Karakoram trekking plan for experienced hikers who need pre-trek Skardu logistics, Askole jeep coordination, guide and permit checks, porter planning, food systems, and buffer days.",
     destinationOverview:
       "K2 Base Camp is reached through the Baltoro Glacier and Concordia, one of the world's most renowned mountain amphitheaters. This is not a casual sightseeing package; it requires fitness, permits, gear, and experienced mountain staff.",
     activities: [
@@ -441,6 +442,7 @@ export const tourPackages: TourPackage[] = [
   {
     slug: "nanga-parbat-astore-deosai-side-trip",
     title: "Astore, Rama and Nanga Parbat Viewpoint Side Trip",
+    metaTitle: "Astore, Rama and Nanga Parbat Tour | Katpana Desert Tour",
     duration: "7 days / 6 nights",
     category: "Adventure road trip",
     region: "Skardu, Deosai, Astore, Rama and Nanga Parbat viewpoints",
