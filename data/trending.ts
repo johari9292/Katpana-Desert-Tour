@@ -56,6 +56,12 @@ export interface TrendingArticle {
   updated_at: string;
 }
 
+export interface ArchivedSeoSignal {
+  targetPath: string;
+  matchingArticleCount: number;
+  latestGenerationDate: string;
+}
+
 export interface TrendingArticleRow
   extends Omit<
     TrendingArticle,

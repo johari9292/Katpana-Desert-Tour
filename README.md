@@ -53,6 +53,8 @@ Cluster ownership and semantic coverage are documented in [SEO_CONTENT_MAP.md](.
 
 The trending workflow no longer follows arbitrary news or auto-publishes daily pages. A bounded catalog creates at most one weekly SEO draft for distinct demand such as Deosai access, Katpana conditions, Skardu 4x4 routes or K2 logistics.
 
+The build sync also consolidates relevant legacy archive rows into aggregate demand signals for existing canonical SEO guides. It never republishes the archived AI copy. While no reviewed update exists, the homepage and `/trending/` use those signals to promote maintained guide URLs; the empty trending hub remains `noindex` and outside the sitemap.
+
 Apply the two August 2026 workflow migrations in order, then deploy the Edge Function:
 
 ```bash

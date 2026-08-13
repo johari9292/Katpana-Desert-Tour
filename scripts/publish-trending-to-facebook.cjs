@@ -1,5 +1,6 @@
 const { createClient } = require("@supabase/supabase-js");
 const fs = require("fs");
+const { resolveSupabaseAdminKey } = require("./supabase-admin-key.cjs");
 
 function loadEnvFile() {
   if (!fs.existsSync(".env")) return;
@@ -182,17 +183,17 @@ async function main() {
   const dryRun = process.argv.includes("--dry-run");
   const includePosted = process.argv.includes("--include-posted");
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const adminKey = resolveSupabaseAdminKey();
   const webhookUrl = process.env.MAKE_FACEBOOK_WEBHOOK_URL;
 
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error("Missing SUPABASE_URL/NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.");
+  if (!supabaseUrl || !adminKey) {
+    throw new Error("Missing SUPABASE_URL/NEXT_PUBLIC_SUPABASE_URL or Supabase admin key.");
   }
   if (!webhookUrl && !dryRun) {
     throw new Error("Missing MAKE_FACEBOOK_WEBHOOK_URL. Pass it as an environment variable.");
   }
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+  const supabase = createClient(supabaseUrl, adminKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 

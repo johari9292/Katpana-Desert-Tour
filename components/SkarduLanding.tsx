@@ -8,6 +8,7 @@ import Hero from "./Hero";
 import DeferredLandingSections from "./DeferredLandingSections";
 import GlobalTravelSeo from "./GlobalTravelSeo";
 import MobileBookingBar from "./MobileBookingBar";
+import TrendingArticles from "./TrendingArticles";
 import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 
 const landingWhatsAppUrl = buildWhatsAppURL(
@@ -29,6 +30,7 @@ export default function SkarduLanding() {
       <DestinationShowcase />
       <AboutTour />
       <GlobalTravelSeo />
+      <TrendingArticles />
       <DeferredLandingSections />
       <Footer />
       <MobileBookingBar whatsappUrl={landingWhatsAppUrl} context="homepage" customizeHref="/contact/" />

@@ -1,6 +1,7 @@
 const { createClient } = require("@supabase/supabase-js");
 const fs = require("fs");
 const path = require("path");
+const { resolveSupabaseAdminKey } = require("./supabase-admin-key.cjs");
 
 function loadEnvFile() {
   if (!fs.existsSync(".env")) return;
@@ -35,43 +36,56 @@ async function main() {
   loadEnvFile();
 
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseKey = resolveSupabaseAdminKey();
 
   if (!supabaseUrl || !supabaseKey) {
-    console.warn("Skipping approved travel-update sync: missing Supabase URL or service-role key.");
+    console.warn("Skipping approved travel-update sync: missing Supabase URL or admin key.");
     return;
   }
 
   const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data, error } = await supabase
-    .from("trending_articles")
-    .select([
-      "id", "slug", "title", "excerpt", "sections", "faqs", "keywords",
-      "trend_topic", "trend_rank", "trend_source_url", "trend_geo",
-      "content_cluster", "search_intent", "primary_query", "intent_key",
-      "canonical_parent", "editorial_summary", "citations", "local_evidence",
-      "status", "reviewed_by", "reviewed_at", "last_verified_at", "next_review_at",
-      "published_at", "generation_date", "updated_at"
-    ].join(","))
-    .eq("status", "published")
-    .order("last_verified_at", { ascending: false })
-    .limit(100);
+  const [publishedResult, archivedResult] = await Promise.all([
+    supabase
+      .from("trending_articles")
+      .select([
+        "id", "slug", "title", "excerpt", "sections", "faqs", "keywords",
+        "trend_topic", "trend_rank", "trend_source_url", "trend_geo",
+        "content_cluster", "search_intent", "primary_query", "intent_key",
+        "canonical_parent", "editorial_summary", "citations", "local_evidence",
+        "status", "reviewed_by", "reviewed_at", "last_verified_at", "next_review_at",
+        "published_at", "generation_date", "updated_at"
+      ].join(","))
+      .eq("status", "published")
+      .order("last_verified_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("trending_articles")
+      .select("id,title,trend_topic,status,generation_date")
+      .eq("status", "archived")
+      .order("generation_date", { ascending: false })
+      .limit(365),
+  ]);
 
-  if (error) {
-    throw new Error(`Could not sync approved travel updates: ${error.message}. Apply the editorial workflow migrations first.`);
+  if (publishedResult.error) {
+    throw new Error(`Could not sync approved travel updates: ${publishedResult.error.message}. Apply the editorial workflow migrations first.`);
+  }
+  if (archivedResult.error) {
+    throw new Error(`Could not load archived SEO signals: ${archivedResult.error.message}. Use a Supabase admin key so archived rows are visible.`);
   }
 
-  const rows = data ?? [];
+  const rows = publishedResult.data ?? [];
   const buildReferenceDate = new Date();
   const articles = rows.filter((article) => isEditoriallyApprovedArticle(article, buildReferenceDate));
+  const archivedSeoSignals = buildArchivedSeoSignals(archivedResult.data ?? []);
   const rejectedCount = rows.length - articles.length;
   if (rejectedCount) {
     console.warn(`Excluded ${rejectedCount} published row(s) that did not pass the static editorial gate.`);
   }
 
-  const body = `import { isTrendingReviewCurrent, type TrendingArticle } from "./trending";
+  const body = articles.length
+    ? `import { isTrendingReviewCurrent, type ArchivedSeoSignal, type TrendingArticle } from "./trending";
 
 // Generated at build time from human-approved Supabase rows only.
 const approvedStaticTrendingArticles: TrendingArticle[] = [
@@ -87,11 +101,101 @@ export const staticTrendingArticles = approvedStaticTrendingArticles.filter((art
 export function getStaticTrendingArticle(slug: string) {
   return staticTrendingArticles.find((article) => article.slug === slug);
 }
+`
+    : `import { isTrendingReviewCurrent, type ArchivedSeoSignal, type TrendingArticle } from "./trending";
+
+// This file is intentionally empty until an editor approves a Supabase draft.
+// \`npm run sync:trending-archive\` writes only rows that pass the editorial gate.
+const approvedStaticTrendingArticles: TrendingArticle[] = [];
+
+// A previously exported row can expire even when a later build has no database
+// credentials. Filter again at build time so stale pages cannot reach the hub
+// or sitemap.
+export const staticTrendingArticles = approvedStaticTrendingArticles.filter((article) =>
+  isTrendingReviewCurrent(article.next_review_at)
+);
+
+export function getStaticTrendingArticle(slug: string) {
+  return staticTrendingArticles.find((article) => article.slug === slug);
+}
+`;
+
+  const completeBody = `${body}
+// Archived AI copy is not republished. These aggregates select the strongest
+// existing canonical SEO guides without creating duplicate indexable URLs.
+export const archivedSeoSignals: ArchivedSeoSignal[] = ${JSON.stringify(archivedSeoSignals, null, 2)};
 `;
 
   const outputPath = path.join(process.cwd(), "data", "trending-static.ts");
-  fs.writeFileSync(outputPath, body, "utf8");
-  console.log(`Synced ${articles.length} approved travel update(s) to data/trending-static.ts.`);
+  fs.writeFileSync(outputPath, completeBody, "utf8");
+  console.log(`Synced ${articles.length} approved travel update(s) and ${archivedSeoSignals.length} archived SEO signal group(s).`);
+}
+
+const archivedSeoTargets = [
+  {
+    targetPath: "/blog/how-to-reach-skardu-from-islamabad",
+    terms: ["islamabad to skardu", "skardu flight", "flight to skardu", "air travel"],
+  },
+  {
+    targetPath: "/blog/things-to-do-skardu-summer",
+    terms: ["summer", "heat dome", "escaping the heat", "summer travel"],
+  },
+  {
+    targetPath: "/karakoram-highway-travel",
+    terms: ["road trip", "road travel", "karakoram highway", "petrol", "fuel", "driving"],
+  },
+  {
+    targetPath: "/blog/best-time-to-visit-skardu",
+    terms: ["best time", "seasonal", "seasons", "season", "spring", "autumn", "winter"],
+  },
+  {
+    targetPath: "/blog/skardu-weather-month-by-month",
+    terms: ["weather", "forecast", "rain", "rainfall", "storm", "monsoon", "temperature", "climate", "snow", "accuweather", "بارش", "موسم"],
+  },
+  {
+    targetPath: "/skardu-travel-guide",
+    terms: ["skardu travel guide", "skardu tourism", "northern pakistan travel", "gilgit-baltistan travel", "skardu adventure"],
+  },
+];
+
+const excludedArchiveHook = /\b(eid|eclipse|cosmos|celestial|stargazing|astrology|cricket|football|fifa|world cup|election|celebrity|cryptocurrency|stock market|lottery|currency|odyssey)\b|کرنسی/i;
+
+function buildArchivedSeoSignals(rows) {
+  const grouped = new Map();
+
+  for (const row of rows) {
+    if (!row || row.status !== "archived") continue;
+    const searchableText = [row.title, row.trend_topic].filter(Boolean).join(" ").toLowerCase();
+    if (!searchableText || excludedArchiveHook.test(searchableText)) continue;
+
+    const target = archivedSeoTargets
+      .map((item, priority) => ({
+        ...item,
+        priority,
+        score: item.terms.reduce((score, term) => score + (searchableText.includes(term) ? term.split(/\s+/).length : 0), 0),
+      }))
+      .filter((item) => item.score > 0)
+      .sort((left, right) => right.score - left.score || left.priority - right.priority)[0];
+
+    if (!target) continue;
+
+    const current = grouped.get(target.targetPath) ?? {
+      targetPath: target.targetPath,
+      matchingArticleCount: 0,
+      latestGenerationDate: "",
+    };
+    const generationDate = validIsoDate(row.generation_date) ?? "";
+
+    current.matchingArticleCount += 1;
+    if (generationDate > current.latestGenerationDate) current.latestGenerationDate = generationDate;
+    grouped.set(target.targetPath, current);
+  }
+
+  return [...grouped.values()].sort(
+    (left, right) => right.matchingArticleCount - left.matchingArticleCount
+      || right.latestGenerationDate.localeCompare(left.latestGenerationDate)
+      || left.targetPath.localeCompare(right.targetPath),
+  );
 }
 
 function isEditoriallyApprovedArticle(article, referenceDate = new Date()) {
@@ -180,4 +284,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { isEditoriallyApprovedArticle, isTrendingReviewCurrent };
+module.exports = { buildArchivedSeoSignals, isEditoriallyApprovedArticle, isTrendingReviewCurrent };

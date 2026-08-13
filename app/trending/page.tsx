@@ -3,10 +3,11 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import TrendingArticles from "@/components/TrendingArticles";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { staticTrendingArticles } from "@/data/trending-static";
+import { archivedSeoSignals, staticTrendingArticles } from "@/data/trending-static";
 import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 const hasApprovedArticles = staticTrendingArticles.length > 0;
+const hasArchivedSeoDemand = archivedSeoSignals.length > 0;
 
 export const metadata: Metadata = createMetadata({
   title: `Skardu Route Updates | ${BRAND_NAME}`,
@@ -45,10 +46,18 @@ export default function TrendingPage() {
             Travel intelligence
           </p>
           <h1 className="max-w-5xl font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-6xl md:text-7xl">
-            Skardu travel updates, checked before we publish
+            {hasApprovedArticles
+              ? "Skardu travel updates, checked before we publish"
+              : hasArchivedSeoDemand
+                ? "Skardu travel articles shaped by search demand"
+                : "Skardu travel updates, checked before we publish"}
           </h1>
           <p className="mt-4 max-w-4xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            Practical updates for high-altitude desert access, Deosai 4x4 logistics, K2 trekking, and Karakoram routes—selected for a distinct traveler question and reviewed against local evidence and cited sources.
+            {hasApprovedArticles
+              ? "Practical updates for high-altitude desert access, Deosai 4x4 logistics, K2 trekking, and Karakoram routes—selected for a distinct traveler question and reviewed against local evidence and cited sources."
+              : hasArchivedSeoDemand
+                ? "Historical article activity is consolidated into maintained guides for distinct Skardu weather, season, summer, road and trip-planning searches."
+                : "Practical updates for high-altitude desert access, Deosai 4x4 logistics, K2 trekking, and Karakoram routes—selected for a distinct traveler question and reviewed against local evidence and cited sources."}
           </p>
         </div>
       </section>
