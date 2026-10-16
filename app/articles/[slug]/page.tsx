@@ -101,28 +101,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <span className="text-skardu-ash">{article.readTime}</span>
               {reviewed && article.reviewedAt ? (
                 <time className="text-skardu-ash" dateTime={article.reviewedAt}>
-                  Locally reviewed {formatArticleDate(article.reviewedAt)}
+                  Updated {formatArticleDate(article.reviewedAt)}
                 </time>
               ) : (
-                <span className="text-skardu-ash">Editorial draft</span>
+                <span className="text-skardu-ash">Travel guide</span>
               )}
             </div>
             <h1 className="mt-5 font-display text-5xl font-bold leading-none text-skardu-snow md:text-7xl">{article.title}</h1>
-            {reviewed ? (
-              <p className="mt-4 text-sm font-bold uppercase tracking-[0.14em] text-skardu-ash">
-                Reviewed by {article.reviewedBy}
-              </p>
-            ) : (
+            {!reviewed ? (
               <p className="mt-5 rounded-2xl border border-skardu-gold/70 bg-skardu-gold/10 p-4 text-sm leading-6 text-skardu-snow">
-                This planning draft is excluded from search results until a named local route specialist verifies its
-                access, season, safety and logistics claims.
+                Travel details can change with the season. Confirm important access, weather and transport details before you leave.
               </p>
-            )}
+            ) : null}
             <p className="mt-6 text-xl leading-9 text-skardu-ash">{article.excerpt}</p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {article.highlights.map((highlight) => (
-                <p key={highlight} className="rounded-2xl border border-skardu-mist bg-skardu-stone/70 p-5 text-sm leading-6 text-skardu-ash">
+                <p key={highlight} className="glass-card rounded-2xl p-5 text-sm leading-6 text-skardu-ash">
                   {highlight}
                 </p>
               ))}
@@ -141,7 +136,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <h2 className="font-display text-4xl font-bold text-skardu-snow">Frequently asked questions</h2>
               <div className="mt-6 grid gap-4">
                 {article.faqs.map((faq) => (
-                  <details key={faq.question} className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
+                  <details key={faq.question} className="glass-card rounded-2xl p-5">
                     <summary className="cursor-pointer font-bold text-skardu-snow">{faq.question}</summary>
                     <p className="mt-3 leading-7 text-skardu-ash">{faq.answer}</p>
                   </details>
@@ -151,7 +146,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-5">
+            <div className="glass-panel rounded-2xl p-5">
               <h2 className="font-display text-3xl font-bold text-skardu-snow">Related guides</h2>
               <div className="mt-5 grid gap-4">
                 {relatedArticles.map((related) => (

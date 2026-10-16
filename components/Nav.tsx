@@ -72,7 +72,7 @@ export default function Nav() {
       initial={reduceMotion ? false : { opacity: 0, y: -22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: isMobile ? 0.28 : 0.65, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-x-0 top-0 z-50 border-b border-skardu-mist/50 bg-skardu-void/85 backdrop-blur-md lg:bg-skardu-void/70"
+      className="site-nav-shell fixed inset-x-0 top-0 z-50 border-b"
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 lg:px-8 lg:py-4" aria-label="Primary navigation">
         <a href="/" aria-label={`${BRAND_NAME} home`} className="max-w-[210px] truncate font-display text-xl font-bold italic tracking-wide text-skardu-gold sm:max-w-none sm:text-2xl lg:text-3xl">
@@ -119,7 +119,7 @@ export default function Nav() {
           aria-controls="homepage-mobile-navigation"
           onClick={() => setOpen((current) => !current)}
           whileTap={{ scale: 0.94 }}
-          className="grid size-12 min-h-12 min-w-12 place-items-center rounded-full border border-skardu-control bg-skardu-stone/50 text-skardu-snow xl:hidden"
+          className="glass-control grid size-12 min-h-12 min-w-12 place-items-center rounded-full text-skardu-snow xl:hidden"
         >
           <span className="space-y-1.5">
             <span className={`block h-0.5 w-5 bg-current transition ${open ? "translate-y-2 rotate-45" : ""}`} />
@@ -137,7 +137,7 @@ export default function Nav() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="max-h-[calc(100dvh-68px)] overflow-y-auto border-t border-skardu-mist/50 bg-skardu-void/97 px-4 py-4 shadow-2xl shadow-black/40 xl:hidden"
+            className="site-nav-shell max-h-[calc(100dvh-68px)] overflow-y-auto border-t px-4 py-4 shadow-2xl shadow-black/40 xl:hidden"
           >
             <MobileGroup title="Tours" href="/tours/" items={tourPackages.map((tour) => [tour.title, `/tours/${tour.slug}/`])} onSelect={() => setOpen(false)} />
             <MobileGroup
@@ -149,7 +149,7 @@ export default function Nav() {
             <MobileGroup title="Guides" href="/travel-guides/" items={guideLinks.map(([label, href]) => [label, href])} onSelect={() => setOpen(false)} />
             <div className="mt-4 grid gap-2 text-sm font-bold uppercase tracking-[0.16em] text-skardu-ash">
               {quickLinks.map(([label, href]) => (
-                <a key={label} href={href} onClick={() => setOpen(false)} className="flex min-h-12 items-center rounded-xl border border-skardu-control bg-skardu-stone/45 px-4">
+                <a key={label} href={href} onClick={() => setOpen(false)} className="glass-control flex min-h-12 items-center rounded-xl px-4">
                   {label}
                 </a>
               ))}
@@ -188,10 +188,10 @@ function DesktopDropdown({
       </a>
 
       <div className="invisible absolute left-1/2 top-full w-[min(78vw,620px)] -translate-x-1/2 translate-y-3 opacity-0 transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-        <div className="rounded-2xl border border-skardu-mist bg-skardu-void/95 p-4 shadow-2xl shadow-black/40 backdrop-blur-xl">
+        <div className="glass-panel rounded-2xl p-4 shadow-2xl shadow-black/40">
           <div className="grid gap-2 sm:grid-cols-2">
             {items.map(([title, itemHref, meta]) => (
-              <a key={itemHref} href={itemHref} className="rounded-xl border border-transparent p-3 normal-case tracking-normal hover:border-skardu-gold hover:bg-skardu-stone">
+              <a key={itemHref} href={itemHref} className="rounded-xl border border-transparent p-3 normal-case tracking-normal hover:border-skardu-gold/60 hover:bg-white/5">
                 <span className="block font-display text-xl font-bold leading-tight text-skardu-snow">{title}</span>
                 <span className="mt-1 block text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">{meta}</span>
               </a>
@@ -216,7 +216,7 @@ function MobileGroup({ title, href, items, onSelect }: { title: string; href: st
         <button
           type="button"
           onClick={() => setExpanded((current) => !current)}
-          className="flex min-h-12 items-center gap-2 rounded-full border border-skardu-control bg-skardu-stone/55 px-4 text-xs font-black uppercase tracking-[0.14em] text-skardu-snow"
+          className="glass-control flex min-h-12 items-center gap-2 rounded-full px-4 text-xs font-black uppercase tracking-[0.14em] text-skardu-snow"
           aria-expanded={expanded}
           aria-label={`${expanded ? "Collapse" : "Expand"} ${title}`}
         >
@@ -227,7 +227,7 @@ function MobileGroup({ title, href, items, onSelect }: { title: string; href: st
       {expanded ? (
         <div className="mt-2 grid gap-2">
           {visibleItems.map(([label, itemHref]) => (
-            <a key={itemHref} href={itemHref} onClick={onSelect} className="flex min-h-12 items-center rounded-xl border border-skardu-control bg-skardu-stone/50 px-4 py-3 text-sm font-bold leading-5 text-skardu-ash">
+            <a key={itemHref} href={itemHref} onClick={onSelect} className="glass-control flex min-h-12 items-center rounded-xl px-4 py-3 text-sm font-bold leading-5 text-skardu-ash">
               {label}
             </a>
           ))}

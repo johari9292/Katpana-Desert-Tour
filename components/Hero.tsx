@@ -28,7 +28,7 @@ export default function Hero() {
       <div aria-hidden="true" className="absolute bottom-20 left-0 right-0 mx-auto h-px max-w-5xl bg-gradient-to-r from-transparent via-skardu-teal/80 to-transparent shadow-teal" />
 
       <div className="relative z-10 mx-auto flex min-h-[92svh] max-w-7xl items-center px-4 pb-28 pt-24 sm:min-h-screen sm:px-5 sm:pb-32 sm:pt-28 lg:px-8">
-        <div className="max-w-5xl">
+        <div className="hero-copy-panel max-w-5xl rounded-[2rem] p-5 sm:p-8 lg:p-10">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-5 sm:text-xs sm:tracking-[0.22em]">
             Skardu and Gilgit-Baltistan, Pakistan
           </p>
@@ -50,7 +50,7 @@ export default function Hero() {
             {SKARDU_TOURIST_POINTS.map((point) => (
               <span
                 key={point}
-                className="rounded-full border border-skardu-mist bg-skardu-void/80 px-3 py-1.5 text-[11px] font-bold leading-4 text-skardu-snow sm:text-xs"
+                className="glass-control rounded-full px-3 py-1.5 text-[11px] font-bold leading-4 text-skardu-snow sm:text-xs"
               >
                 {point}
               </span>
@@ -74,7 +74,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <p className="absolute bottom-5 right-4 z-20 rounded-2xl border border-skardu-control bg-skardu-void/85 px-4 py-3 text-xs text-skardu-snow sm:bottom-8 sm:right-5 sm:px-5 sm:py-4 sm:text-sm lg:right-10">
+      <p className="glass-panel absolute bottom-5 right-4 z-20 rounded-2xl px-4 py-3 text-xs text-skardu-snow sm:bottom-8 sm:right-5 sm:px-5 sm:py-4 sm:text-sm lg:right-10">
         <span className="block font-display text-2xl italic text-skardu-gold">Cold desert</span>
         <span className="text-skardu-snow">High-altitude route planning</span>
       </p>

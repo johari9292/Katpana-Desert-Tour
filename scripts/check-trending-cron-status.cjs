@@ -23,14 +23,7 @@ function loadEnvFile() {
 }
 
 function poolerUrlFromDirectUrl(directUrl) {
-  const url = new URL(directUrl);
-  const projectRef = url.hostname.match(/^db\.([^.]+)\.supabase\.co$/)?.[1];
-  if (!projectRef) return directUrl;
-
-  url.hostname = "aws-1-ap-northeast-1.pooler.supabase.com";
-  url.port = "6543";
-  url.username = `postgres.${projectRef}`;
-  return url.toString();
+  return process.env.SUPABASE_POOLER_URL || directUrl;
 }
 
 async function main() {
@@ -53,7 +46,7 @@ async function main() {
     const job = await db.query(`
       select jobid, jobname, schedule, active
       from cron.job
-      where jobname = 'generate-trending-seo-draft-weekly'
+      where jobname = 'generate-trending-article-daily'
       order by jobid desc
       limit 1
     `);
@@ -63,7 +56,7 @@ async function main() {
       where jobid = (
         select jobid
         from cron.job
-        where jobname = 'generate-trending-seo-draft-weekly'
+        where jobname = 'generate-trending-article-daily'
         order by jobid desc
         limit 1
       )

@@ -56,8 +56,8 @@ export default function TourPackages() {
                   onClick={() => setActiveSlug(tour.slug)}
                   whileHover={reduceMotion ? undefined : { y: -4, borderColor: "#C9A84C" }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  className={`min-w-[78vw] rounded-2xl border p-4 text-left transition sm:min-w-0 ${
-                    active ? "border-skardu-gold bg-skardu-stone" : "border-skardu-mist bg-skardu-stone/55"
+                  className={`glass-card min-w-[78vw] rounded-2xl p-4 text-left transition sm:min-w-0 ${
+                    active ? "border-skardu-gold/80 bg-skardu-gold/10" : ""
                   }`}
                 >
                   <span className="mb-3 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">
@@ -81,7 +81,7 @@ export default function TourPackages() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="glass-panel rounded-2xl p-4 sm:p-5 md:p-7"
           >
-            <div className="relative overflow-hidden rounded-xl border border-skardu-mist bg-skardu-void/60">
+            <div className="glass-image-frame relative overflow-hidden rounded-2xl bg-skardu-void/60">
               <Image
                 src={activeTour.image}
                 alt={imageAltFor(activeTour.image)}
@@ -110,7 +110,7 @@ export default function TourPackages() {
 
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               {activeTour.highlights.slice(0, 4).map((highlight) => (
-                <p key={highlight} className="rounded-2xl border border-skardu-mist bg-skardu-void/45 p-4 text-sm leading-6 text-skardu-ash">
+                <p key={highlight} className="glass-control rounded-2xl p-4 text-sm leading-6 text-skardu-ash">
                   {highlight}
                 </p>
               ))}

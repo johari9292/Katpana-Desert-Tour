@@ -13,7 +13,7 @@ export default function NotFound() {
             This page is not available.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-skardu-ash">
-            The address may have changed, or the content may still be awaiting editorial review. Use the travel-guide library or return home.
+            The address may have changed, or the page may no longer be available. Use the travel-guide library or return home.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/travel-guides/" className="flex min-h-12 items-center justify-center rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-void">

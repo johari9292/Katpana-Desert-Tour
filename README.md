@@ -51,11 +51,11 @@ Cluster ownership and semantic coverage are documented in [SEO_CONTENT_MAP.md](.
 
 ## SEO-led travel updates
 
-The trending workflow no longer follows arbitrary news or auto-publishes daily pages. A bounded catalog creates at most one weekly SEO draft for distinct demand such as Deosai access, Katpana conditions, Skardu 4x4 routes or K2 logistics.
+The trending workflow uses a bounded catalog of travel intents such as Deosai access, Katpana conditions, Skardu 4x4 routes and K2 logistics. The daily production job creates one dated public update, records the generated source/evidence context, posts it to the configured Make Facebook webhook, and can trigger a static-site deploy hook.
 
 The build sync also consolidates relevant legacy archive rows into aggregate demand signals for existing canonical SEO guides. It never republishes the archived AI copy. While no reviewed update exists, the homepage and `/trending/` use those signals to promote maintained guide URLs; the empty trending hub remains `noindex` and outside the sitemap.
 
-Apply the two August 2026 workflow migrations in order, then deploy the Edge Function:
+Apply the editorial migrations in order, including `202610160001_restore_daily_article_publishing.sql`, then deploy the Edge Function:
 
 ```bash
 supabase functions deploy generate-trending-article
@@ -68,6 +68,8 @@ supabase secrets set GEMINI_API_KEY=your-key
 supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 supabase secrets set CRON_SECRET=your-long-random-secret
 supabase secrets set GEMINI_MODEL=your-approved-model
+supabase secrets set MAKE_FACEBOOK_WEBHOOK_URL=your-make-webhook-url
+supabase secrets set SITE_DEPLOY_HOOK_URL=your-vercel-or-host-deploy-hook
 ```
 
 Set the Edge Function base URL and the same cron secret as database settings before enabling the weekly job. The generator can write only `draft`; a service-role-only SQL approval function enforces sources, named local evidence, substantive copy and a review date before publication.
@@ -78,7 +80,7 @@ Approved rows are exported during `prebuild`:
 npm run sync:trending-archive
 ```
 
-Social publishing is a separate editor-triggered step. Preview it first:
+The daily function posts the newly published article to Make. The retry script remains available for failed or interrupted Make deliveries:
 
 ```bash
 node scripts/publish-trending-to-facebook.cjs --dry-run --limit 3

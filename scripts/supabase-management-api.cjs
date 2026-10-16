@@ -84,10 +84,14 @@ async function setSecrets() {
   const ref = getProjectRef();
   const secrets = [
     ["NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL],
+    ["SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY],
     ["GEMINI_API_KEY", process.env.GEMINI_API_KEY],
     ["CRON_SECRET", process.env.CRON_SECRET],
     ["GEMINI_MODEL", process.env.GEMINI_MODEL || "gemini-2.5-flash"],
     ["MAKE_FACEBOOK_WEBHOOK_URL", process.env.MAKE_FACEBOOK_WEBHOOK_URL],
+    ["MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN", process.env.MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN],
+    ["MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER", process.env.MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER],
+    ["SITE_DEPLOY_HOOK_URL", process.env.SITE_DEPLOY_HOOK_URL],
     ["SITE_URL", "https://www.katpanadesert.com"],
   ]
     .filter(([, value]) => value)

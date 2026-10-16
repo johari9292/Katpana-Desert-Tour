@@ -26,14 +26,13 @@ export default function Articles() {
   if (!articles.length) {
     return (
       <section id="articles" className="relative px-5 py-20 lg:px-8 lg:py-28">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-skardu-control bg-skardu-stone/65 p-6 sm:p-8">
+        <div className="glass-panel mx-auto max-w-7xl rounded-2xl p-6 sm:p-8">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-skardu-gold">Route planning library</p>
           <h2 className="mt-3 font-display text-4xl font-bold leading-tight text-skardu-snow sm:text-5xl">
             Browse guides grouped by real travel decisions
           </h2>
           <p className="mt-4 max-w-3xl leading-7 text-skardu-ash">
-            Generated article drafts stay out of search until local review. The published library connects Skardu,
-            Katpana Desert, Deosai 4x4 and K2 planning to the most useful next step.
+            Find practical reading for Skardu, Katpana Desert, Deosai 4x4 and K2 planning, with helpful next steps for your trip.
           </p>
           <Link
             href="/travel-guides/"
@@ -76,7 +75,7 @@ export default function Articles() {
                 className={`rounded-full border px-4 py-2 text-sm font-black transition ${
                   active
                     ? "border-skardu-gold bg-skardu-gold text-skardu-void"
-                    : "border-skardu-mist bg-skardu-stone/70 text-skardu-ash hover:border-skardu-gold hover:text-skardu-snow"
+                    : "glass-control border-transparent text-skardu-ash hover:border-skardu-gold hover:text-skardu-snow"
                 }`}
               >
                 {category}
@@ -108,7 +107,7 @@ export default function Articles() {
             <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em]">
               <span className="rounded-full bg-skardu-gold px-3 py-1 text-skardu-void">{selectedArticle.category}</span>
               <span className="text-skardu-ash">{selectedArticle.readTime}</span>
-              <span className="text-skardu-ash">Locally reviewed</span>
+              <span className="text-skardu-ash">Travel guide</span>
             </div>
             <h3 className="font-display text-4xl font-bold leading-tight text-skardu-snow md:text-5xl">{selectedArticle.title}</h3>
             <p className="mt-5 text-lg leading-8 text-skardu-ash">{selectedArticle.excerpt}</p>
@@ -165,8 +164,8 @@ function ArticleListButton({
       type="button"
       onClick={onSelect}
       aria-pressed={active}
-      className={`rounded-2xl border p-4 text-left transition ${
-        active ? "border-skardu-gold bg-skardu-stone" : "border-skardu-mist bg-skardu-stone/50 hover:border-skardu-gold"
+      className={`glass-card rounded-2xl p-4 text-left transition ${
+        active ? "border-skardu-gold/80 bg-skardu-gold/10" : "hover:border-skardu-gold"
       }`}
     >
       <span className="mb-3 flex items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">

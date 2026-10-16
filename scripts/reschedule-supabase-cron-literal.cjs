@@ -20,14 +20,7 @@ function loadEnvFile() {
 }
 
 function poolerUrlFromDirectUrl(directUrl) {
-  const url = new URL(directUrl);
-  const projectRef = url.hostname.match(/^db\.([^.]+)\.supabase\.co$/)?.[1];
-  if (!projectRef) return directUrl;
-
-  url.hostname = "aws-1-ap-northeast-1.pooler.supabase.com";
-  url.port = "6543";
-  url.username = `postgres.${projectRef}`;
-  return url.toString();
+  return process.env.SUPABASE_POOLER_URL || directUrl;
 }
 
 function projectRefFromSupabaseUrl(value) {
@@ -67,6 +60,7 @@ select net.http_post(
   ),
   body := jsonb_build_object(
     'source', 'supabase-cron',
+    'workflow', 'daily-publish',
     'scheduled_at', now()
   ),
   timeout_milliseconds := 120000
@@ -85,6 +79,9 @@ select net.http_post(
       begin
         if exists (select 1 from cron.job where jobname = 'generate-trending-article-daily') then
           perform cron.unschedule('generate-trending-article-daily');
+        end if;
+        if exists (select 1 from cron.job where jobname = 'generate-trending-seo-draft-weekly') then
+          perform cron.unschedule('generate-trending-seo-draft-weekly');
         end if;
       end;
       $$;

@@ -3,20 +3,17 @@ import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import TrendingArticles from "@/components/TrendingArticles";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
-import { archivedSeoSignals, staticTrendingArticles } from "@/data/trending-static";
+import { staticTrendingArticles } from "@/data/trending-static";
 import { createMetadata, jsonLdScript } from "@/lib/seo";
 
 const hasApprovedArticles = staticTrendingArticles.length > 0;
-const hasArchivedSeoDemand = archivedSeoSignals.length > 0;
 
 export const metadata: Metadata = createMetadata({
   title: `Skardu Route Updates | ${BRAND_NAME}`,
-  description: "Editorially reviewed Skardu, Deosai, Katpana, K2 and Karakoram travel updates with local checks, cited sources and practical trip-planning context.",
+  description: "Practical Skardu, Deosai, Katpana, K2 and Karakoram travel updates for planning your next trip.",
   path: "/trending",
   image: "/images/places/katapana-desert.jpg",
   imageAlt: "Katpana Cold Desert near Skardu with Karakoram mountains",
-  // An empty archive is a holding page. Once reviewed articles exist, the
-  // server-rendered hub becomes a substantive, indexable cluster page.
   index: hasApprovedArticles
 });
 
@@ -24,7 +21,7 @@ const trendingSchema = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   name: `Skardu Travel Updates | ${BRAND_NAME}`,
-  description: "Editorially reviewed travel updates for Skardu, Deosai, Katpana, K2 and Karakoram routes.",
+  description: "Practical travel updates for Skardu, Deosai, Katpana, K2 and Karakoram routes.",
   url: `${SITE_URL}/trending/`,
   publisher: {
     "@type": "Organization",
@@ -43,21 +40,13 @@ export default function TrendingPage() {
       <section className="px-4 pb-4 pt-28 sm:px-5 sm:pt-32 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">
-            Travel intelligence
+            Travel updates
           </p>
           <h1 className="max-w-5xl font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-6xl md:text-7xl">
-            {hasApprovedArticles
-              ? "Skardu travel updates, checked before we publish"
-              : hasArchivedSeoDemand
-                ? "Skardu travel articles shaped by search demand"
-                : "Skardu travel updates, checked before we publish"}
+            Skardu travel updates and trip-planning tips
           </h1>
           <p className="mt-4 max-w-4xl text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-            {hasApprovedArticles
-              ? "Practical updates for high-altitude desert access, Deosai 4x4 logistics, K2 trekking, and Karakoram routes—selected for a distinct traveler question and reviewed against local evidence and cited sources."
-              : hasArchivedSeoDemand
-                ? "Historical article activity is consolidated into maintained guides for distinct Skardu weather, season, summer, road and trip-planning searches."
-                : "Practical updates for high-altitude desert access, Deosai 4x4 logistics, K2 trekking, and Karakoram routes—selected for a distinct traveler question and reviewed against local evidence and cited sources."}
+            Practical notes on routes, weather, access, transport and planning across Skardu and the Karakoram.
           </p>
         </div>
       </section>

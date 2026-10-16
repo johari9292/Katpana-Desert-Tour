@@ -45,14 +45,13 @@ export default function ArticlesPage() {
               Pakistan, Skardu, and Gilgit-Baltistan travel guides
             </h1>
             <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-lg sm:leading-8">
-              Locally reviewed route articles appear here after their seasonal, access and safety claims pass the
-              editorial evidence gate. Start with the structured guide library while reviews are in progress.
+              Practical guides for planning routes, stays, transport, food and experiences across Skardu and northern Pakistan.
             </p>
             <Link
               href="/travel-guides/"
               className="mt-6 inline-flex min-h-12 items-center rounded-full bg-skardu-gold px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-skardu-void"
             >
-              Browse travel guide clusters
+              Explore the travel guide
             </Link>
           </div>
 
@@ -75,7 +74,7 @@ export default function ArticlesPage() {
                       <Link
                         key={article.slug}
                         href={`/articles/${article.slug}/`}
-                        className="rounded-2xl border border-skardu-mist bg-skardu-stone/65 p-4 transition hover:border-skardu-gold hover:bg-skardu-stone sm:p-5"
+                        className="glass-card rounded-2xl p-4 transition hover:border-skardu-gold hover:bg-skardu-stone sm:p-5"
                       >
                         <span className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">{article.readTime}</span>
                         <h3 className="mt-3 font-display text-2xl font-bold leading-tight text-skardu-snow sm:text-3xl">{article.title}</h3>
@@ -91,7 +90,7 @@ export default function ArticlesPage() {
             })}
           </div> : (
             <p className="mt-10 rounded-2xl border border-skardu-control bg-skardu-stone/65 p-6 leading-7 text-skardu-ash">
-              No route article has completed local review yet. Drafts remain outside the search index and XML sitemap.
+              We’re preparing more travel guides. In the meantime, explore the guide library and destinations while you plan.
             </p>
           )}
         </div>

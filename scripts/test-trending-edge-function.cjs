@@ -41,7 +41,11 @@ async function main() {
       "Content-Type": "application/json",
       "x-cron-secret": cronSecret,
     },
-    body: JSON.stringify({ source: "manual-production-test", tested_at: new Date().toISOString() }),
+    body: JSON.stringify({
+      source: "manual-production-test",
+      workflow: process.argv.includes("--daily-publish") ? "daily-publish" : "seo-editorial-draft",
+      tested_at: new Date().toISOString(),
+    }),
   });
   const text = await response.text();
 

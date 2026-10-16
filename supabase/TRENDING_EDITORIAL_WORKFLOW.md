@@ -1,10 +1,10 @@
 # SEO travel-update editorial workflow
 
-The `generate-trending-article` function now creates bounded SEO drafts. It never publishes an article, posts it to Facebook, or selects an arbitrary Google Trends topic.
+The `generate-trending-article` function supports two explicit workflows. The default request creates a bounded SEO draft for human review. The scheduled `workflow: "daily-publish"` request creates one dated public article, sends the same article to the Make Facebook webhook, and optionally triggers a static-site deploy hook.
 
 ## 1. Apply and deploy
 
-Apply migrations `202608100001_harden_trending_editorial_workflow.sql` and `202608100002_schedule_weekly_trending_drafts.sql`, then deploy the Edge Function. The first migration archives legacy auto-published rows that have no documented human review. The second replaces the daily job with one weekly draft job.
+Apply migrations `202608100001_harden_trending_editorial_workflow.sql`, `202608100002_schedule_weekly_trending_drafts.sql`, and `202610160001_restore_daily_article_publishing.sql`, then deploy the Edge Function. The August migrations preserve the editorial schema; the October migration replaces the weekly draft schedule with the explicit daily publishing workflow.
 
 ## 2. Create a draft
 
@@ -53,7 +53,7 @@ Do not update `status` directly to `published`. The database constraint will rej
 
 ## 4. Approve
 
-After the human review, run this in the Supabase SQL editor using the draft UUID and the actual reviewer name:
+For the default draft workflow, after human review run this in the Supabase SQL editor using the draft UUID and the actual reviewer name:
 
 ```sql
 select public.approve_trending_article(
@@ -70,6 +70,8 @@ The approval function rejects articles without a unique intent, at least 600 wor
 
 Run a new production build after approval. The `prebuild` archive sync exports only approved rows that pass a second static validation gate. Those articles receive indexable `/trending/<slug>/` pages. The `/trending/` collection remains `noindex,follow` while empty, then becomes indexable only when it has approved, server-rendered article links.
 
-After checking the deployed canonical URL, an editor may run the separate Facebook publishing script. Social publishing is intentionally decoupled from draft generation and approval.
+For the daily workflow, Make delivery is recorded in `facebook_webhook_status`, `facebook_webhook_response`, `facebook_webhook_error`, and `facebook_posted_at`. A successful webhook response means Make accepted the payload; confirm the Facebook module/page result in Make. If delivery fails, replay it with `node scripts/publish-trending-to-facebook.cjs --limit 3`.
+
+Because this project uses a static Next.js export, set `SITE_DEPLOY_HOOK_URL` to the deployment hook for the host that publishes `out/`. Without that hook the database row and Facebook post can succeed while the new article waits for the next site build.
 
 To withdraw an update, set it to `archived`, add a reason to `editorial_notes`, choose the best relevant permanent redirect, and rebuild. To refresh an existing intent, edit the same row and URL—never create a date-stamped replacement. A material edit to published copy, intent fields, citations, or local evidence automatically changes the row to `in_review` and clears its prior approval stamp; reapprove it after the new verification pass.

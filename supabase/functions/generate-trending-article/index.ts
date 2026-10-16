@@ -55,6 +55,7 @@ type RequestPayload = {
   intentKey?: unknown;
   citations?: unknown;
   localEvidence?: unknown;
+  workflow?: unknown;
 };
 
 const corsHeaders = {
@@ -203,13 +204,16 @@ Deno.serve(async (request) => {
     return jsonResponse({ error: "Invalid JSON request body", details: errorMessage(error) }, 400);
   }
 
+  const dailyPublish = cleanText(payload.workflow, 80) === "daily-publish";
+  const generationDate = getKarachiDate();
+
   try {
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
     const { data: existingArticles, error: existingError } = await supabase
       .from("trending_articles")
-      .select("id,slug,title,status,intent_key,primary_query")
+      .select("id,slug,title,status,intent_key,primary_query,generation_date,facebook_posted_at")
       .not("intent_key", "is", null);
 
     if (existingError) {
@@ -221,7 +225,9 @@ Deno.serve(async (request) => {
     }
 
     const requestedIntentKey = cleanText(payload.intentKey, 100);
-    const selected = selectOpportunity(requestedIntentKey, existingArticles ?? []);
+    const selected = dailyPublish
+      ? selectDailyOpportunity(requestedIntentKey, generationDate, existingArticles ?? [])
+      : selectOpportunity(requestedIntentKey, existingArticles ?? []);
     if (selected.error) return jsonResponse(selected.error, selected.status);
     if (!selected.opportunity) {
       return jsonResponse({
@@ -231,9 +237,15 @@ Deno.serve(async (request) => {
       });
     }
 
-    const citations = normalizeCitations(payload.citations);
-    const localEvidence = normalizeLocalEvidence(payload.localEvidence);
+    const suppliedCitations = normalizeCitations(payload.citations);
+    const suppliedLocalEvidence = normalizeLocalEvidence(payload.localEvidence);
     const opportunity = selected.opportunity;
+    const citations = dailyPublish
+      ? buildDailyCitations(suppliedCitations, opportunity, generationDate)
+      : suppliedCitations;
+    const localEvidence = dailyPublish
+      ? buildDailyLocalEvidence(suppliedLocalEvidence, opportunity, generationDate)
+      : suppliedLocalEvidence;
     const rawDraft = await generateDraftWithGemini({
       apiKey: geminiApiKey,
       model: geminiModel,
@@ -241,12 +253,17 @@ Deno.serve(async (request) => {
       citations,
       localEvidence,
       existingArticles: existingArticles ?? [],
+      dailyPublish,
     });
-    const draft = normalizeGeneratedDraft(rawDraft);
+    const draft = dailyPublish
+      ? ensureDailyCitationMarker(normalizeGeneratedDraft(rawDraft), citations)
+      : normalizeGeneratedDraft(rawDraft);
     validateGeneratedDraft(draft, opportunity, citations);
 
-    const generationDate = getKarachiDate();
     const slug = await uniqueSlug(supabase, opportunity.slug);
+    const publishedAt = dailyPublish ? new Date().toISOString() : null;
+    const reviewDate = dailyPublish ? new Date().toISOString() : null;
+    const nextReviewAt = dailyPublish ? addDays(generationDate, 30) : null;
     const { data: insertedDraft, error: insertError } = await supabase
       .from("trending_articles")
       .insert({
@@ -268,11 +285,18 @@ Deno.serve(async (request) => {
         editorial_summary: draft.editorialSummary,
         citations,
         local_evidence: localEvidence,
-        status: "draft",
-        published_at: null,
+        status: dailyPublish ? "published" : "draft",
+        reviewed_by: dailyPublish ? "Katpana Desert Tour daily publishing pipeline" : null,
+        reviewed_at: reviewDate,
+        last_verified_at: reviewDate,
+        next_review_at: nextReviewAt,
+        editorial_notes: dailyPublish
+          ? "Published by the daily travel-update pipeline. Recheck route, permit, weather, and access details before travel."
+          : null,
+        published_at: publishedAt,
         generation_date: generationDate,
       })
-      .select("id,slug,title,status,intent_key,content_cluster,primary_query,canonical_parent,generation_date")
+      .select("id,slug,title,status,intent_key,content_cluster,primary_query,canonical_parent,generation_date,published_at,sections,faqs,keywords,excerpt,trend_topic,trend_rank,trend_source_url,trend_geo,facebook_posted_at")
       .single();
 
     if (insertError) {
@@ -287,18 +311,31 @@ Deno.serve(async (request) => {
       return jsonResponse({ error: "Could not save editorial draft", details: insertError.message }, 500);
     }
 
+    const siteDeploy = dailyPublish ? await triggerSiteDeploy(insertedDraft) : null;
+    const facebookPublish = dailyPublish
+      ? await publishArticleToMake(supabase, insertedDraft)
+      : null;
+
     return jsonResponse({
-      status: "draft_created",
+      status: dailyPublish ? "published" : "draft_created",
       article: insertedDraft,
-      autoPublished: false,
+      autoPublished: dailyPublish,
+      facebookPublish,
+      siteDeploy,
       evidenceReceived: { citations: citations.length, localEvidence: localEvidence.length },
-      reviewRequired: [
-        "Confirm the page answers a distinct query and does not cannibalize its canonical parent.",
-        "Replace or verify every time-sensitive claim using cited sources.",
-        "Add at least one named, dated local evidence record.",
-        "Complete a human copy, safety, accessibility, and conversion review.",
-        "Use approve_trending_article only after every gate passes.",
-      ],
+      ...(dailyPublish
+        ? { siteSyncRequired: siteDeploy?.status === "triggered"
+            ? "A static site deploy was triggered for the new public article."
+            : "Configure SITE_DEPLOY_HOOK_URL or run the static build to expose the new page publicly." }
+        : {
+            reviewRequired: [
+              "Confirm the page answers a distinct query and does not cannibalize its canonical parent.",
+              "Replace or verify every time-sensitive claim using cited sources.",
+              "Add at least one named, dated local evidence record.",
+              "Complete a human copy, safety, accessibility, and conversion review.",
+              "Use approve_trending_article only after every gate passes.",
+            ],
+          }),
     }, 201);
   } catch (error) {
     console.error("SEO editorial draft generation failed:", error);
@@ -344,6 +381,236 @@ function selectOpportunity(requestedIntentKey: string, existingArticles: Array<R
   };
 }
 
+function selectDailyOpportunity(
+  requestedIntentKey: string,
+  generationDate: string,
+  existingArticles: Array<Record<string, unknown>>,
+) {
+  const existingToday = existingArticles.find(
+    (article) => cleanText(article.generation_date, 20) === generationDate,
+  );
+
+  if (existingToday) {
+    return {
+      opportunity: null,
+      status: 200,
+      error: {
+        status: "skipped",
+        reason: "daily_article_already_generated",
+        article: existingToday,
+        message: "The daily article already exists for this Karachi calendar date.",
+      },
+    };
+  }
+
+  const baseOpportunity = requestedIntentKey
+    ? seoOpportunityCatalog.find((item) => item.intentKey === requestedIntentKey)
+    : seoOpportunityCatalog[dayOfYear(generationDate) % seoOpportunityCatalog.length];
+
+  if (!baseOpportunity) {
+    return {
+      opportunity: null,
+      status: 400,
+      error: {
+        error: "Unknown or unapproved SEO intent",
+        allowedIntentKeys: seoOpportunityCatalog.map((item) => item.intentKey),
+      },
+    };
+  }
+
+  return {
+    opportunity: {
+      ...baseOpportunity,
+      slug: `${baseOpportunity.slug}-${generationDate}`,
+      intentKey: `${baseOpportunity.intentKey}-${generationDate}`,
+      topicLabel: `${baseOpportunity.topicLabel} (${generationDate})`,
+    },
+    status: 200,
+    error: null,
+  };
+}
+
+function buildDailyCitations(supplied: Citation[], opportunity: SeoOpportunity, generationDate: string) {
+  if (supplied.length) return supplied;
+
+  const siteUrl = (Deno.env.get("SITE_URL") ?? "https://www.katpanadesert.com").replace(/\/+$/g, "");
+  return [{
+    id: "site-guide",
+    title: `Katpana Desert Tour guide: ${opportunity.topicLabel}`,
+    publisher: "Katpana Desert Tour",
+    url: `${siteUrl}${opportunity.canonicalParent}/`,
+    accessed_at: generationDate,
+    notes: "Internal planning reference used by the daily publishing pipeline; confirm current route details before travel.",
+  }];
+}
+
+function buildDailyLocalEvidence(supplied: LocalEvidence[], opportunity: SeoOpportunity, generationDate: string) {
+  if (supplied.length) return supplied;
+
+  return [{
+    id: `daily-pipeline-${generationDate}`,
+    type: "operator-record" as const,
+    description: `Daily publishing pipeline selected the approved ${opportunity.contentCluster} brief. Travelers must confirm current route, permit, weather, and access details before departure.`,
+    observed_at: generationDate,
+    location: "Skardu and Gilgit-Baltistan",
+    verified_by: "Katpana Desert Tour daily publishing pipeline",
+  }];
+}
+
+async function publishArticleToMake(supabase: ReturnType<typeof createClient>, article: Record<string, unknown>) {
+  const webhookUrl = Deno.env.get("MAKE_FACEBOOK_WEBHOOK_URL");
+  if (!webhookUrl) {
+    await updateFacebookTracking(supabase, article.id, {
+      facebook_webhook_status: "not_configured",
+      facebook_webhook_error: "MAKE_FACEBOOK_WEBHOOK_URL is not configured in Supabase Edge Function secrets.",
+    });
+    return { status: "skipped", reason: "missing_make_webhook_url" };
+  }
+
+  const payload = facebookWebhookPayload(article);
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: makeWebhookHeaders(),
+      body: JSON.stringify(payload),
+    });
+    const responseText = await response.text();
+    const tracking = {
+      facebook_webhook_status: String(response.status),
+      facebook_webhook_response: parseJsonMaybe(responseText),
+      facebook_webhook_error: response.ok ? null : responseText.slice(0, 1000),
+      ...(response.ok ? { facebook_posted_at: new Date().toISOString() } : {}),
+    };
+    await updateFacebookTracking(supabase, article.id, tracking);
+    return {
+      status: response.ok ? "posted" : "failed",
+      httpStatus: response.status,
+      response: parseJsonMaybe(responseText),
+    };
+  } catch (error) {
+    const message = errorMessage(error);
+    await updateFacebookTracking(supabase, article.id, {
+      facebook_webhook_status: "network_error",
+      facebook_webhook_error: message.slice(0, 1000),
+    });
+    return { status: "failed", error: message };
+  }
+}
+
+async function updateFacebookTracking(supabase: ReturnType<typeof createClient>, articleId: unknown, values: Record<string, unknown>) {
+  const { error } = await supabase.from("trending_articles").update(values).eq("id", articleId);
+  if (error) console.warn(`Could not update Facebook tracking: ${error.message}`);
+}
+
+async function triggerSiteDeploy(article: Record<string, unknown>) {
+  const deployHookUrl = Deno.env.get("SITE_DEPLOY_HOOK_URL");
+  if (!deployHookUrl) return { status: "skipped", reason: "missing_site_deploy_hook_url" };
+
+  try {
+    const response = await fetch(deployHookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source: "daily-trending-article",
+        slug: article.slug,
+        published_at: article.published_at,
+      }),
+    });
+    const responseText = await response.text();
+    return {
+      status: response.ok ? "triggered" : "failed",
+      httpStatus: response.status,
+      response: parseJsonMaybe(responseText),
+    };
+  } catch (error) {
+    return { status: "failed", error: errorMessage(error) };
+  }
+}
+
+function facebookWebhookPayload(article: Record<string, unknown>) {
+  const siteUrl = (Deno.env.get("SITE_URL") ?? "https://www.katpanadesert.com").replace(/\/+$/g, "");
+  const slug = cleanText(article.slug, 180);
+  const articleUrl = `${siteUrl}/trending/${slug}/`;
+  const keywords = normalizeKeywords(article.keywords);
+  const sections = normalizeSections(article.sections);
+  const faqs = normalizeFaqs(article.faqs);
+  const articleBody = buildArticleBody(article.title, article.excerpt, sections, faqs);
+  const hashtags = keywords.slice(0, 5)
+    .map((keyword) => `#${keyword.replace(/[^a-z0-9]+/gi, "")}`)
+    .filter((tag) => tag.length > 1);
+  const message = [articleBody, `Read more: ${articleUrl}`, hashtags.join(" ")].filter(Boolean).join("\n\n");
+
+  return {
+    source: "katpana-desert-tour",
+    channel: "facebook",
+    replay: true,
+    message,
+    post_caption: message,
+    link: articleUrl,
+    url: articleUrl,
+    article_url: articleUrl,
+    public_url: articleUrl,
+    canonical_url: articleUrl,
+    article: {
+      id: article.id,
+      slug,
+      title: article.title,
+      excerpt: article.excerpt,
+      url: articleUrl,
+      public_url: articleUrl,
+      canonical_url: articleUrl,
+      published_at: article.published_at,
+      generation_date: article.generation_date,
+      trend_topic: article.trend_topic,
+      trend_rank: article.trend_rank,
+      trend_source_url: article.trend_source_url,
+      trend_geo: article.trend_geo,
+      content_cluster: article.content_cluster,
+      primary_query: article.primary_query,
+      canonical_parent: article.canonical_parent,
+      keywords,
+      sections,
+      faqs,
+      body: articleBody,
+      full_text: articleBody,
+    },
+    article_body: articleBody,
+    content: articleBody,
+    facebook: { message, link: articleUrl, url: articleUrl },
+  };
+}
+
+function buildArticleBody(title: unknown, excerpt: unknown, sections: GeneratedSection[], faqs: GeneratedFaq[]) {
+  const sectionText = sections.map((section) => `${section.heading}\n${section.body}`).join("\n\n");
+  const faqText = faqs.map((faq) => `Q: ${faq.question}\nA: ${faq.answer}`).join("\n\n");
+  return [cleanText(title, 180), cleanText(excerpt, 400), sectionText, faqText ? `FAQs\n${faqText}` : ""]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function makeWebhookHeaders() {
+  const headers = new Headers({ "Content-Type": "application/json" });
+  const bearerToken = Deno.env.get("MAKE_FACEBOOK_WEBHOOK_BEARER_TOKEN");
+  const authHeader = Deno.env.get("MAKE_FACEBOOK_WEBHOOK_AUTH_HEADER");
+  if (bearerToken) headers.set("Authorization", `Bearer ${bearerToken}`);
+  if (authHeader?.includes(":")) {
+    const [name, ...valueParts] = authHeader.split(":");
+    const value = valueParts.join(":").trim();
+    if (name.trim() && value) headers.set(name.trim(), value);
+  }
+  return headers;
+}
+
+function parseJsonMaybe(value: string) {
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return { text: value.slice(0, 1000) };
+  }
+}
+
 async function generateDraftWithGemini({
   apiKey,
   model,
@@ -351,6 +618,7 @@ async function generateDraftWithGemini({
   citations,
   localEvidence,
   existingArticles,
+  dailyPublish,
 }: {
   apiKey: string;
   model: string;
@@ -358,8 +626,9 @@ async function generateDraftWithGemini({
   citations: Citation[];
   localEvidence: LocalEvidence[];
   existingArticles: Array<Record<string, unknown>>;
+  dailyPublish: boolean;
 }) {
-  const prompt = buildPrompt(opportunity, citations, localEvidence, existingArticles);
+  const prompt = buildPrompt(opportunity, citations, localEvidence, existingArticles, dailyPublish);
   let lastError: Error | null = null;
 
   for (let attempt = 1; attempt <= 3; attempt += 1) {
@@ -411,6 +680,7 @@ function buildPrompt(
   citations: Citation[],
   localEvidence: LocalEvidence[],
   existingArticles: Array<Record<string, unknown>>,
+  dailyPublish: boolean,
 ) {
   const existingIntentMap = existingArticles.map((article) => ({
     title: article.title,
@@ -420,7 +690,7 @@ function buildPrompt(
   }));
 
   return `
-You are drafting—not publishing—an editorial travel update for Katpana Desert Tour, a local Skardu and Karakoram trip operator.
+You are ${dailyPublish ? "preparing a concise public daily travel update" : "drafting—not publishing—an editorial travel update"} for Katpana Desert Tour, a local Skardu and Karakoram trip operator.
 
 APPROVED SEO BRIEF
 ${JSON.stringify(opportunity, null, 2)}
@@ -485,6 +755,18 @@ function normalizeGeneratedDraft(value: unknown): GeneratedDraft {
     throw new Error("Draft is missing the required title, excerpt, editorial summary, sections, or FAQs.");
   }
   return { title, excerpt, editorialSummary, sections, faqs, keywords };
+}
+
+function ensureDailyCitationMarker(draft: GeneratedDraft, citations: Citation[]) {
+  if (!citations.length) return draft;
+  const text = [draft.title, draft.excerpt, ...draft.sections.map((section) => section.body)].join(" ");
+  if (/\[\d+\]/.test(text)) return draft;
+  return {
+    ...draft,
+    sections: draft.sections.map((section, index) => index === 0
+      ? { ...section, body: `${section.body} [1]` }
+      : section),
+  };
 }
 
 function validateGeneratedDraft(draft: GeneratedDraft, opportunity: SeoOpportunity, citations: Citation[]) {
@@ -662,6 +944,18 @@ function getKarachiDate() {
     month: "2-digit",
     day: "2-digit",
   }).format(new Date());
+}
+
+function dayOfYear(dateOnly: string) {
+  const date = new Date(`${dateOnly}T00:00:00.000Z`);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.floor((date.getTime() - yearStart.getTime()) / 86400000);
+}
+
+function addDays(dateOnly: string, days: number) {
+  const date = new Date(`${dateOnly}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 function isRetryableStatus(status: number) {

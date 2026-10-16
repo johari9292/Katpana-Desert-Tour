@@ -35,6 +35,11 @@ function tsValue(value, indent = 4) {
 async function main() {
   loadEnvFile();
 
+  if (process.env.SKIP_TRENDING_SYNC === "1") {
+    console.warn("Skipping approved travel-update sync because SKIP_TRENDING_SYNC=1.");
+    return;
+  }
+
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = resolveSupabaseAdminKey();
 

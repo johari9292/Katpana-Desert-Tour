@@ -33,7 +33,7 @@ export default function DestinationShowcase() {
               viewport={{ once: true, margin: "-80px" }}
               transition={{ delay: index * 0.04, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               whileHover={reduceMotion ? undefined : { y: -8, borderColor: "#C9A84C" }}
-              className="overflow-hidden rounded-2xl border border-skardu-mist bg-skardu-stone/65"
+              className="glass-card overflow-hidden rounded-2xl"
             >
               <div className="relative">
                 <Image
@@ -45,7 +45,7 @@ export default function DestinationShowcase() {
                   className="aspect-[16/11] w-full object-cover opacity-75 sm:aspect-[4/3]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-skardu-void/85 via-skardu-void/20 to-transparent" />
-                <span className="absolute left-4 top-4 rounded-full bg-skardu-void/70 px-3 py-1 text-xs font-black uppercase tracking-widest text-skardu-gold backdrop-blur-md">
+                  <span className="glass-control absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-black uppercase tracking-widest text-skardu-gold">
                   {destination.type}
                 </span>
               </div>
@@ -55,7 +55,7 @@ export default function DestinationShowcase() {
                 <p className="mt-4 line-clamp-3 text-sm leading-6 text-skardu-ash">{destination.overview}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {destination.activities.slice(0, 2).map((activity) => (
-                    <span key={activity} className="rounded-full border border-skardu-mist px-3 py-1 text-xs font-bold text-skardu-ash">
+                    <span key={activity} className="glass-control rounded-full px-3 py-1 text-xs font-bold text-skardu-ash">
                       {activity}
                     </span>
                   ))}

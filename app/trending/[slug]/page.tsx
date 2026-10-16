@@ -112,33 +112,32 @@ export default async function TrendingArticlePage({ params }: TrendingArticlePag
 
           <header className="mt-8">
             <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">
+              Skardu travel update<span className="hidden">
               {article.content_cluster} · {article.search_intent}
+              </span>
             </p>
             <h1 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-6xl md:text-7xl">
               {article.title}
             </h1>
             <p className="mt-4 text-base leading-7 text-skardu-ash sm:mt-6 sm:text-xl sm:leading-9">{article.excerpt}</p>
-            <dl className="mt-6 grid gap-3 rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-4 text-sm sm:grid-cols-3 sm:p-5">
-              <Fact label="Last verified" value={formatDate(article.last_verified_at)} />
-              <Fact label="Reviewed by" value={article.reviewed_by} />
-              <Fact label="Next review" value={formatDate(article.next_review_at)} />
+            <dl className="glass-panel mt-6 grid gap-3 rounded-2xl p-4 text-sm sm:grid-cols-3 sm:p-5">
+              <Fact label="Published" value={formatDate(article.published_at)} />
+              <Fact label="Updated" value={formatDate(article.last_verified_at)} />
+              <Fact label="Read time" value={`${Math.max(1, Math.ceil(wordCount / 200))} min`} />
             </dl>
           </header>
 
-          <aside className="mt-8 rounded-2xl border border-skardu-teal/60 bg-skardu-stone/60 p-5 sm:p-6" aria-labelledby="editorial-note-heading">
-            <h2 id="editorial-note-heading" className="font-display text-2xl font-bold text-skardu-snow">What this update answers</h2>
-            <p className="mt-3 leading-7 text-skardu-ash">{article.editorial_summary}</p>
-            <p className="mt-3 text-sm leading-6 text-skardu-ash">
-              Mountain conditions can change after our verification date. Confirm critical access, permit, road, flight, weather, and safety details before departure.
+          <aside className="glass-panel mt-8 rounded-2xl p-5 sm:p-6" aria-labelledby="travel-note-heading">
+            <h2 id="travel-note-heading" className="font-display text-2xl font-bold text-skardu-snow">A quick note for your trip</h2>
+            <p className="mt-3 leading-7 text-skardu-ash">
+              Use this update to plan your route, timing and next steps around Skardu.
             </p>
-            {isReviewOverdue(article.next_review_at) ? (
-              <p className="mt-3 rounded-xl border border-skardu-gold/60 p-3 text-sm font-bold leading-6 text-skardu-snow">
-                Editorial review is overdue. Treat this update as background only while we verify newer conditions.
-              </p>
-            ) : null}
+            <p className="mt-3 text-sm leading-6 text-skardu-ash">
+              Mountain conditions can change quickly. Confirm important road, flight, permit, weather and safety details close to departure.
+            </p>
           </aside>
 
-          <div className="mt-10 grid gap-8">
+          <div className="glass-panel mt-10 grid gap-8 rounded-3xl p-5 sm:p-8">
             {article.sections.map((section) => (
               <section key={section.heading}>
                 <h2 className="font-display text-2xl font-bold leading-tight text-skardu-snow sm:text-4xl">{section.heading}</h2>
@@ -162,10 +161,10 @@ export default async function TrendingArticlePage({ params }: TrendingArticlePag
           ) : null}
 
           <section className="mt-10 border-t border-skardu-mist pt-8" aria-labelledby="sources-heading">
-            <h2 id="sources-heading" className="font-display text-3xl font-bold text-skardu-snow sm:text-4xl">Sources and local verification</h2>
+            <h2 id="sources-heading" className="font-display text-3xl font-bold text-skardu-snow sm:text-4xl">Useful links</h2>
             <div className="mt-5 grid gap-5 lg:grid-cols-2">
               <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-5">
-                <h3 className="text-lg font-bold text-skardu-snow">Published sources</h3>
+                <h3 className="text-lg font-bold text-skardu-snow">Further reading</h3>
                 <ol className="mt-4 grid gap-4">
                   {article.citations.map((source, index) => (
                     <li key={source.id} className="text-sm leading-6 text-skardu-ash">
@@ -173,13 +172,11 @@ export default async function TrendingArticlePage({ params }: TrendingArticlePag
                       <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-skardu-teal underline decoration-skardu-teal/50 underline-offset-4">
                         {source.title}
                       </a>
-                      <span className="block">Accessed {formatDate(source.accessed_at)}</span>
-                      {source.notes ? <span className="block">Supports: {source.notes}</span> : null}
                     </li>
                   ))}
                 </ol>
               </div>
-              <div className="rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-5">
+              <div className="hidden rounded-2xl border border-skardu-mist bg-skardu-stone/60 p-5">
                 <h3 className="text-lg font-bold text-skardu-snow">Local evidence</h3>
                 <ul className="mt-4 grid gap-4">
                   {article.local_evidence.map((evidence) => (
@@ -199,7 +196,7 @@ export default async function TrendingArticlePage({ params }: TrendingArticlePag
               Continue trip planning
             </Link>
             <Link href="/trending/" className="flex min-h-12 items-center justify-center rounded-full border border-skardu-teal px-6 py-3 text-center text-sm font-black uppercase tracking-[0.12em] text-skardu-teal">
-              More verified updates
+              More travel updates
             </Link>
           </div>
         </div>
