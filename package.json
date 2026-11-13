@@ -4,6 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "reels": "node scripts/reel-wizard.cjs",
+    "reels:create": "node scripts/create-topic-reel.cjs",
+    "reels:queue": "node scripts/queue-topic-reel.cjs",
+    "reels:publish-test": "node scripts/publish-test-reel.cjs",
+    "reels:test": "node --test scripts/reels.test.cjs",
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
     "prebuild": "node scripts/sync-trending-archive.cjs",
     "build": "next build",
