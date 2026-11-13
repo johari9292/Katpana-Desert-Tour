@@ -19,7 +19,9 @@ function readLocaleExportConfig(root = process.cwd()) {
     locales: descriptors,
     siteUrl,
     outputRoot: path.join(root, "out"),
+    prerenderRoot: path.join(root, ".next", "server", "app"),
     fileFor: ({ href }) => path.join(root, "out", href.replace(/^\/+/, ""), "index.html"),
+    nextFileFor: ({ code }) => path.join(root, ".next", "server", "app", `${code === "en" ? "index" : code}.html`),
     urlFor: ({ href }) => `${siteUrl}${href}`
   };
 }

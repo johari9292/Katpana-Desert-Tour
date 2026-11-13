@@ -43,6 +43,23 @@ for (const locale of config.locales) {
   if (document.lang !== locale.code || document.dir !== locale.dir) {
     failures.push(`${locale.href}: incorrect document lang or dir`);
   }
+  // The production host can serve Next's prerendered pages instead of out/.
+  // Both copies must agree, including the document attributes and all SEO data.
+  if (fs.existsSync(config.prerenderRoot)) {
+    const nextFile = config.nextFileFor(locale);
+    if (!fs.existsSync(nextFile)) {
+      failures.push(`${locale.href}: missing Next prerendered landing page`);
+    } else {
+      const nextHtml = fs.readFileSync(nextFile, "utf8");
+      const nextDocument = attributes(nextHtml.match(/<html\b[^>]*>/i)?.[0] || "");
+      if (nextDocument.lang !== locale.code || nextDocument.dir !== locale.dir) {
+        failures.push(`${locale.href}: incorrect Next prerender document lang or dir`);
+      }
+      if (nextHtml !== html) {
+        failures.push(`${locale.href}: Next prerendered HTML differs from the validated static export`);
+      }
+    }
+  }
   const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1] || "";
   const links = [...head.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => tag);
   const canonical = links.map(attributes).filter(({ rel }) => rel === "canonical");
@@ -83,4 +100,4 @@ if (failures.length) {
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exit(1);
 }
-console.log(`Multilingual export check passed for ${config.locales.length} languages, reciprocal alternates, canonicals and localized content.`);
+console.log(`Multilingual export check passed for ${config.locales.length} languages, matching Next prerenders, reciprocal alternates, canonicals and localized content.`);
