@@ -24,6 +24,9 @@ async function queue(filename, dryRun = false, makeCall = callMake) {
   const snapshot = await makeCall("scenario_get", { scenarioId });
   if (snapshot.isError || !snapshot.structuredContent?.scenario) throw new Error("Could not inspect the existing scheduler.");
   const scenario = snapshot.structuredContent;
+  if (scenario.modules.some((module) => module.label === "Fresh daily Reel")) {
+    throw new Error("Live daily preparation owns this schedule. Run npm run social:prepare to prepare the next matching post and Reel together.");
+  }
   if (scenario.scenario.status !== "active") throw new Error("The daily scheduler must be active before queuing a Reel.");
   const reelModule = await makeCall("scenario_module_get", { scenarioId, moduleIds: [4] });
   const current = reelModule.structuredContent?.modules?.[0];

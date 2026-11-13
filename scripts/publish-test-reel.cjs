@@ -20,7 +20,7 @@ async function publishNow(filename) {
   const scenarioId = 8551535;
   const before = check(await callMake("scenario_get", { scenarioId }));
   if (before.scenario.status !== "active") throw new Error("The existing scheduler is not active.");
-  const target = before.modules.find((module) => module.label === "Queued topic Reel");
+  const target = before.modules.find((module) => module.label === "Queued topic Reel" || module.label === "Fresh daily Reel");
   if (!target) throw new Error("Queue a topic Reel first so the test route exists.");
   const module = check(await callMake("scenario_module_get", { scenarioId, moduleIds: [target.id] })).modules[0];
   const routes = before.modules.filter((entry) => entry.parent?.kind === "route" && entry.parent.moduleId === 2);

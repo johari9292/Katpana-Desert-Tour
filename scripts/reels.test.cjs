@@ -49,6 +49,17 @@ test("original music is a non-silent PCM WAV of the requested duration", () => {
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test("daily seeds produce different instrumental arrangements", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-music-variety-"));
+  try {
+    const first = path.join(dir, "first.wav");
+    const second = path.join(dir, "second.wav");
+    createMusic(first, 1, 100);
+    createMusic(second, 1, 101);
+    assert.notDeepEqual(fs.readFileSync(first), fs.readFileSync(second));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("queue rejects past slots and converts Pakistan time correctly", () => {
   const reel = { date: "2026-11-14", seconds: 12, video: "reel.mp4", caption: "caption", topic: "topic" };
   assert.equal(validate(reel, new Date("2026-11-13T08:00:00Z")), "2026-11-14T04:00:00.000Z");

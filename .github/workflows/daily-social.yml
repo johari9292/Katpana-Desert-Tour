@@ -1,0 +1,70 @@
+name: Prepare daily Facebook post and Reel
+
+on:
+  schedule:
+    - cron: '37 2 * * *'
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: 'Publishing date in Pakistan (YYYY-MM-DD); empty selects the next 9 AM slot'
+        required: false
+        type: string
+      dry_run:
+        description: 'Render and validate without updating the Make schedule'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-social-preparation
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Install video renderer
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Restore topic history
+        uses: actions/cache/restore@v6
+        with:
+          path: .supabase/social-history.json
+          key: social-history-${{ github.run_id }}
+          restore-keys: social-history-
+      - name: Check content pipeline
+        run: node --test scripts/reels.test.cjs scripts/daily-social.test.cjs
+      - name: Prepare fresh topic, photo and musical Reel in Make
+        env:
+          MAKE_MCP_API_KEY: ${{ secrets.MAKE_MCP_API_KEY }}
+          MAKE_MCP_URL: ${{ secrets.MAKE_MCP_URL }}
+          SOCIAL_TARGET_DATE: ${{ inputs.target_date }}
+          SOCIAL_DRY_RUN: ${{ inputs.dry_run }}
+        run: node scripts/daily-social-content.cjs
+      - name: Save topic history
+        if: inputs.dry_run != true
+        uses: actions/cache/save@v6
+        with:
+          path: .supabase/social-history.json
+          key: social-history-${{ github.run_id }}
+      - name: Save prepared media and provenance
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: daily-social-media-${{ github.run_id }}
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore
+          path: |
+            .supabase/reels/*/reel.mp4
+            .supabase/reels/*/post.jpg
+            .supabase/reels/*/daily-post.json
+            .supabase/reels/*/reel.json

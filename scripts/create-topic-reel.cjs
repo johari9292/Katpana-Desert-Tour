@@ -1,6 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { createHash } = require("node:crypto");
 const { resolvePost, briefFor } = require("./reel-topic.cjs");
 const { createMusic } = require("./reel-music.cjs");
 
@@ -38,6 +39,7 @@ function render(options) {
   const seconds = Number(options.seconds || 12);
   if (!Number.isInteger(seconds) || seconds < 10 || seconds > 60) throw new Error("--seconds must be an integer between 10 and 60.");
   const post = resolvePost(options);
+  const seed = createHash("sha256").update(`${post.date}:${post.title}`).digest().readUInt32LE(0);
   const slug = post.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "travel";
   const directory = path.resolve(options.out || `.supabase/reels/${post.date}-${slug}`);
   fs.mkdirSync(directory, { recursive: true });
@@ -58,16 +60,16 @@ function render(options) {
   if (!duration || !/Video:/.test(probe.stderr)) throw new Error("Could not inspect the source video.");
   const available = Number(duration[1]) * 3600 + Number(duration[2]) * 60 + Number(duration[3]);
   if (available < seconds) throw new Error(`Source video is ${available}s; supply at least ${seconds}s of footage.`);
-  const font = path.resolve(options.font || process.env.SOCIAL_FONT_PATH || "C:/Windows/Fonts/arialbd.ttf");
+  const font = path.resolve(options.font || process.env.SOCIAL_FONT_PATH || (process.platform === "win32" ? "C:/Windows/Fonts/arialbd.ttf" : "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"));
   if (!fs.existsSync(font)) throw new Error("Set --font or SOCIAL_FONT_PATH to a TrueType font.");
   fs.copyFileSync(font, path.join(directory, "font.ttf"));
   fs.writeFileSync(path.join(directory, "title.txt"), wrap(post.title));
   fs.writeFileSync(path.join(directory, "cta.txt"), "Plan your next adventure\nkatpanadesert.com");
-  const music = options.music ? path.resolve(options.music) : createMusic(path.join(directory, "original-music.wav"), seconds);
+  const music = options.music ? path.resolve(options.music) : createMusic(path.join(directory, "original-music.wav"), seconds, seed);
   if (!fs.existsSync(music)) throw new Error("Music file not found.");
   if (music === output) throw new Error("Music input and output must be different files.");
   const filter = [
-    "[0:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,setsar=1,fps=25",
+    `[0:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280:x=(iw-ow)*${0.15 + (seed % 71) / 100},setsar=1,fps=25`,
     ",drawbox=x=0:y=840:w=iw:h=440:color=black@0.55:t=fill",
     ",drawtext=fontfile=font.ttf:text='KATPANA DESERT':expansion=none:fontcolor=white:fontsize=24:x=48:y=875",
     `,drawtext=fontfile=font.ttf:textfile=title.txt:expansion=none:fontcolor=white:fontsize=39:line_spacing=12:x=48:y=932:enable='lt(t,${seconds - 4})'`,
@@ -76,10 +78,10 @@ function render(options) {
     `[1:a]atrim=duration=${seconds},asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=${seconds - 1}:d=1,volume=${options.music ? 0.65 : 2}[a]`,
   ].join("");
   const result = spawnSync(ffmpeg, [
-    "-y", "-hide_banner", "-loglevel", "error", "-i", source,
+    "-y", "-hide_banner", "-loglevel", "error", "-ss", String(((seed % 1000) / 1000) * Math.max(0, available - seconds)), "-i", source,
     "-stream_loop", "-1", "-i", music,
     "-filter_complex", filter, "-map", "[v]", "-map", "[a]", "-t", String(seconds),
-    "-c:v", "libx264", "-preset", "fast", "-crf", "24", "-maxrate", "310k", "-bufsize", "620k",
+    "-c:v", "libx264", "-preset", "fast", "-crf", "24", "-maxrate", "270k", "-bufsize", "540k",
     "-c:a", "aac", "-b:a", "64k", "-ac", "2", "-ar", "44100", "-movflags", "+faststart", output,
   ], { cwd: directory, stdio: "inherit" });
   if (result.error) throw result.error;
@@ -87,7 +89,8 @@ function render(options) {
   const metadata = {
     video: output, seconds, width: 720, height: 1280, topic: post.title,
     date: post.date, source: post.source,
-    caption: `${post.source === "daily-evergreen-post" ? post.caption.split("\n\nPhoto:")[0] : post.caption}\n\nVisuals: illustrative travel footage, not a report of current conditions.${options.video ? "" : " Source: https://www.pexels.com/video/19150358/"}\nMusic: ${options.music ? "user-supplied track" : "original instrumental composed by this workflow"}.`,
+    caption: post.source === "daily-evergreen-post" ? post.caption.split("\n\nPhoto:")[0] : post.caption,
+    provenance: { seed, footageSource: options.video ? "operator-supplied" : "https://www.pexels.com/video/19150358/", license: options.video ? "operator-supplied" : "Pexels license; attribution not required", musicSource: options.music ? "operator-supplied" : "original synthesized instrumental" },
     music: options.music ? "user-supplied" : "original-synthesized",
     footage: source, bytes: fs.statSync(output).size,
   };

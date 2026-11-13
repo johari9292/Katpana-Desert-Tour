@@ -44,7 +44,12 @@ function clean(value, limit) {
 
 function resolvePost(options) {
   const date = checkedDate(options.date || pakistanDate());
-  if (!options.post && !options.topic) return dailyPost(date);
+  if (!options.post && !options.topic) {
+    const historyFile = ".supabase/social-history.json";
+    const saved = fs.existsSync(historyFile) ? JSON.parse(fs.readFileSync(historyFile, "utf8")).find((entry) => entry.date === date) : null;
+    if (saved) return { title: saved.topic, caption: saved.caption, excerpt: saved.caption.split("\n")[0], date, source: "daily-live-topic" };
+    return dailyPost(date);
+  }
   const payload = options.post ? JSON.parse(fs.readFileSync(options.post, "utf8")) : {};
   const article = payload.article || payload;
   const title = clean(options.topic || article.title || article.trend_topic, 160);

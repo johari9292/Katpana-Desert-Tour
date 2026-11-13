@@ -1,5 +1,10 @@
 # Katpana Desert Facebook automation
 
+**Current production behavior:** daily fresh-topic photo **and Reel** at 09:00
+Pakistan time. See [DAILY_SOCIAL_AUTOMATION.md](DAILY_SOCIAL_AUTOMATION.md).
+The old repeating Sunday Reel and eight-photo rotation described in the
+original setup below have been superseded by this daily flow.
+
 ## Live configuration
 
 - Make zone: `eu1.make.com`, team `1704156`.

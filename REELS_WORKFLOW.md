@@ -1,5 +1,10 @@
 # Reels with music
 
+For the active unattended daily topic/post/Reel pipeline, see
+[DAILY_SOCIAL_AUTOMATION.md](DAILY_SOCIAL_AUTOMATION.md). It replaces the original
+Sunday-only schedule. The local tools below remain available for previews and
+testing; the legacy manual queue cannot overwrite the active daily automation.
+
 Double-click **Create-Reel.cmd**, or run `npm run reels` from this project.
 In PowerShell, use `npm.cmd` instead of `npm` if script execution is blocked.
 
@@ -8,7 +13,8 @@ The menu offers:
 1. Create a **12-second vertical Reel** from moving footage with an original
    instrumental track, topic text, and a closing call to action.
 2. Generate a topic-matched **prompt/brief for an AI video service**.
-3. Queue a finished Reel in the existing Make scheduler for its selected date.
+3. Prepare the next matching daily post and Reel in Make.
+4. Queue a finished Reel in the original legacy scheduling mode only.
 
 The local renderer calls no paid AI API. It edits moving video; it does not
 generate new scenes from a text prompt. By default it uses the travel footage
@@ -19,9 +25,10 @@ silently stretched or looped to meet the minimum length.
 
 ## Match the daily post
 
-The default topic follows the **same date and photo rotation as Make**, using
-Pakistan time. Choose the intended publishing date before rendering. This is
-the existing evergreen content rotation, not a live trends feed.
+The local default first uses a saved daily topic for the selected Pakistan date.
+If no prepared topic is saved locally, the preview renderer falls back to the
+legacy evergreen catalog. The production daily worker always fetches current
+topic feeds and never uses that catalog as a substitute for fresh topics.
 
 For a trending article, supply its exact JSON payload. The existing Facebook
 webhook payload works: the renderer reads `article.title`, `article.excerpt`,
@@ -56,7 +63,11 @@ stated in its caption. Use location-matched footage for a factual destination
 report. Photo credits from the evergreen photo caption are removed from the
 Reel caption; the video and music credits are supplied instead.
 
-## Queue in Make
+## Queue in Make (legacy mode)
+
+The production daily pipeline owns the current Make routes. Use Reel Studio
+option 3 or `npm run social:prepare` for the current mode. The queue commands
+below apply only when the legacy mode is active.
 
 Choose option 3 in the menu and paste the path to the generated `reel.json`, or:
 
