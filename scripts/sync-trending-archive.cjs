@@ -32,26 +32,64 @@ function tsValue(value, indent = 4) {
     .join("\n");
 }
 
-async function main() {
-  loadEnvFile();
+const transientHttpStatuses = new Set([0, 408, 502, 503, 504]);
+const transportErrorCodes = new Set([
+  "ECONNRESET", "ECONNREFUSED", "ENOTFOUND", "EAI_AGAIN", "ETIMEDOUT",
+  "UND_ERR_CONNECT_TIMEOUT", "UND_ERR_HEADERS_TIMEOUT", "UND_ERR_SOCKET", "ABORT_ERR",
+]);
 
-  if (process.env.SKIP_TRENDING_SYNC === "1") {
-    console.warn("Skipping approved travel-update sync because SKIP_TRENDING_SYNC=1.");
+function isTransientSyncFailure(error, status) {
+  if (!error) return false;
+  const code = String(error.code || error.cause?.code || "");
+  // Database, PostgREST, auth and schema errors must remain visible, even if a
+  // response incorrectly reports status 0 alongside its permanent error code.
+  if (code && !transportErrorCodes.has(code)) return false;
+  if (Number.isInteger(status)) return transientHttpStatuses.has(status);
+  if (transportErrorCodes.has(code)) return true;
+  return /^(?:TypeError:\s*)?(?:fetch failed|failed to fetch|network request failed|networkerror when attempting to fetch resource\.?|request timed out)$/i
+    .test(String(error.message || "").trim());
+}
+
+function retainReviewedArchive(outputPath, warn) {
+  if (!fs.existsSync(outputPath)) {
+    throw new Error("Supabase is temporarily unavailable and no reviewed static archive exists. Restore data/trending-static.ts before building.");
+  }
+  const source = fs.readFileSync(outputPath, "utf8");
+  const typedArchive = /const\s+approvedStaticTrendingArticles\s*:\s*TrendingArticle\[\]/.test(source);
+  const expiryGate = /export\s+const\s+staticTrendingArticles\s*=\s*approvedStaticTrendingArticles\.filter\(\s*\(article\)\s*=>\s*isTrendingReviewCurrent\(article\.next_review_at\)/.test(source);
+  if (!typedArchive || !expiryGate) {
+    throw new Error("Cannot retain the static archive: its typed editorial archive or review-expiry filter is missing.");
+  }
+  warn("Supabase is temporarily unavailable. Keeping the existing reviewed static archive unchanged; its review-expiry filter still runs during this build.");
+}
+
+async function main({
+  env = process.env,
+  loadEnv = env === process.env,
+  clientFactory = createClient,
+  outputPath = path.join(process.cwd(), "data", "trending-static.ts"),
+  warn = console.warn,
+  log = console.log,
+} = {}) {
+  if (loadEnv) loadEnvFile();
+
+  if (env.SKIP_TRENDING_SYNC === "1") {
+    warn("Skipping approved travel-update sync because SKIP_TRENDING_SYNC=1.");
     return;
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = resolveSupabaseAdminKey();
+  const supabaseUrl = env.SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = resolveSupabaseAdminKey(env);
 
   if (!supabaseUrl || !supabaseKey) {
-    console.warn("Skipping approved travel-update sync: missing Supabase URL or admin key.");
+    warn("Skipping approved travel-update sync: missing Supabase URL or admin key.");
     return;
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey, {
+  const supabase = clientFactory(supabaseUrl, supabaseKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const [publishedResult, archivedResult] = await Promise.all([
+  const queryResults = await Promise.allSettled([
     supabase
       .from("trending_articles")
       .select([
@@ -72,12 +110,25 @@ async function main() {
       .order("generation_date", { ascending: false })
       .limit(365),
   ]);
+  const [publishedResult, archivedResult] = queryResults.map((result) =>
+    result.status === "fulfilled"
+      ? result.value
+      : { error: result.reason, status: result.reason?.status }
+  );
 
-  if (publishedResult.error) {
+  const failures = [publishedResult, archivedResult].filter((result) => result.error);
+  // Never hide a permanent failure in one query behind a temporary failure in
+  // the other, and never write a partial result into the committed archive.
+  const permanentFailure = failures.find((result) => !isTransientSyncFailure(result.error, result.status));
+  if (permanentFailure === publishedResult) {
     throw new Error(`Could not sync approved travel updates: ${publishedResult.error.message}. Apply the editorial workflow migrations first.`);
   }
-  if (archivedResult.error) {
+  if (permanentFailure === archivedResult) {
     throw new Error(`Could not load archived SEO signals: ${archivedResult.error.message}. Use a Supabase admin key so archived rows are visible.`);
+  }
+  if (failures.length) {
+    retainReviewedArchive(outputPath, warn);
+    return;
   }
 
   const rows = publishedResult.data ?? [];
@@ -86,7 +137,7 @@ async function main() {
   const archivedSeoSignals = buildArchivedSeoSignals(archivedResult.data ?? []);
   const rejectedCount = rows.length - articles.length;
   if (rejectedCount) {
-    console.warn(`Excluded ${rejectedCount} published row(s) that did not pass the static editorial gate.`);
+    warn(`Excluded ${rejectedCount} published row(s) that did not pass the static editorial gate.`);
   }
 
   const body = articles.length
@@ -131,9 +182,8 @@ export function getStaticTrendingArticle(slug: string) {
 export const archivedSeoSignals: ArchivedSeoSignal[] = ${JSON.stringify(archivedSeoSignals, null, 2)};
 `;
 
-  const outputPath = path.join(process.cwd(), "data", "trending-static.ts");
   fs.writeFileSync(outputPath, completeBody, "utf8");
-  console.log(`Synced ${articles.length} approved travel update(s) and ${archivedSeoSignals.length} archived SEO signal group(s).`);
+  log(`Synced ${articles.length} approved travel update(s) and ${archivedSeoSignals.length} archived SEO signal group(s).`);
 }
 
 const archivedSeoTargets = [
@@ -289,4 +339,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildArchivedSeoSignals, isEditoriallyApprovedArticle, isTrendingReviewCurrent };
+module.exports = { buildArchivedSeoSignals, isEditoriallyApprovedArticle, isTrendingReviewCurrent, isTransientSyncFailure, syncTrendingArchive: main };

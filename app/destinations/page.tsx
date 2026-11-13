@@ -77,8 +77,8 @@ export default function DestinationsPage() {
               Northern Pakistan destinations for global travelers
             </h1>
             <p className="mt-6 text-lg leading-8 text-skardu-ash">
-              Read destination overviews for international Skardu tourism, trekking, family trips, cultural travel,
-              high plateaus, and adventure routes across Gilgit-Baltistan.
+              Find a place that fits your idea of adventure. Explore Skardu&apos;s desert and lakes, Baltistan&apos;s
+              heritage valleys, Hunza and the Karakoram, with practical notes on access, seasons and travel style.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <TrackedLink

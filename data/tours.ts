@@ -54,7 +54,7 @@ export const tourPackages: TourPackage[] = [
     bestSeason: "April to October, with winter snow trips on request",
     priceFrom: "Custom quote",
     image: "/images/places/katapana-desert.jpg",
-    badge: "Best seller",
+    badge: "Skardu highlights",
     overview: `${BRAND_NAME} builds this short Skardu package around the cold desert, blue lakes, heritage lanes, and flexible airport timing. It works well for families, couples, and first-time visitors who want the strongest Skardu experiences without rushing every hour.`,
     destinationOverview:
       "Skardu sits between the Indus River, glacial lakes, desert dunes, and the gateway valleys of the Karakoram. Katpana Desert is close to the airport and city, which makes it ideal for sunrise, sunset, and first-day sightseeing.",

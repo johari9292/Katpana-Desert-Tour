@@ -25,6 +25,12 @@ descriptions, self-canonicals, WebPage schema, all reciprocal language alternate
 and sitemap coverage. It runs automatically after production builds and through
 `npm run check:export` or `npm run check:i18n`.
 
+The optional Supabase archive sync retains the committed reviewed archive when
+the source has a temporary network outage. The build still filters expired
+reviews, and authentication or database-schema failures still stop the sync.
+Healthy syncs continue to refresh the archive normally. Run
+`node --test scripts/trending-sync-fallback.test.cjs` to check these cases.
+
 ## Content and search quality
 
 The pages describe the existing trip-planning service. They do not invent

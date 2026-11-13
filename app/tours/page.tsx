@@ -75,11 +75,12 @@ export default function ToursPage() {
           <div className="max-w-4xl">
             <p className="mb-4 text-xs font-black uppercase tracking-[0.24em] text-skardu-gold">Tour packages</p>
             <h1 className="font-display text-6xl font-bold leading-none text-skardu-snow md:text-7xl">
-              Pakistan, Skardu, Hunza, Deosai, and Karakoram tour packages
+              Northern Pakistan tours, shaped around you
             </h1>
             <p className="mt-6 text-lg leading-8 text-skardu-ash">
-              Compare realistic northern Pakistan itineraries for local and international travelers with durations,
-              route notes, destination overviews, highlights, inclusions, exclusions, and direct planning support from {BRAND_NAME}.
+              Start with the lakes and cold desert of Skardu, follow the Karakoram Highway to Hunza, or plan a
+              longer trek towards K2. Explore our itineraries, then ask {BRAND_NAME} to tailor the route,
+              stays and transport to your dates.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <TrackedLink
