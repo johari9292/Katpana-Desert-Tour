@@ -3,6 +3,7 @@ const nextConfig = {
   compress: true,
   output: "export",
   poweredByHeader: false,
+  experimental: { globalNotFound: true },
   images: {
     loader: "custom",
     loaderFile: "./lib/static-image-loader.ts",

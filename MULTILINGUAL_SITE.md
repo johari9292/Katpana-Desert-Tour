@@ -11,24 +11,26 @@ alternates and an English `x-default`. The XML sitemap lists all landing pages
 with the same alternate group. Existing English deep links are preserved. There
 are no country-based or browser-language redirects.
 
-## Production build requirement
+## Server-rendered document language
 
-Deploy the complete `npm run build` lifecycle, including `postbuild`. The Next.js
-static export shares the existing English root layout. Because that layout
-cannot read a descendant language parameter, `normalize-export-locales.cjs`
-sets only the opening document element's `lang` and `dir` in each known landing
-page's HTML in both `out/` and `.next/server/app/`. The current Vercel deployment
-serves Next's prerendered HTML, so normalizing only `out/` does not cover the live
-response. Other static hosts can serve `out/` directly. Both copies must carry
-the same document attributes, content and SEO data. Localized content also
-declares its language and direction, and `LocaleDocument` keeps the document
-attributes correct during navigation.
+The site uses two root layouts. `app/(english)/layout.tsx` renders English pages
+at their existing URLs; the route-group name does not appear in URLs.
+`app/[locale]/layout.tsx` receives the language parameter and renders the
+localized landing page's document. Both use the shared `SiteDocument` component
+for fonts, styles and the document shell.
+
+`lang` and `dir` are rendered directly on `<html>` by the correct root layout.
+Urdu, Arabic and Persian use `dir="rtl"`. These attributes are present in the
+initial HTML response, before JavaScript runs. No build step rewrites exported
+HTML or Next's prerendered files. Localized content also declares its language
+and direction. Crossing between root layouts causes a full document navigation.
 
 `check-multilingual.cjs` verifies document attributes, localized headings and
 descriptions, self-canonicals, WebPage schema, all reciprocal language alternates
 and sitemap coverage. When Next's prerender directory exists, it also verifies
 every known language landing file there and requires it to match the validated
-static export. It runs automatically after production builds and through
+static export. Deploy the complete `npm run build` lifecycle, including the
+read-only `postbuild` checks. These checks also run through
 `npm run check:export` or `npm run check:i18n`. After deployment, verify the raw
 HTTP response for the language URLs as well as their browser appearance.
 

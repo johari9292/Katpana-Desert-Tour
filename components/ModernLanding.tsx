@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Nav from "./Nav";
 import Footer from "./Footer";
-import LocaleDocument from "./LocaleDocument";
 import JourneyExplorer from "./JourneyExplorer";
 import ModernEnquiry from "./ModernEnquiry";
 import { getMessages, localeInfo, type Locale } from "@/lib/i18n";
@@ -18,7 +17,6 @@ export default function ModernLanding({ locale = "en" }: { locale?: Locale }) {
   const t = getMessages(locale);
   return (
     <div className="modern-site" lang={locale} dir={localeInfo(locale).dir}>
-      <LocaleDocument locale={locale} />
       <Nav locale={locale} messages={{ nav: [...t.nav], language: t.language, menu: t.menu, close: t.close }} />
       <main id="main-content" tabIndex={-1}>
         <section className="modern-hero" aria-labelledby="hero-title">

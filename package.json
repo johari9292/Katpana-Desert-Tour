@@ -14,7 +14,7 @@
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
     "prebuild": "node scripts/sync-trending-archive.cjs",
     "build": "next build",
-    "postbuild": "node scripts/normalize-export-locales.cjs && node scripts/check-static-export.cjs && node scripts/check-multilingual.cjs",
+    "postbuild": "node scripts/check-static-export.cjs && node scripts/check-multilingual.cjs",
     "start": "next start",
     "lint": "next typegen && tsc --noEmit",
     "typecheck": "next typegen && tsc --noEmit",

@@ -1,11 +1,9 @@
-import type { Metadata } from "next";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import localFont from "next/font/local";
-import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import WebVitalsReporter from "@/components/WebVitalsReporter";
-import { createMetadata } from "@/lib/seo";
-import "./globals.css";
-import "./modern.css";
+import { localeInfo, type Locale } from "@/lib/i18n/config";
+import "@/app/globals.css";
+import "@/app/modern.css";
 
 const bodyFont = localFont({
   src: "../public/fonts/dm-sans-latin.woff2",
@@ -75,39 +73,11 @@ const fontVariables = {
   "--font-display": `${displayFont.style.fontFamily}, ${displayExtendedFont.style.fontFamily}, ${displayCyrillicFont.style.fontFamily}, ${displayCyrillicExtendedFont.style.fontFamily}, ${displayVietnameseFont.style.fontFamily}, Georgia, serif`
 } as CSSProperties;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  ...createMetadata({
-    title: "Private Skardu & Northern Pakistan Tours | Katpana Desert Tour",
-    description:
-      "Discover Skardu, Hunza and the Karakoram with a locally planned private Pakistan tour. Explore routes, seasons and tailor your trip with Katpana Desert Tour.",
-    path: "/",
-    imageAlt: "Katpana Desert Tour Skardu cold desert and Karakoram travel Pakistan"
-  }),
-  applicationName: BRAND_NAME,
-  authors: [{ name: BRAND_NAME }],
-  creator: BRAND_NAME,
-  publisher: BRAND_NAME,
-  category: "Travel",
-  formatDetection: {
-    telephone: true,
-    address: false,
-    email: false
-  },
-  manifest: "/manifest.webmanifest"
-};
-
-export default function RootLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function SiteDocument({ locale, children }: { locale: Locale; children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang={locale} dir={localeInfo(locale).dir} data-scroll-behavior="smooth">
       <body className="bg-skardu-void font-body text-skardu-snow" style={fontVariables}>
-        <a className="skip-link" href="#main-content" lang="en">
-          Skip to main content
-        </a>
+        <a className="skip-link" href="#main-content" lang="en">Skip to main content</a>
         {children}
         <WebVitalsReporter />
       </body>
