@@ -78,7 +78,7 @@ export function createMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [imageUrl]
+      images: [{ url: imageUrl, alt: resolvedImageAlt }]
     },
     robots: robotsMetadata(index)
   };
@@ -98,6 +98,9 @@ export function createSeoPageMetadata(page: SEOPage): Metadata {
 export function jsonLdScript(schema: unknown) {
   return {
     __html: JSON.stringify(schema)
+      .replace(/</g, "\\u003c")
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029")
   };
 }
 

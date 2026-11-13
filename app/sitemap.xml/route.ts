@@ -3,6 +3,8 @@ import { destinations } from "@/data/destinations";
 import { seoPages } from "@/data/seo";
 import { tourPackages } from "@/data/tours";
 import { staticTrendingArticles } from "@/data/trending-static";
+import { homepageLanguageAlternates } from "@/lib/homepage-seo";
+import { locales, localePath } from "@/lib/i18n/config";
 import { absoluteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
@@ -11,21 +13,31 @@ interface SitemapEntry {
   url: string;
   lastModified?: string;
   images?: string[];
+  alternates?: Record<string, string>;
 }
 
-function entry(path: string, options: { image?: string; lastModified?: string } = {}): SitemapEntry {
+function entry(
+  path: string,
+  options: { image?: string; lastModified?: string; alternates?: Record<string, string> } = {}
+): SitemapEntry {
   const lastModified = options.lastModified ? validDate(options.lastModified) : undefined;
 
   return {
     url: absoluteUrl(path),
     ...(lastModified ? { lastModified } : {}),
-    ...(options.image ? { images: [absoluteUrl(options.image)] } : {})
+    ...(options.image ? { images: [absoluteUrl(options.image)] } : {}),
+    ...(options.alternates ? { alternates: options.alternates } : {})
   };
 }
 
 function sitemapEntries(): SitemapEntry[] {
   const entries = [
-    entry("/", { image: "/images/katpana-skardu-hero.jpg" }),
+    ...locales.map(({ code }) =>
+      entry(localePath(code), {
+        image: "/images/katpana-skardu-hero.jpg",
+        alternates: homepageLanguageAlternates()
+      })
+    ),
     entry("/tours", { image: "/images/katpana-skardu-hero.jpg" }),
     entry("/destinations", { image: "/images/katpana-skardu-hero.jpg" }),
     ...(reviewedArticles.length ? [entry("/articles")] : []),
@@ -91,10 +103,19 @@ function sitemapXml(entries: SitemapEntry[]) {
         ?.map((image) => `    <image:image><image:loc>${escapeXml(image)}</image:loc></image:image>`)
         .join("\n");
 
+      const alternates = item.alternates
+        ? Object.entries(item.alternates)
+            .map(([language, url]) =>
+              `    <xhtml:link rel="alternate" hreflang="${escapeXml(language)}" href="${escapeXml(url)}" />`
+            )
+            .join("\n")
+        : undefined;
+
       return [
         "  <url>",
         `    <loc>${escapeXml(item.url)}</loc>`,
         item.lastModified ? `    <lastmod>${formatDate(item.lastModified)}</lastmod>` : undefined,
+        alternates,
         images,
         "  </url>"
       ]
@@ -104,7 +125,7 @@ function sitemapXml(entries: SitemapEntry[]) {
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls}
 </urlset>`;
 }

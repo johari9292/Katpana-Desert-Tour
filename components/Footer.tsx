@@ -1,113 +1,22 @@
 import Link from "next/link";
-import { BRAND_NAME } from "@/constants/brand";
-import {
-  buildWhatsAppURL,
-  displayPhone2International,
-  displayPhoneInternational,
-  PHONE_SECONDARY,
-  WHATSAPP_MAIN,
-} from "@/constants/contact";
+import { buildWhatsAppURL, WHATSAPP_MAIN, displayPhoneInternational } from "@/constants/contact";
+import { getMessages, localePath, type Locale } from "@/lib/i18n";
 import TrackedLink from "./TrackedLink";
 
-export default function Footer() {
-  const currentYear = new Date().getUTCFullYear();
-  const planningUrl = buildWhatsAppURL(
-    WHATSAPP_MAIN,
-    `Hi! I want to plan a private northern Pakistan itinerary with ${BRAND_NAME}. Please ask me for my dates, group size and priorities.`,
-  );
+const exploreLinks = ["/tours/", "/destinations/", "/travel-guides/", "/about/", "/contact/"];
+const essentialLinks = ["/travel-safety/", "/responsible-travel/", "/booking-terms/", "/privacy/", "/image-credits/"];
 
+export default function Footer({ locale = "en" }: { locale?: Locale }) {
+  const t = getMessages(locale);
   return (
-    <footer className="relative border-t border-skardu-mist/60 bg-gradient-to-r from-skardu-void via-skardu-stone to-skardu-void px-4 py-12 sm:px-5 sm:py-16 lg:px-8">
-      <div className="mx-auto max-w-7xl text-center">
-        <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-skardu-gold sm:mb-4 sm:text-xs sm:tracking-[0.24em]">Start the journey</p>
-        <h2 className="font-display text-4xl font-bold leading-[0.95] text-skardu-snow sm:text-5xl md:text-6xl">Ready to Plan Northern Pakistan from Anywhere?</h2>
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <TrackedLink
-            href={planningUrl}
-            target="_blank"
-            rel="noreferrer"
-            eventName="whatsapp_click"
-            eventData={{ placement: "footer", context: "custom_itinerary" }}
-            className="flex min-h-12 items-center justify-center rounded-full bg-[#25D366] px-8 py-4 font-black text-skardu-void"
-          >
-            Book via WhatsApp
-          </TrackedLink>
-          <Link
-            href="/contact/"
-            className="flex min-h-12 items-center justify-center rounded-full border-2 border-skardu-teal px-8 py-4 font-black text-skardu-snow"
-          >
-            Customize itinerary
-          </Link>
-        </div>
-        <p className="mt-6 flex flex-wrap justify-center gap-x-2 text-sm leading-6 text-skardu-ash sm:text-base">
-          <span>Telephone:</span>
-          <TrackedLink
-            href={`tel:${WHATSAPP_MAIN}`}
-            eventName="phone_click"
-            eventData={{ placement: "footer", context: "primary_phone" }}
-            className="font-bold text-skardu-teal underline underline-offset-4"
-          >
-            {displayPhoneInternational}
-          </TrackedLink>
-          <span aria-hidden="true">·</span>
-          <TrackedLink
-            href={`tel:${PHONE_SECONDARY}`}
-            eventName="phone_click"
-            eventData={{ placement: "footer", context: "secondary_phone" }}
-            className="font-bold text-skardu-teal underline underline-offset-4"
-          >
-            {displayPhone2International}
-          </TrackedLink>
-        </p>
-
-        <nav aria-label="Footer" className="mt-10 grid gap-8 border-t border-skardu-control pt-8 text-left sm:grid-cols-3">
-          <FooterGroup
-            title="Plan"
-            links={[
-              ["Tour packages", "/tours/"],
-              ["Destinations", "/destinations/"],
-              ["Travel guides", "/travel-guides/"],
-              ["Contact", "/contact/"],
-            ]}
-          />
-          <FooterGroup
-            title="Trust"
-            links={[
-              ["About", "/about/"],
-              ["Booking terms", "/booking-terms/"],
-              ["Travel safety", "/travel-safety/"],
-              ["Responsible travel", "/responsible-travel/"],
-            ]}
-          />
-          <FooterGroup
-            title="Legal"
-            links={[
-              ["Privacy", "/privacy/"],
-              ["Testimonials", "/testimonials/"],
-              ["Image credits", "/image-credits/"],
-            ]}
-          />
-        </nav>
-
-        <p className="mt-10 text-sm leading-6 text-skardu-ash">© {currentYear} {BRAND_NAME} · Skardu and northern Pakistan travel planning</p>
+    <footer className="modern-footer">
+      <div className="modern-container footer-grid">
+        <div className="footer-intro"><Link className="footer-brand" href={localePath(locale)}>KATPANA<span>DESERT TOUR</span></Link><p>{t.footerText}</p><span className="footer-location">{t.footerLocation}</span></div>
+        <div><h2>{t.footerExplore}</h2><ul>{exploreLinks.map((href, i) => <li key={href}><Link href={href}>{t.footerLinks[i]}</Link></li>)}</ul></div>
+        <div><h2>{t.footerPlan}</h2><ul>{essentialLinks.map((href, i) => <li key={href}><Link href={href}>{t.footerLinks[i + 5]}</Link></li>)}</ul></div>
+        <div className="footer-contact"><h2>{t.footerContact}</h2><TrackedLink href={`tel:${WHATSAPP_MAIN}`} dir="ltr" eventName="phone_click" eventData={{ placement: "footer", locale }}>{displayPhoneInternational}</TrackedLink><TrackedLink href={buildWhatsAppURL(WHATSAPP_MAIN, t.form.intro)} target="_blank" rel="noopener noreferrer" eventName="whatsapp_click" eventData={{ placement: "footer", locale }} className="footer-whatsapp">WhatsApp <span aria-hidden="true">↗</span></TrackedLink><Link href={`${localePath(locale)}#plan-trip`}>{t.nav[4]} <span aria-hidden="true">↗</span></Link></div>
       </div>
+      <div className="modern-container footer-bottom"><p>© {new Date().getUTCFullYear()} {t.footerCopyright}</p><span>35.30° N &nbsp; 75.63° E</span></div>
     </footer>
-  );
-}
-
-function FooterGroup({ title, links }: { title: string; links: string[][] }) {
-  return (
-    <div>
-      <h3 className="text-xs font-black uppercase tracking-[0.18em] text-skardu-gold">{title}</h3>
-      <ul className="mt-4 grid gap-3">
-        {links.map(([label, href]) => (
-          <li key={href}>
-            <Link href={href} className="inline-flex min-h-8 items-center text-sm font-bold text-skardu-ash underline-offset-4 hover:text-skardu-snow hover:underline">
-              {label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }

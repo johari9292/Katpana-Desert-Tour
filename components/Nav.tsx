@@ -1,238 +1,47 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { BRAND_NAME } from "@/constants/brand";
-import { destinations } from "@/data/destinations";
-import { tourPackages } from "@/data/tours";
+import { usePathname } from "next/navigation";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { localePath, type Locale } from "@/lib/i18n/config";
+import { en, type Messages } from "@/lib/i18n/en";
 
-const quickLinks = [
-  ["Articles", "/articles/"],
-  ["Trending", "/trending/"],
-  ["Search", "/search/"],
-  ["About", "/about/"],
-  ["Contact", "/contact/"],
-];
-
-const guideLinks = [
-  ["Travel Guide Library", "/travel-guides/", "Guides grouped by travel intent"],
-  ["International Pakistan Tours", "/international-pakistan-tours/", "Global trip planning"],
-  ["Skardu Travel Guide", "/skardu-travel-guide/", "Skardu travel guide"],
-  ["Gilgit-Baltistan Tourism", "/gilgit-baltistan-tourism/", "Gilgit-Baltistan tourism"],
-  ["Pakistan Trekking Guide", "/pakistan-trekking-guide/", "Best trekking in Pakistan"],
-  ["Karakoram Highway", "/karakoram-highway-travel/", "Karakoram Highway travel"],
-];
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  return isMobile;
+function MountainMark() {
+  return <svg viewBox="0 0 48 40" fill="none" aria-hidden="true"><path d="m2 33 16-25 9 14 6-9 13 20H2Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="m12 18 6 3 5-5m5 5 5 4 4-5M7 38h34" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
 }
 
-export default function Nav() {
-  const [open, setOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const reduceMotion = useReducedMotion();
-  const isMobile = useIsMobile();
+type NavMessages = Pick<Messages, "language" | "menu" | "close"> & { nav: readonly string[] };
 
+export default function Nav({ locale = "en", messages = en }: { locale?: Locale; messages?: NavMessages }) {
+  const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
+  const home = localePath(locale);
+  const links = ["#journeys", "#destinations", "#our-approach", "/travel-guides/"];
+
+  useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     if (!open) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setOpen(false);
-      menuButtonRef.current?.focus();
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setOpen(false); menuButton.current?.focus(); }
     };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", onEscape);
+    return () => document.removeEventListener("keydown", onEscape);
   }, [open]);
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08 },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: -10 },
-    show: { opacity: 1, y: 0 },
-  };
-
   return (
-    <motion.header
-      initial={reduceMotion ? false : { opacity: 0, y: -22 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: isMobile ? 0.28 : 0.65, ease: [0.16, 1, 0.3, 1] }}
-      className="site-nav-shell fixed inset-x-0 top-0 z-50 border-b"
-    >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 lg:px-8 lg:py-4" aria-label="Primary navigation">
-        <a href="/" aria-label={`${BRAND_NAME} home`} className="max-w-[210px] truncate font-display text-xl font-bold italic tracking-wide text-skardu-gold sm:max-w-none sm:text-2xl lg:text-3xl">
-          {BRAND_NAME}
-        </a>
-
-        <motion.div
-          variants={container}
-          initial={reduceMotion ? false : "hidden"}
-          animate="show"
-          className="hidden items-center gap-4 text-xs font-bold uppercase tracking-[0.14em] text-skardu-ash xl:flex xl:gap-6 xl:tracking-[0.16em]"
-        >
-          <DesktopDropdown label="Tours" href="/tours/" items={tourPackages.map((tour) => [tour.title, `/tours/${tour.slug}/`, tour.duration])} variants={item} />
-          <DesktopDropdown
-            label="Destinations"
-            href="/destinations/"
-            items={destinations.map((destination) => [destination.name, `/destinations/${destination.slug}/`, destination.type])}
-            variants={item}
-          />
-          <DesktopDropdown label="Guides" href="/travel-guides/" items={guideLinks} variants={item} />
-          {quickLinks.map(([label, href]) => (
-            <motion.a key={label} variants={item} href={href} whileHover={{ color: "#C9A84C", y: -2 }}>
-              {label}
-            </motion.a>
-          ))}
-        </motion.div>
-
-        <div className="hidden xl:block">
-          <motion.a
-            href="/contact/"
-            whileHover={{ scale: 1.04, boxShadow: "0 0 28px rgba(201,168,76,0.32)" }}
-            whileTap={{ scale: 0.96 }}
-            className="rounded-full bg-skardu-gold px-5 py-3 text-sm font-black text-skardu-void"
-          >
-            Customize trip
-          </motion.a>
+    <header className="modern-header" dir={locale === "ur" || locale === "ar" || locale === "fa" ? "rtl" : "ltr"}>
+      <nav className="modern-nav" aria-label={messages.menu}>
+        <Link href={home} className="modern-brand" aria-label="Katpana Desert Tour"><MountainMark /><span>KATPANA<span className="brand-subtitle">DESERT TOUR</span></span></Link>
+        <div className="modern-desktop-links">{links.map((href, i) => <Link key={href} href={href.startsWith("#") ? `${home}${href}` : href}>{messages.nav[i]}</Link>)}</div>
+        <div className="modern-nav-actions">
+          <LanguageSwitcher locale={locale} label={messages.language} />
+          <Link className="modern-button modern-button-small nav-plan" href={`${home}#plan-trip`}>{messages.nav[4]} <span aria-hidden="true">↗</span></Link>
+          <button ref={menuButton} className="modern-menu-button" type="button" aria-expanded={open} aria-controls="modern-mobile-menu" aria-label={open ? messages.close : messages.menu} onClick={() => setOpen(!open)}>{open ? <span aria-hidden="true">×</span> : <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.5"/></svg>}</button>
         </div>
-
-        <motion.button
-          ref={menuButtonRef}
-          type="button"
-          aria-label={open ? "Close mobile menu" : "Open mobile menu"}
-          aria-expanded={open}
-          aria-controls="homepage-mobile-navigation"
-          onClick={() => setOpen((current) => !current)}
-          whileTap={{ scale: 0.94 }}
-          className="glass-control grid size-12 min-h-12 min-w-12 place-items-center rounded-full text-skardu-snow xl:hidden"
-        >
-          <span className="space-y-1.5">
-            <span className={`block h-0.5 w-5 bg-current transition ${open ? "translate-y-2 rotate-45" : ""}`} />
-            <span className={`block h-0.5 w-5 bg-current transition ${open ? "opacity-0" : ""}`} />
-            <span className={`block h-0.5 w-5 bg-current transition ${open ? "-translate-y-2 -rotate-45" : ""}`} />
-          </span>
-        </motion.button>
       </nav>
-
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            id="homepage-mobile-navigation"
-            initial={reduceMotion ? false : { opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="site-nav-shell max-h-[calc(100dvh-68px)] overflow-y-auto border-t px-4 py-4 shadow-2xl shadow-black/40 xl:hidden"
-          >
-            <MobileGroup title="Tours" href="/tours/" items={tourPackages.map((tour) => [tour.title, `/tours/${tour.slug}/`])} onSelect={() => setOpen(false)} />
-            <MobileGroup
-              title="Destinations"
-              href="/destinations/"
-              items={destinations.map((destination) => [destination.name, `/destinations/${destination.slug}/`])}
-              onSelect={() => setOpen(false)}
-            />
-            <MobileGroup title="Guides" href="/travel-guides/" items={guideLinks.map(([label, href]) => [label, href])} onSelect={() => setOpen(false)} />
-            <div className="mt-4 grid gap-2 text-sm font-bold uppercase tracking-[0.16em] text-skardu-ash">
-              {quickLinks.map(([label, href]) => (
-                <a key={label} href={href} onClick={() => setOpen(false)} className="glass-control flex min-h-12 items-center rounded-xl px-4">
-                  {label}
-                </a>
-              ))}
-              <a className="flex min-h-12 items-center justify-center rounded-xl bg-skardu-gold px-4 text-skardu-void" href="/contact/" onClick={() => setOpen(false)}>
-                Customize trip
-              </a>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </motion.header>
-  );
-}
-
-function DesktopDropdown({
-  label,
-  href,
-  items,
-  variants,
-}: {
-  label: string;
-  href: string;
-  items: string[][];
-  variants: {
-    hidden: { opacity: number; y: number };
-    show: { opacity: number; y: number };
-  };
-}) {
-  return (
-    <motion.div variants={variants} className="group relative">
-      <a href={href} className="inline-flex items-center gap-1.5 py-3 hover:text-skardu-gold">
-        {label}
-        <span aria-hidden="true" className="mt-[1px] text-[10px] text-skardu-gold transition-transform duration-200 group-hover:rotate-180">
-          ▼
-        </span>
-      </a>
-
-      <div className="invisible absolute left-1/2 top-full w-[min(78vw,620px)] -translate-x-1/2 translate-y-3 opacity-0 transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-        <div className="glass-panel rounded-2xl p-4 shadow-2xl shadow-black/40">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {items.map(([title, itemHref, meta]) => (
-              <a key={itemHref} href={itemHref} className="rounded-xl border border-transparent p-3 normal-case tracking-normal hover:border-skardu-gold/60 hover:bg-white/5">
-                <span className="block font-display text-xl font-bold leading-tight text-skardu-snow">{title}</span>
-                <span className="mt-1 block text-xs font-black uppercase tracking-[0.16em] text-skardu-ash">{meta}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function MobileGroup({ title, href, items, onSelect }: { title: string; href: string; items: string[][]; onSelect: () => void }) {
-  const [expanded, setExpanded] = useState(false);
-  const visibleItems = expanded ? items : [];
-
-  return (
-    <div className="border-b border-skardu-control/70 py-3">
-      <div className="flex items-center gap-2">
-        <a href={href} onClick={onSelect} className="flex min-h-12 flex-1 items-center text-sm font-black uppercase tracking-[0.16em] text-skardu-gold">
-          {title}
-        </a>
-        <button
-          type="button"
-          onClick={() => setExpanded((current) => !current)}
-          className="glass-control flex min-h-12 items-center gap-2 rounded-full px-4 text-xs font-black uppercase tracking-[0.14em] text-skardu-snow"
-          aria-expanded={expanded}
-          aria-label={`${expanded ? "Collapse" : "Expand"} ${title}`}
-        >
-          {expanded ? "Hide" : "Open"}
-          <span aria-hidden="true" className={`text-skardu-gold transition ${expanded ? "rotate-180" : ""}`}>▼</span>
-        </button>
-      </div>
-      {expanded ? (
-        <div className="mt-2 grid gap-2">
-          {visibleItems.map(([label, itemHref]) => (
-            <a key={itemHref} href={itemHref} onClick={onSelect} className="glass-control flex min-h-12 items-center rounded-xl px-4 py-3 text-sm font-bold leading-5 text-skardu-ash">
-              {label}
-            </a>
-          ))}
-        </div>
-      ) : null}
-    </div>
+      {open && <nav id="modern-mobile-menu" className="modern-mobile-menu" aria-label={messages.menu}>{links.map((href, i) => <Link key={href} href={href.startsWith("#") ? `${home}${href}` : href} onClick={() => setOpen(false)}>{messages.nav[i]} <span aria-hidden="true">↗</span></Link>)}<Link className="modern-button" href={`${home}#plan-trip`} onClick={() => setOpen(false)}>{messages.nav[4]} <span aria-hidden="true">↗</span></Link></nav>}
+    </header>
   );
 }

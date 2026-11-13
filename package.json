@@ -14,12 +14,13 @@
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
     "prebuild": "node scripts/sync-trending-archive.cjs",
     "build": "next build",
-    "postbuild": "node scripts/check-static-export.cjs",
+    "postbuild": "node scripts/normalize-export-locales.cjs && node scripts/check-static-export.cjs && node scripts/check-multilingual.cjs",
     "start": "next start",
     "lint": "next typegen && tsc --noEmit",
     "typecheck": "next typegen && tsc --noEmit",
     "check:seo": "node scripts/check-seo-integrity.cjs && node scripts/check-trending-review-gate.cjs",
-    "check:export": "node scripts/check-static-export.cjs",
+    "check:export": "node scripts/check-static-export.cjs && node scripts/check-multilingual.cjs",
+    "check:i18n": "node scripts/check-multilingual.cjs",
     "check": "npm run typecheck && npm run check:seo && npm run build"
   },
   "dependencies": {
