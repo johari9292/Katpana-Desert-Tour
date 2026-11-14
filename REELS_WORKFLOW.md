@@ -10,15 +10,15 @@ In PowerShell, use `npm.cmd` instead of `npm` if script execution is blocked.
 
 The menu offers:
 
-1. Create a **12-second vertical Reel** from moving footage with an original
+1. Create a **12-second vertical Reel** from real internet photos with an original
    instrumental track, topic text, and a closing call to action.
 2. Generate a topic-matched **prompt/brief for an AI video service**.
 3. Prepare the next matching daily post and Reel in Make.
 4. Queue a finished Reel in the original legacy scheduling mode only.
 
-The local renderer calls no paid AI API. It edits moving video; it does not
-generate new scenes from a text prompt. By default it uses the travel footage
-already in the project. You can select your own footage or a video exported
+The local renderer calls no paid AI API. By default it downloads three licensed
+destination photos from Wikimedia Commons and makes an animated slideshow with
+photographer/source/licence credits in the caption. You can select your own footage or a video exported
 from a generation service and your own licensed music instead. Source audio
 is replaced by the selected music bed. Short clips are rejected rather than
 silently stretched or looped to meet the minimum length.
@@ -57,11 +57,10 @@ Outputs are saved in `.supabase/reels/<date>-<topic>/`:
 - `original-music.wav`: instrumental composed by the local workflow when no
   user music file is selected. No recordings or song samples are used.
 
-Preview the video before queuing. The default footage is illustrative travel
-imagery; it does not verify a specific location or current conditions. This is
-stated in its caption. Use location-matched footage for a factual destination
-report. Photo credits from the evergreen photo caption are removed from the
-Reel caption; the video and music credits are supplied instead.
+Preview the video before queuing. Archive destination photos do not verify
+current conditions. The caption credits the photos actually used, and
+`photos.json` preserves their source, licence and download hashes. Supplied
+video remains the operator's responsibility to clear for reuse.
 
 ## Queue in Make (legacy mode)
 

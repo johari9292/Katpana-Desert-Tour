@@ -68,3 +68,4 @@ jobs:
             .supabase/reels/*/post.jpg
             .supabase/reels/*/daily-post.json
             .supabase/reels/*/reel.json
+            .supabase/reels/*/photos.json

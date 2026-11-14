@@ -31,18 +31,23 @@ Repeated runs for the same prepared date do not overwrite it.
 
 Titles and captions are planning invitations based on the source subject.
 They do not report unverified current road, weather, price or safety conditions.
-Sources and license/provenance details stay in internal records, not captions.
+Photo captions and Reel descriptions include photographer, source and licence credits.
 No text, image, video-generation or music API key is needed for this pipeline.
 
-Each day's video edit uses a new topic/date seed to change the footage start,
-framing, title and original music arrangement. The square photo is extracted
-from that edit. The current footage library is the existing licensed travel
-clip; this creates different edits, not newly filmed or AI-generated scenes.
-Adding more owned/licensed footage is the next step for greater scene variety.
+Each preparation downloads four distinct destination photos from Wikimedia Commons.
+One becomes the square daily post; the other three become a musical portrait
+slideshow with gentle zoom, topic text and a call to action. These are archive
+destination photos, not a live report of current conditions. Explicitly labelled
+AI images, maps, drawings and unrelated destinations are filtered out.
 
-The worker uses the Pexels-licensed clip already in the repository, whose
-license does not require public attribution. It does not strip required credits
-from Creative Commons photos: those images are excluded from this daily flow.
+Only JPEGs with usable dimensions, author/source metadata and recognized CC0,
+public-domain or CC BY licences are accepted. Other licence terms are skipped.
+Credits identify cropping/animation and link to each source and licence. Full
+provenance is saved in `photos.json`, Reel metadata and the Make variables.
+The 90-entry history tracks photo IDs and original/download hashes to avoid
+recent reuse, even if a new video edit would have a different file hash.
+If too few unused licensed photos are available, preparation fails instead
+of reusing the old clip. This feature needs network access to Wikimedia Commons.
 
 ## Failure behavior
 

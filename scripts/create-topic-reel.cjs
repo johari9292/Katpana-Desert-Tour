@@ -4,6 +4,7 @@ const { spawnSync } = require("node:child_process");
 const { createHash } = require("node:crypto");
 const { resolvePost, briefFor } = require("./reel-topic.cjs");
 const { createMusic } = require("./reel-music.cjs");
+const { selectPhotos, creditsFor } = require("./social-photos.cjs");
 
 function args(argv) {
   const options = {};
@@ -49,11 +50,22 @@ function render(options) {
   fs.writeFileSync(path.join(directory, "generation-prompt.txt"), brief.generationPrompt + "\n");
   if (options.brief) return { brief: briefPath, topic: post.title, source: post.source };
 
-  const source = path.resolve(options.video || "public/videos/skardu-destinations.mp4");
+  const ffmpeg = ffmpegPath(options);
+  let source;
+  if (options.photos?.length) {
+    source = path.join(directory, "photo-slideshow.mp4");
+    const duration = seconds / options.photos.length;
+    const inputs = options.photos.flatMap((photo) => ["-loop", "1", "-framerate", "1", "-t", String(duration), "-i", photo.path]);
+    const scenes = options.photos.map((_, i) => `[${i}:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,setsar=1,zoompan=z='min(max(zoom,pzoom)+0.0004,1.08)':d=25:s=720x1280:fps=25,trim=duration=${duration},setpts=PTS-STARTPTS[v${i}]`);
+    const filter = scenes.join(";") + ";" + options.photos.map((_, i) => `[v${i}]`).join("") + `concat=n=${options.photos.length}:v=1:a=0,format=yuv420p[v]`;
+    const slideshow = spawnSync(ffmpeg, ["-y", "-hide_banner", "-loglevel", "error", ...inputs, "-filter_complex", filter, "-map", "[v]", "-t", String(seconds), "-c:v", "libx264", "-preset", "fast", "-crf", "22", source], { stdio: "inherit" });
+    if (slideshow.error) throw slideshow.error;
+    if (slideshow.status !== 0) throw new Error("Could not render the internet photo slideshow.");
+  } else if (options.video) source = path.resolve(options.video);
+  else throw new Error("Supply --video or use renderOnline to download real destination photos.");
   if (!fs.existsSync(source)) throw new Error("Video not found. Use --video with footage or an exported generated video.");
   const output = path.join(directory, "reel.mp4");
   if (source === output) throw new Error("Input video and output must be different files.");
-  const ffmpeg = ffmpegPath(options);
   const probe = spawnSync(ffmpeg, ["-hide_banner", "-i", source], { encoding: "utf8" });
   if (probe.error) throw new Error(`FFmpeg unavailable: ${probe.error.message}. Set FFMPEG_PATH or --ffmpeg.`);
   const duration = probe.stderr?.match(/Duration: (\d+):(\d+):([\d.]+)/);
@@ -89,8 +101,8 @@ function render(options) {
   const metadata = {
     video: output, seconds, width: 720, height: 1280, topic: post.title,
     date: post.date, source: post.source,
-    caption: post.source === "daily-evergreen-post" ? post.caption.split("\n\nPhoto:")[0] : post.caption,
-    provenance: { seed, footageSource: options.video ? "operator-supplied" : "https://www.pexels.com/video/19150358/", license: options.video ? "operator-supplied" : "Pexels license; attribution not required", musicSource: options.music ? "operator-supplied" : "original synthesized instrumental" },
+    caption: options.photos?.length ? `${post.caption.split("\n\nPhoto:")[0]}\n\n${creditsFor(options.photos)}` : post.caption,
+    provenance: { seed, footageSource: options.photos?.length ? "Wikimedia Commons destination photographs" : "operator-supplied", photos: options.photos || [], musicSource: options.music ? "operator-supplied" : "original synthesized instrumental" },
     music: options.music ? "user-supplied" : "original-synthesized",
     footage: source, bytes: fs.statSync(output).size,
   };
@@ -98,11 +110,19 @@ function render(options) {
   return metadata;
 }
 
-module.exports = { args, wrap, render };
+async function renderOnline(options) {
+  if (options.brief || options.video || options.photos?.length) return render(options);
+  const post = resolvePost(options);
+  const directory = path.resolve(options.out || `.supabase/reels/${post.date}-internet-photos`);
+  const history = fs.existsSync(".supabase/social-history.json") ? JSON.parse(fs.readFileSync(".supabase/social-history.json", "utf8")) : [];
+  const photos = await selectPhotos({ topic: post.title, date: post.date, directory, history, count: 3 });
+  return render({ ...options, out: directory, photos });
+}
+module.exports = { args, wrap, render, renderOnline };
 if (require.main === module) {
   try {
     const options = args(process.argv.slice(2));
-    if (options.help) console.log("Create a 10-60 second portrait Reel with music.\nUsage: npm run reels:create -- [--post daily-post.json | --topic TEXT] [--video clip.mp4] [--music track.mp3] [--seconds 12] [--date YYYY-MM-DD] [--brief]\nDefault topic follows the daily Make photo rotation. --post uses the exact supplied article/topic. No paid API is called.");
-    else console.log(JSON.stringify(render(options), null, 2));
+    if (options.help) console.log("Create a 10-60 second portrait Reel with music from real internet destination photos.\nUsage: npm run reels:create -- [--post daily-post.json | --topic TEXT] [--video clip.mp4] [--music track.mp3] [--seconds 12] [--date YYYY-MM-DD] [--brief]\nDefaults to licensed Wikimedia Commons photos with credits. --video uses your footage instead. No paid API is called.");
+    else renderOnline(options).then((result) => console.log(JSON.stringify(result, null, 2))).catch((error) => { console.error(error.message); process.exitCode = 1; });
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

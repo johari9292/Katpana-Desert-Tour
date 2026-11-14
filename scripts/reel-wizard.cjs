@@ -1,6 +1,6 @@
 const { createInterface } = require("node:readline/promises");
 const { stdin, stdout } = require("node:process");
-const { render } = require("./create-topic-reel.cjs");
+const { renderOnline } = require("./create-topic-reel.cjs");
 const { queue } = require("./queue-topic-reel.cjs");
 const { pakistanDate } = require("./reel-topic.cjs");
 const { prepare } = require("./daily-social-content.cjs");
@@ -30,13 +30,13 @@ async function main() {
     const post = await ask("Daily/trending post JSON file, or leave empty for the saved daily topic");
     const options = { date, ...(post ? { post } : {}), brief: choice === "2" };
     if (choice === "1") {
-      const video = await ask("Your footage or exported AI video, or leave empty for the existing travel clip");
+      const video = await ask("Your footage, or leave empty to download real destination photos from the internet");
       const music = await ask("Your licensed music file, or leave empty for an original instrumental");
       if (video) options.video = video;
       if (music) options.music = music;
       console.log("Rendering...");
     }
-    const result = render(options);
+    const result = await renderOnline(options);
     console.log(JSON.stringify(result, null, 2));
     console.log("\nSaved locally. The automated daily schedule prepares matching posts and Reels through option 3.");
   } finally { rl.close(); }

@@ -5,10 +5,11 @@ const { createHash } = require("node:crypto");
 const { callMake } = require("./make-mcp.cjs");
 const { pakistanDate, checkedDate } = require("./reel-topic.cjs");
 const { render } = require("./create-topic-reel.cjs");
+const { selectPhotos, creditsFor } = require("./social-photos.cjs");
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-v1";
+const PIPELINE = "live-trends-photos-v2";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -47,7 +48,6 @@ function nextDate(now = new Date()) {
 function validateCopy(copy, history = []) {
   if (typeof copy.topic !== "string" || copy.topic.length < 8 || copy.topic.length > 100 ||
       typeof copy.caption !== "string" || copy.caption.length < 40 || copy.caption.length > 650) throw new Error("Generated copy has invalid lengths.");
-  if (/photo\s*:|music\s*:|source\s*:|visuals\s*:|pexels|creativecommons|CC BY|photograph/i.test(copy.caption)) throw new Error("Caption contains unwanted credit or technical text.");
   if (/\b(road is open|road is closed|guaranteed safe|confirmed open|today's weather|live footage)\b/i.test(copy.caption)) throw new Error("Caption asserts unsupported live conditions.");
   if (history.some((entry) => entry.topic?.toLowerCase() === copy.topic.toLowerCase() || entry.caption === copy.caption)) throw new Error("Topic or caption repeats a previous day.");
   return copy;
@@ -101,8 +101,8 @@ async function prepare(date, dryRun = false) {
   }
   const existing = check(await callMake("scenario_module_get", { scenarioId: SCENARIO, moduleIds: [1] })).modules[0];
   const values = Object.fromEntries((existing.config.mapper.variables || []).map((entry) => [entry.name, entry.value]));
-  if (values.pipeline_version === PIPELINE && values.content_date && !history.some((entry) => entry.date === values.content_date)) {
-    history.push({ date: values.content_date, topic: values.topic, caption: values.caption, sourceUrl: values.source_url, sourceKind: values.source_kind, mediaHash: values.media_hash });
+  if (values.pipeline_version?.startsWith("live-trends-") && values.content_date && !history.some((entry) => entry.date === values.content_date)) {
+    history.push({ date: values.content_date, topic: values.topic, caption: values.caption, sourceUrl: values.source_url, sourceKind: values.source_kind, mediaHash: values.media_hash, photos: values.photo_provenance ? JSON.parse(values.photo_provenance) : [] });
   }
   if (values.pipeline_version === PIPELINE && values.content_date === date) {
     fs.writeFileSync(HISTORY, JSON.stringify(history.slice(-90), null, 2));
@@ -123,19 +123,29 @@ async function prepare(date, dryRun = false) {
   const copy = await generateCopy(candidate, history, date);
   const directory = path.resolve(`.supabase/reels/${date}-daily-topic`);
   fs.mkdirSync(directory, { recursive: true });
+  const photos = await selectPhotos({ topic: copy.topic, date, directory, history });
+  const photoCaption = `${copy.caption}\n\n${creditsFor([photos[0]])}`;
   const postFile = path.join(directory, "daily-post.json");
   fs.writeFileSync(postFile, JSON.stringify({ title: copy.topic, message: copy.caption, excerpt: copy.caption, provenance: candidate }, null, 2));
-  const reel = render({ post: postFile, date, out: directory });
+  const reel = render({ post: postFile, date, out: directory, photos: photos.slice(1) });
   const ffmpeg = process.env.FFMPEG_PATH || (process.platform === "win32" ? path.resolve(".supabase/package/ffmpeg.exe") : "ffmpeg");
   const photo = path.join(directory, "post.jpg");
-  const frame = spawnSync(ffmpeg, ["-y", "-hide_banner", "-loglevel", "error", "-ss", "2", "-i", reel.video, "-frames:v", "1", "-vf", "crop=720:720:0:120,scale=1080:1080", "-q:v", "5", photo], { stdio: "inherit" });
-  if (frame.error || frame.status !== 0) throw new Error("Could not render the day's square photo.");
   const video = fs.readFileSync(reel.video);
+  // Leave room for base64 expansion, captions, provenance and Make's config envelope.
+  const photoBudget = Math.min(180000, Math.floor((900000 - Math.ceil(video.length / 3) * 4) * 0.75));
+  if (photoBudget < 20000) throw new Error("Reel leaves insufficient room for the daily photo in Make.");
+  for (const [size, quality] of [[1080, 8], [1080, 14], [1080, 22], [1080, 31], [720, 31]]) {
+    const frame = spawnSync(ffmpeg, ["-y", "-hide_banner", "-loglevel", "error", "-i", photos[0].path, "-frames:v", "1", "-vf", `scale=${size}:${size}:force_original_aspect_ratio=increase,crop=${size}:${size}`, "-q:v", String(quality), photo], { stdio: "inherit" });
+    if (frame.error || frame.status !== 0) throw new Error("Could not render the day's square photo.");
+    if (fs.statSync(photo).size <= photoBudget) break;
+  }
+  if (fs.statSync(photo).size > photoBudget) throw new Error("Daily photo exceeds the Make delivery budget after compression.");
   const photoBytes = fs.readFileSync(photo);
   const mediaHash = createHash("sha256").update(video).digest("hex");
   if (history.some((entry) => entry.mediaHash === mediaHash)) throw new Error("Rendered video repeats a previous day's file.");
   const variables = [
-    { name: "caption", value: copy.caption }, { name: "topic", value: copy.topic },
+    { name: "caption", value: photoCaption }, { name: "topic", value: copy.topic },
+    { name: "photo_provenance", value: JSON.stringify(photos) },
     { name: "content_date", value: date }, { name: "pipeline_version", value: PIPELINE },
     { name: "photo_base64", value: photoBytes.toString("base64") },
     { name: "source_url", value: candidate.url }, { name: "source_published_at", value: candidate.publishedAt },
@@ -153,7 +163,7 @@ async function prepare(date, dryRun = false) {
       { op: "module_config_set", moduleId: 3, config: { parameters: { __IMTCONN__: 7833051 }, mapper: { page_id: "668690229664491", message: "{{1.caption}}", photos: [{ type: "data", fileName: "daily-travel.jpg", data: '{{toBinary(1.photo_base64; "base64")}}' }] } } },
       { op: "filter_set", moduleId: 3, filter: gate },
       { op: "module_disabled_set", moduleId: 4, disabled: true },
-      { op: "module_config_set", moduleId: 5, label: "Fresh daily Reel", config: { parameters: { __IMTCONN__: 7833051 }, mapper: { page_id: "668690229664491", uploadMethod: "data", fileName: "daily-travel.mp4", data: `{{toBinary("${video.toString("base64")}"; "base64")}}`, title: copy.topic, description: copy.caption } } },
+      { op: "module_config_set", moduleId: 5, label: "Fresh daily Reel", config: { parameters: { __IMTCONN__: 7833051 }, mapper: { page_id: "668690229664491", uploadMethod: "data", fileName: "daily-travel.mp4", data: `{{toBinary("${video.toString("base64")}"; "base64")}}`, title: copy.topic, description: reel.caption } } },
       { op: "filter_set", moduleId: 5, filter: gate },
     ],
   };
@@ -163,7 +173,7 @@ async function prepare(date, dryRun = false) {
     const current = check(await callMake("scenario_get", { scenarioId: SCENARIO }));
     if (current.scenario.lastEdit !== snapshot.scenario.lastEdit) throw new Error("Make was edited during preparation. Retry after inspecting the scenario.");
     check(await callMake("scenario_patch", args));
-    history.push({ date, topic: copy.topic, caption: copy.caption, sourceUrl: candidate.url, sourceKind: candidate.kind, mediaHash });
+    history.push({ date, topic: copy.topic, caption: copy.caption, sourceUrl: candidate.url, sourceKind: candidate.kind, mediaHash, photos });
     fs.writeFileSync(HISTORY, JSON.stringify(history.slice(-90), null, 2));
   }
   return { date, topic: copy.topic, caption: copy.caption, sourceKind: candidate.kind, seconds: reel.seconds, mediaHash, dryRun, scheduledAt: `${date}T09:00:00+05:00` };
