@@ -20,8 +20,6 @@ function photoFromPage(page, destination) {
   const description = `${page.title} ${field("ImageDescription")} ${field("Categories")}`;
   if (!new RegExp(`\\b${destination}\\b`, "i").test(description) || /\b(map|diagram|logo|flag|drawing|painting|AI.generated|AI-generated|stable diffusion|midjourney)\b/i.test(description)) return null;
   if (/\bk2-\d{1,3}\b|\b(tank|armoured|armored|artillery|military|warship|black panther|exoplanet|planet|spacecraft|telescope|illustration|rendering|computer.generated|artist.s impression|martyrs?|memorial|battalion|cemeter\w*|gravestone|tombstone|plaque|inscription)\b/i.test(description)) return null;
-  if (/\b(election\w*|voting|voters?|ballot|rally|politic\w*|assembly|parliament|polling|protest\w*|portrait)\b/i.test(description)) return null;
-  if (!/\b(landscape\w*|mountain\w*|valley\w*|lake\w*|river\w*|glacier\w*|desert|dune\w*|meadow\w*|forest\w*|peak\w*|trek\w*|trail\w*|highway|road|village|fort|palace|monastery|mosque|architecture|baltoro|bridge|panorama|view\w*|sunrise|sunset|pass)\b/i.test(description)) return null;
   // Short place names have unrelated namesakes: K2 is also a tank and planet prefix.
   if (destination === "K2" && !/\b(mountain|karakoram|baltoro|godwin.austen|baltistan)\b/i.test(description)) return null;
   if (destination === "Rama" && !/\b(astore|gilgit|baltistan|pakistan)\b/i.test(description)) return null;
@@ -48,7 +46,7 @@ async function selectPhotos({ topic, date, directory, history = [], count = 4, m
   const destination = destinationFor(topic);
   const api = new URL("https://commons.wikimedia.org/w/api.php");
   api.search = new URLSearchParams({ action: "query", format: "json", generator: "search", gsrnamespace: "6",
-    gsrsearch: `${destination === "K2" ? "K2 mountain" : destination === "Karakoram" ? "Karakoram mountain" : ["Baltistan", "Gilgit"].includes(destination) ? `${destination} landscape` : destination === "Rama" ? "Rama Astore" : destination === "Pakistan" ? "Pakistan Gilgit Baltistan landscape" : destination} filetype:bitmap -incategory:"AI-generated images"`, gsrlimit: "50",
+    gsrsearch: `${destination === "K2" ? "K2 mountain" : destination === "Karakoram" ? "Karakoram mountain" : destination === "Rama" ? "Rama Astore" : destination === "Pakistan" ? "Pakistan Gilgit Baltistan landscape" : destination} filetype:bitmap -incategory:"AI-generated images"`, gsrlimit: "50",
     prop: "imageinfo", iiprop: "url|size|mime|sha1|extmetadata", iiurlwidth: "1280" }).toString();
   const used = new Set(history.flatMap((entry) => entry.photos || []).flatMap((photo) => [photo.id, photo.originalSha1, photo.contentHash]));
   const selected = [];

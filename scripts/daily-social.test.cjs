@@ -32,9 +32,6 @@ test("ambiguous K2 names never admit planet illustrations or military photograph
   assert.equal(photoFromPage({ ...photoPage(11), title: "File:K2 unknown.jpg" }, "K2"), null);
   assert.equal(photoFromPage({ ...photoPage(12), title: "File:Martyrs of Karakoram Highway.jpg" }, "Karakoram"), null);
   assert.equal(photoFromPage({ ...photoPage(13), title: "File:Hunza memorial plaque.jpg" }, "Hunza"), null);
-  assert.equal(photoFromPage({ ...photoPage(14), title: "File:2020 Gilgit-Baltistan Assembly election women.jpg" }, "Baltistan"), null);
-  assert.equal(photoFromPage({ ...photoPage(15), title: "File:Baltistan people.jpg" }, "Baltistan"), null);
-  assert.ok(photoFromPage({ ...photoPage(16), title: "File:Karakoram Highway.jpg" }, "Karakoram"));
 });
 
 test("downloads distinct photos and excludes previously used originals", async () => {
