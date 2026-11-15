@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import localFont from "next/font/local";
+import { loadTranslation } from "@/lib/i18n/dictionaries";
+import { translateText } from "@/lib/i18n/translate";
 import WebVitalsReporter from "@/components/WebVitalsReporter";
 import { localeInfo, type Locale } from "@/lib/i18n/config";
 import "@/app/globals.css";
@@ -74,10 +76,11 @@ const fontVariables = {
 } as CSSProperties;
 
 export default function SiteDocument({ locale, children }: { locale: Locale; children: ReactNode }) {
+  const translation = loadTranslation(locale, []);
   return (
     <html lang={locale} dir={localeInfo(locale).dir} data-scroll-behavior="smooth">
       <body className="bg-skardu-void font-body text-skardu-snow" style={fontVariables}>
-        <a className="skip-link" href="#main-content" lang="en">Skip to main content</a>
+        <a className="skip-link" href="#main-content" lang={translation.dictionary["Skip to main content"] ? locale : "en"}>{translateText("Skip to main content", translation)}</a>
         {children}
         <WebVitalsReporter />
       </body>

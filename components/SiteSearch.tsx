@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { translateClientTree, translateText, type Translation } from "@/lib/i18n/translate";
+import { localePath } from "@/lib/i18n/config";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 
 export interface SearchEntry {
@@ -11,7 +13,7 @@ export interface SearchEntry {
   searchText: string;
 }
 
-export default function SiteSearch({ entries }: { entries: SearchEntry[] }) {
+export default function SiteSearch({ entries, translation }: { entries: SearchEntry[]; translation?: Translation }) {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -23,23 +25,24 @@ export default function SiteSearch({ entries }: { entries: SearchEntry[] }) {
     const terms = normalizeText(query).split(" ").filter(Boolean);
     if (!terms.length) return entries;
     return entries.filter((entry) => {
-      const haystack = normalizeText(entry.searchText);
+      const haystack = normalizeText([entry.searchText, entry.title, entry.summary, entry.type].join(" "));
       return terms.every((term) => haystack.includes(term));
     });
   }, [entries, query]);
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const url = query.trim() ? `/search/?q=${encodeURIComponent(query.trim())}` : "/search/";
+    const searchPath = localePath(translation?.locale || "en", "/search/");
+    const url = query.trim() ? `${searchPath}?q=${encodeURIComponent(query.trim())}` : searchPath;
     window.history.replaceState({}, "", url);
   }
 
   function clearSearch() {
     setQuery("");
-    window.history.replaceState({}, "", "/search/");
+    window.history.replaceState({}, "", localePath(translation?.locale || "en", "/search/"));
   }
 
-  return (
+  return translateClientTree((
     <>
       <form onSubmit={submitSearch} role="search" className="mt-8 flex max-w-3xl flex-col gap-3 sm:flex-row">
         <label className="sr-only" htmlFor="site-search">
@@ -66,7 +69,7 @@ export default function SiteSearch({ entries }: { entries: SearchEntry[] }) {
       <div className="mt-10 flex flex-wrap items-end justify-between gap-4 border-b border-skardu-control pb-5">
         <div aria-live="polite" aria-atomic="true">
           <h2 className="font-display text-3xl font-bold text-skardu-snow">
-            {query ? `Results for “${query}”` : "Browse all travel resources"}
+            {query ? `${translation ? translateText("Results for", translation) : "Results for"} ?${query}?` : "Browse all travel resources"}
           </h2>
           <p className="mt-2 text-sm text-skardu-ash">
             {results.length} {results.length === 1 ? "result" : "results"}
@@ -102,7 +105,7 @@ export default function SiteSearch({ entries }: { entries: SearchEntry[] }) {
         </div>
       )}
     </>
-  );
+  ), translation);
 }
 
 function normalizeText(value: string) {
@@ -110,6 +113,6 @@ function normalizeText(value: string) {
     .toLocaleLowerCase("en")
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, " ")
-    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 }

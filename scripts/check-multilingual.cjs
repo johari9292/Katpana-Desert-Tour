@@ -14,12 +14,12 @@ function attributes(tag) {
     .map(([, name, , value]) => [name.toLowerCase(), value]));
 }
 
-function checkAlternates(tags, context) {
+function checkAlternates(tags, context, expected = expectedAlternates) {
   const actual = tags.map(attributes).filter((tag) => tag.rel === "alternate" && tag.hreflang);
-  if (actual.length !== expectedAlternates.size) {
-    failures.push(`${context}: expected ${expectedAlternates.size} language alternates, found ${actual.length}`);
+  if (actual.length !== expected.size) {
+    failures.push(`${context}: expected ${expected.size} language alternates, found ${actual.length}`);
   }
-  for (const [language, url] of expectedAlternates) {
+  for (const [language, url] of expected) {
     const matches = actual.filter((tag) => tag.hreflang === language && tag.href === url);
     if (matches.length !== 1) failures.push(`${context}: missing or duplicate ${language} alternate for ${url}`);
   }
@@ -95,9 +95,51 @@ for (const locale of config.locales) {
   else checkAlternates([...sitemapEntry[1].matchAll(/<xhtml:link\b[^>]*>/gi)].map(([tag]) => tag), `sitemap ${locale.href}`);
 }
 
+
+// Validate the actual exported inner pages as well as the homepages.
+require("./i18n-source.cjs").registerSourceLoader();
+const { innerRoutes } = require("../lib/i18n/page-registry.ts");
+const { localePath } = require("../lib/i18n/config.ts");
+const { pageLanguageAlternates } = require("../lib/i18n/alternates.ts");
+const { loadTranslation } = require("../lib/i18n/dictionaries.ts");
+const routes = innerRoutes();
+for (const route of routes) {
+  const sourceFile = path.join(config.outputRoot, route.path.slice(1), "index.html");
+  const sourceHtml = fs.readFileSync(sourceFile, "utf8");
+  const sourceNoindex = /<meta\b[^>]*name="robots"[^>]*content="[^"]*noindex/i.test(sourceHtml);
+  const sourceCanonical = attributes(sourceHtml.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0] || "").href;
+  const canonicalPath = sourceCanonical ? new URL(sourceCanonical).pathname : route.path;
+  const expected = new Map(Object.entries(pageLanguageAlternates(canonicalPath)));
+  checkAlternates([...sourceHtml.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => tag), route.path, expected);
+  for (const locale of config.locales.filter(({ code }) => code !== "en")) {
+    const localizedPath = localePath(locale.code, route.path);
+    const file = path.join(config.outputRoot, localizedPath.slice(1), "index.html");
+    if (!fs.existsSync(file)) { failures.push(localizedPath + ": missing inner page"); continue; }
+    const html = fs.readFileSync(file, "utf8");
+    const document = attributes(html.match(/<html\b[^>]*>/i)?.[0] || "");
+    if (document.lang !== locale.code || document.dir !== locale.dir) failures.push(localizedPath + ": incorrect lang/dir");
+    const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1] || "";
+    const tags = [...head.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => tag);
+    const canonical = tags.map(attributes).filter(({ rel }) => rel === "canonical");
+    if (canonical.length !== 1 || canonical[0].href !== expected.get(locale.code)) failures.push(localizedPath + ": incorrect canonical");
+    checkAlternates(tags, localizedPath, expected);
+    const noindex = /<meta\b[^>]*name="robots"[^>]*content="[^"]*noindex/i.test(head);
+    const ready = loadTranslation(locale.code, []).complete;
+    if ((!ready || sourceNoindex) && !noindex) failures.push(localizedPath + ": missing translation/editorial noindex gate");
+    const url = config.siteUrl + localizedPath;
+    const inSitemap = sitemap.includes("<loc>" + url + "</loc>");
+    if (noindex && inSitemap) failures.push(localizedPath + ": noindex page appears in sitemap");
+    if (ready && !noindex && !inSitemap && sitemap.includes("<loc>" + sourceCanonical + "</loc>")) failures.push(localizedPath + ": translated canonical missing from sitemap");
+    const schemas = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)].flatMap(([, json]) => {
+      try { const value = JSON.parse(json); return value["@graph"] || [value]; } catch { return []; }
+    });
+    if (!schemas.some((schema) => schema["@type"] === "WebPage" && schema.inLanguage === locale.code && schema.url === url)) failures.push(localizedPath + ": missing localized WebPage schema");
+  }
+}
+
 if (failures.length) {
   console.error(`Multilingual export check failed (${failures.length}):`);
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exit(1);
 }
-console.log(`Multilingual export check passed for ${config.locales.length} languages, matching Next prerenders, reciprocal alternates, canonicals and localized content.`);
+console.log(`Multilingual export check passed for ${config.locales.length} languages and ${routes.length} inner routes, matching Next prerenders, reciprocal alternates, canonicals and localized content.`);

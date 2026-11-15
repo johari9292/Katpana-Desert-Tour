@@ -12,7 +12,7 @@
     "social:prepare": "node scripts/daily-social-content.cjs",
     "social:test": "node --test scripts/reels.test.cjs scripts/daily-social.test.cjs scripts/social-copy.test.cjs",
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
-    "prebuild": "node scripts/sync-trending-archive.cjs",
+    "prebuild": "node scripts/generate-localized-registry.cjs && node scripts/sync-trending-archive.cjs && node scripts/collect-inner-translations.cjs",
     "build": "next build",
     "postbuild": "node scripts/check-static-export.cjs && node scripts/check-multilingual.cjs",
     "start": "next start",
@@ -21,7 +21,10 @@
     "check:seo": "node scripts/check-seo-integrity.cjs && node scripts/check-trending-review-gate.cjs && node --test scripts/trending-sync-fallback.test.cjs",
     "check:export": "node scripts/check-static-export.cjs && node scripts/check-multilingual.cjs",
     "check:i18n": "node scripts/check-multilingual.cjs",
-    "check": "npm run typecheck && npm run check:seo && npm run build"
+    "check": "npm run typecheck && npm run check:seo && npm run build",
+    "i18n:extract": "node scripts/generate-localized-registry.cjs && node scripts/collect-inner-translations.cjs",
+    "i18n:translate": "node scripts/translate-inner-content.cjs",
+    "i18n:test": "node --test scripts/inner-localization.test.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",

@@ -5,8 +5,9 @@ import { BRAND_NAME } from "@/constants/brand";
 import { buildWhatsAppURL, WHATSAPP_MAIN } from "@/constants/contact";
 import type { TourPackage } from "@/data/tours";
 import { trackConversion } from "@/lib/analytics";
+import { translateClientTree, type Translation } from "@/lib/i18n/translate";
 
-export default function TourInquiryForm({ tour }: { tour?: TourPackage }) {
+export default function TourInquiryForm({ tour, translation }: { tour?: TourPackage; translation?: Translation }) {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [travelDate, setTravelDate] = useState("");
@@ -65,7 +66,7 @@ export default function TourInquiryForm({ tour }: { tour?: TourPackage }) {
     window.open(buildWhatsAppURL(WHATSAPP_MAIN, message), "_blank", "noopener,noreferrer");
   }
 
-  return (
+  return translateClientTree((
     <form
       id="tour-inquiry"
       noValidate
@@ -167,5 +168,5 @@ export default function TourInquiryForm({ tour }: { tour?: TourPackage }) {
         </p>
       </div>
     </form>
-  );
+  ), translation);
 }

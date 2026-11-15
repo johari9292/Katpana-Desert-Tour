@@ -1,17 +1,20 @@
 "use client";
 
 import TrackedLink from "./TrackedLink";
+import { translateClientTree, type Translation } from "@/lib/i18n/translate";
 
 export default function MobileBookingBar({
   whatsappUrl,
   context,
   customizeHref = "#tour-inquiry",
+  translation,
 }: {
   whatsappUrl: string;
   context: string;
   customizeHref?: string;
+  translation?: Translation;
 }) {
-  return (
+  return translateClientTree((
     <>
       <div aria-hidden="true" className="h-24 lg:hidden" />
       <aside
@@ -41,5 +44,5 @@ export default function MobileBookingBar({
         </div>
       </aside>
     </>
-  );
+  ), translation);
 }

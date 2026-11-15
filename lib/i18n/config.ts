@@ -27,8 +27,19 @@ export function isLocale(value: string): value is Locale {
   return locales.some(({ code }) => code === value);
 }
 
-export function localePath(locale: Locale): string {
-  return locale === "en" ? "/" : `/${locale}/`;
+export function localeFromPath(path: string): Locale {
+  const first = path.split(/[?#]/, 1)[0].split("/")[1];
+  return first && isLocale(first) ? first : "en";
+}
+
+export function localePath(locale: Locale, path = "/"): string {
+  const suffixAt = path.search(/[?#]/);
+  const pathname = suffixAt < 0 ? path : path.slice(0, suffixAt);
+  const suffix = suffixAt < 0 ? "" : path.slice(suffixAt);
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments[0] && isLocale(segments[0])) segments.shift();
+  const prefix = locale === "en" ? [] : [locale];
+  return `/${[...prefix, ...segments].join("/")}${prefix.length + segments.length ? "/" : ""}${suffix}`;
 }
 
 export function localeInfo(locale: Locale) {

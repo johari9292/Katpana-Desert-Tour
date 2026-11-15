@@ -1,3 +1,5 @@
+import { loadTranslation } from "@/lib/i18n/dictionaries";
+import { pageLanguageAlternates } from "@/lib/i18n/alternates";
 import { reviewedArticles } from "@/data/articles";
 import { destinations } from "@/data/destinations";
 import { seoPages } from "@/data/seo";
@@ -75,7 +77,12 @@ function sitemapEntries(): SitemapEntry[] {
     )
   ];
 
-  return Array.from(new Map(entries.map((item) => [item.url, item])).values());
+  const expanded = entries.flatMap((item) => {
+    const path = new URL(item.url).pathname;
+    if (locales.some(({ code }) => localePath(code) === path)) return [item];
+    return locales.filter(({ code }) => code === "en" || loadTranslation(code, []).complete).map(({ code }) => ({ ...item, url: absoluteUrl(localePath(code, path)), alternates: pageLanguageAlternates(path) }));
+  });
+  return Array.from(new Map(expanded.map((item) => [item.url, item])).values());
 }
 
 function validDate(value: string) {

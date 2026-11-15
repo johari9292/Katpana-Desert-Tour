@@ -31,17 +31,17 @@ export default function Nav({ locale = "en", messages = en }: { locale?: Locale;
   }, [open]);
 
   return (
-    <header className="modern-header" dir={locale === "ur" || locale === "ar" || locale === "fa" ? "rtl" : "ltr"}>
+    <header lang={locale} className="modern-header" dir={locale === "ur" || locale === "ar" || locale === "fa" ? "rtl" : "ltr"}>
       <nav className="modern-nav" aria-label={messages.menu}>
         <Link href={home} className="modern-brand" aria-label="Katpana Desert Tour"><MountainMark /><span>KATPANA<span className="brand-subtitle">DESERT TOUR</span></span></Link>
-        <div className="modern-desktop-links">{links.map((href, i) => <Link key={href} href={href.startsWith("#") ? `${home}${href}` : href}>{messages.nav[i]}</Link>)}</div>
+        <div className="modern-desktop-links">{links.map((href, i) => <Link key={href} href={href.startsWith("#") ? `${home}${href}` : localePath(locale, href)}>{messages.nav[i]}</Link>)}</div>
         <div className="modern-nav-actions">
           <LanguageSwitcher locale={locale} label={messages.language} />
           <Link className="modern-button modern-button-small nav-plan" href={`${home}#plan-trip`}>{messages.nav[4]} <span aria-hidden="true">↗</span></Link>
           <button ref={menuButton} className="modern-menu-button" type="button" aria-expanded={open} aria-controls="modern-mobile-menu" aria-label={open ? messages.close : messages.menu} onClick={() => setOpen(!open)}>{open ? <span aria-hidden="true">×</span> : <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.5"/></svg>}</button>
         </div>
       </nav>
-      {open && <nav id="modern-mobile-menu" className="modern-mobile-menu" aria-label={messages.menu}>{links.map((href, i) => <Link key={href} href={href.startsWith("#") ? `${home}${href}` : href} onClick={() => setOpen(false)}>{messages.nav[i]} <span aria-hidden="true">↗</span></Link>)}<Link className="modern-button" href={`${home}#plan-trip`} onClick={() => setOpen(false)}>{messages.nav[4]} <span aria-hidden="true">↗</span></Link></nav>}
+      {open && <nav id="modern-mobile-menu" className="modern-mobile-menu" aria-label={messages.menu}>{links.map((href, i) => <Link key={href} href={href.startsWith("#") ? `${home}${href}` : localePath(locale, href)} onClick={() => setOpen(false)}>{messages.nav[i]} <span aria-hidden="true">↗</span></Link>)}<Link className="modern-button" href={`${home}#plan-trip`} onClick={() => setOpen(false)}>{messages.nav[4]} <span aria-hidden="true">↗</span></Link></nav>}
     </header>
   );
 }

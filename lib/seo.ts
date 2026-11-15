@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageLanguageAlternates } from "@/lib/i18n/alternates";
 import { BRAND_NAME, SITE_URL } from "@/constants/brand";
 import { WHATSAPP_MAIN } from "@/constants/contact";
 import { type RelatedLink, type SEOPage } from "@/data/seo";
@@ -58,7 +59,8 @@ export function createMetadata({
     title,
     description,
     alternates: {
-      canonical
+      canonical,
+      languages: pageLanguageAlternates(path)
     },
     openGraph: {
       title,
