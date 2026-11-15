@@ -23,6 +23,15 @@ test("photo selection requires destination, usable dimensions and known commerci
   assert.match(creditsFor([photoFromPage(photoPage(1), "Hunza")]), /Test Photographer; CC BY 4.0.*creativecommons.*commons\.wikimedia/);
 });
 
+test("ambiguous K2 names never admit planet illustrations or military photographs", () => {
+  const mountain = { ...photoPage(10), title: "File:K2 2006.jpg" };
+  mountain.imageinfo[0].extmetadata.ImageDescription = { value: "K2 mountain in the Karakoram" };
+  assert.ok(photoFromPage(mountain, "K2"));
+  assert.equal(photoFromPage({ ...mountain, title: "File:Surface of K2-18 B.jpg" }, "K2"), null);
+  assert.equal(photoFromPage({ ...mountain, title: "File:K2 Black Panther 20161106.jpg" }, "K2"), null);
+  assert.equal(photoFromPage({ ...photoPage(11), title: "File:K2 unknown.jpg" }, "K2"), null);
+});
+
 test("downloads distinct photos and excludes previously used originals", async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-photos-"));
   try {

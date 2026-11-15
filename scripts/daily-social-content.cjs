@@ -10,7 +10,7 @@ const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v3";
+const PIPELINE = "live-trends-photos-v4";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -75,14 +75,18 @@ async function prepare(date, dryRun = false) {
   date = checkedDate(date || nextDate());
   if (new Date(`${date}T09:00:00+05:00`) <= new Date()) throw new Error("The publishing slot has passed.");
   fs.mkdirSync(".supabase", { recursive: true });
-  const history = fs.existsSync(HISTORY) ? JSON.parse(fs.readFileSync(HISTORY, "utf8")) : [];
+  let history = fs.existsSync(HISTORY) ? JSON.parse(fs.readFileSync(HISTORY, "utf8")) : [];
   const snapshot = check(await callMake("scenario_get", { scenarioId: SCENARIO }));
   if (snapshot.modules.some((module) => module.filter?.name === "Single live Reel test")) {
     throw new Error("A live publishing test is in progress. Retry preparation after its schedule is restored.");
   }
   const existing = check(await callMake("scenario_module_get", { scenarioId: SCENARIO, moduleIds: [1] })).modules[0];
   const values = Object.fromEntries((existing.config.mapper.variables || []).map((entry) => [entry.name, entry.value]));
-  if (values.pipeline_version?.startsWith("live-trends-") && values.content_date && !history.some((entry) => entry.date === values.content_date)) {
+  // The slot is verified to be in the future above; replace obsolete pending
+  // content without treating that unpublished draft as a previously used story.
+  const replacingPending = values.content_date === date && values.pipeline_version !== PIPELINE;
+  if (replacingPending) history = history.filter((entry) => entry.date !== date);
+  if (!replacingPending && values.pipeline_version?.startsWith("live-trends-") && values.content_date && !history.some((entry) => entry.date === values.content_date)) {
     history.push({ date: values.content_date, topic: values.topic, caption: values.post_caption || values.caption, reelCaption: values.reel_caption, sourceUrl: values.source_url, sourceTitle: values.source_title, sourceKind: values.source_kind, destination: values.destination, angle: values.angle, mediaHash: values.media_hash, photos: values.photo_provenance ? JSON.parse(values.photo_provenance) : [] });
   }
   if (values.pipeline_version === PIPELINE && values.content_date === date) {

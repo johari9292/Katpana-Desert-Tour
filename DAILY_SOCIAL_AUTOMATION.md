@@ -42,7 +42,9 @@ searching up to 200 results per destination.
 One becomes the square daily post; the other three become a musical portrait
 slideshow with gentle zoom, topic text and a call to action. These are archive
 destination photos, not a live report of current conditions. Explicitly labelled
-AI images, maps, drawings and unrelated destinations are filtered out.
+AI images, maps, drawings and unrelated destinations are filtered out. Ambiguous
+names such as K2 also require geographic context; planetary illustrations and
+military subjects are excluded.
 
 Only JPEGs with usable dimensions, author/source metadata and recognized CC0,
 public-domain or CC BY licences are accepted. Other licence terms are skipped.
