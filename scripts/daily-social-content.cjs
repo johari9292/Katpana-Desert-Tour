@@ -10,7 +10,7 @@ const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v6";
+const PIPELINE = "live-trends-photos-v7";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
