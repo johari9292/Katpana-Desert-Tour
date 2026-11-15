@@ -43,38 +43,44 @@ async function selectPhotos({ topic, date, directory, history = [], count = 4, f
   api.search = new URLSearchParams({ action: "query", format: "json", generator: "search", gsrnamespace: "6",
     gsrsearch: `${destination} filetype:bitmap -incategory:"AI-generated images"`, gsrlimit: "50",
     prop: "imageinfo", iiprop: "url|size|mime|sha1|extmetadata", iiurlwidth: "1280" }).toString();
-  const response = await fetcher(api, { headers: { "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(30000) });
-  if (!response.ok) throw new Error(`Photo search failed: HTTP ${response.status}`);
-  const data = await response.json();
-  if (data.error) throw new Error(`Photo search failed: ${data.error.code}`);
   const used = new Set(history.flatMap((entry) => entry.photos || []).flatMap((photo) => [photo.id, photo.originalSha1, photo.contentHash]));
-  const candidates = Object.values(data.query?.pages || {}).map((page) => photoFromPage(page, destination)).filter(Boolean)
-    .filter((photo) => !used.has(photo.id) && !used.has(photo.originalSha1))
-    .sort((a, b) => createHash("sha256").update(date + a.id).digest("hex").localeCompare(createHash("sha256").update(date + b.id).digest("hex")));
   const selected = [];
   fs.mkdirSync(directory, { recursive: true });
-  for (const photo of candidates) {
-    if (selected.length === count) break;
-    if (used.has(photo.originalSha1)) continue;
-    try {
-      const download = await fetcher(photo.url, { headers: { "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(30000) });
-      if (!download.ok || !/^image\/jpeg\b/i.test(download.headers.get("content-type") || "")) continue;
-      if (Number(download.headers.get("content-length")) > 15000000) continue;
-      const chunks = []; let size = 0;
-      for await (const chunk of download.body) {
-        size += chunk.length;
-        if (size > 15000000) throw new Error("Photo download exceeds 15 MB.");
-        chunks.push(chunk);
-      }
-      const bytes = Buffer.concat(chunks);
-      if (bytes[0] !== 0xff || bytes[1] !== 0xd8) continue;
-      const contentHash = createHash("sha256").update(bytes).digest("hex");
-      if (used.has(contentHash)) continue;
-      const filename = path.resolve(directory, `photo-${selected.length + 1}.jpg`);
-      fs.writeFileSync(filename, bytes);
-      selected.push({ ...photo, contentHash, path: filename });
-      used.add(photo.id); used.add(photo.originalSha1); used.add(contentHash);
-    } catch { /* Try another licensed photo if this download fails. */ }
+  // The first search page often contains maps or incompatible licences.
+  // Read at most 200 results before moving on to another fresh topic.
+  for (let page = 0; page < 4 && selected.length < count; page++) {
+    const response = await fetcher(new URL(api), { headers: { "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(30000) });
+    if (!response.ok) throw new Error(`Photo search failed: HTTP ${response.status}`);
+    const data = await response.json();
+    if (data.error) throw new Error(`Photo search failed: ${data.error.code}`);
+    const candidates = Object.values(data.query?.pages || {}).map((entry) => photoFromPage(entry, destination)).filter(Boolean)
+      .filter((photo) => !used.has(photo.id) && !used.has(photo.originalSha1))
+      .sort((a, b) => createHash("sha256").update(date + a.id).digest("hex").localeCompare(createHash("sha256").update(date + b.id).digest("hex")));
+    for (const photo of candidates) {
+      if (selected.length === count) break;
+      if (used.has(photo.originalSha1)) continue;
+      try {
+        const download = await fetcher(photo.url, { headers: { "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(30000) });
+        if (!download.ok || !/^image\/jpeg\b/i.test(download.headers.get("content-type") || "")) continue;
+        if (Number(download.headers.get("content-length")) > 15000000) continue;
+        const chunks = []; let size = 0;
+        for await (const chunk of download.body) {
+          size += chunk.length;
+          if (size > 15000000) throw new Error("Photo download exceeds 15 MB.");
+          chunks.push(chunk);
+        }
+        const bytes = Buffer.concat(chunks);
+        if (bytes[0] !== 0xff || bytes[1] !== 0xd8) continue;
+        const contentHash = createHash("sha256").update(bytes).digest("hex");
+        if (used.has(contentHash)) continue;
+        const filename = path.resolve(directory, `photo-${selected.length + 1}.jpg`);
+        fs.writeFileSync(filename, bytes);
+        selected.push({ ...photo, contentHash, path: filename });
+        used.add(photo.id); used.add(photo.originalSha1); used.add(contentHash);
+      } catch { /* Try another licensed photo if this download fails. */ }
+    }
+    if (!data.continue?.gsroffset) break;
+    for (const [key, value] of Object.entries(data.continue)) api.searchParams.set(key, String(value));
   }
   if (selected.length !== count) throw new Error(`Found only ${selected.length}/${count} unused licensed ${destination} photos. No repeated stock clip will be substituted.`);
   fs.writeFileSync(path.join(directory, "photos.json"), JSON.stringify(selected, null, 2));

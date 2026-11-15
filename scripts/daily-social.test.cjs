@@ -44,6 +44,27 @@ test("RSS titles are data, not executable markup", () => {
   assert.equal(result[0].title, "Skardu travel & mountain views");
 });
 
+test("photo search continues when the first page contains no reusable photographs", async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-photo-pages-"));
+  const searches = [];
+  try {
+    const fetcher = async (url) => {
+      const request = new URL(url);
+      if (request.pathname.includes("api.php")) {
+        searches.push(request.searchParams.get("gsroffset"));
+        return { ok: true, json: async () => request.searchParams.has("gsroffset")
+          ? { query: { pages: Object.fromEntries([2, 3, 4, 5].map((id) => [id, photoPage(id)])) } }
+          : { continue: { gsroffset: 50, continue: "gsroffset||" }, query: { pages: { 1: photoPage(1, { width: 200 }) } } } };
+      }
+      const id = Number(request.pathname.match(/test-(\d+)/)[1]);
+      return new Response(Buffer.from([0xff, 0xd8, id, 0xff, 0xd9]), { headers: { "content-type": "image/jpeg" } });
+    };
+    const photos = await selectPhotos({ topic: "Hunza travel", date: "2026-11-16", directory, fetcher });
+    assert.equal(photos.length, 4);
+    assert.deepEqual(searches, [null, "50"]);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
+
 test("only fresh, unused, travel-related topics qualify", () => {
   const base = { url: "https://example.com/a", publishedAt: "2026-11-13T04:00:00Z", kind: "recent-travel-news" };
   const items = [

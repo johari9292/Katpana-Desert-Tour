@@ -37,7 +37,8 @@ They do not report unverified current road, weather, price or safety conditions.
 Photo captions and Reel descriptions include photographer, source and licence credits.
 No text, image, video-generation or music API key is needed for this pipeline.
 
-Each preparation downloads four distinct destination photos from Wikimedia Commons.
+Each preparation downloads four distinct destination photos from Wikimedia Commons,
+searching up to 200 results per destination.
 One becomes the square daily post; the other three become a musical portrait
 slideshow with gentle zoom, topic text and a call to action. These are archive
 destination photos, not a live report of current conditions. Explicitly labelled
