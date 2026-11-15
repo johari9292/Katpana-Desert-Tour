@@ -42,7 +42,7 @@ function creditsFor(photos) {
     `${photo.title} — ${photo.attribution || photo.author}; ${photo.license}${photo.licenseUrl ? ` (${photo.licenseUrl})` : ""}. ${photo.sourceUrl}`
   ).join("\n");
 }
-async function selectPhotos({ topic, date, directory, history = [], count = 4, fetcher = fetch }) {
+async function selectPhotos({ topic, date, directory, history = [], count = 4, minCount = count, fetcher = fetch }) {
   const destination = destinationFor(topic);
   const api = new URL("https://commons.wikimedia.org/w/api.php");
   api.search = new URLSearchParams({ action: "query", format: "json", generator: "search", gsrnamespace: "6",
@@ -87,7 +87,7 @@ async function selectPhotos({ topic, date, directory, history = [], count = 4, f
     if (!data.continue?.gsroffset) break;
     for (const [key, value] of Object.entries(data.continue)) api.searchParams.set(key, String(value));
   }
-  if (selected.length !== count) throw new Error(`Found only ${selected.length}/${count} unused licensed ${destination} photos. No repeated stock clip will be substituted.`);
+  if (selected.length < minCount) throw new Error(`Found only ${selected.length}/${count} unused licensed ${destination} photos. No repeated stock clip will be substituted.`);
   fs.writeFileSync(path.join(directory, "photos.json"), JSON.stringify(selected, null, 2));
   return selected;
 }

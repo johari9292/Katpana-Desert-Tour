@@ -37,10 +37,12 @@ They do not report unverified current road, weather, price or safety conditions.
 Photo captions and Reel descriptions include photographer, source and licence credits.
 No text, image, video-generation or music API key is needed for this pipeline.
 
-Each preparation downloads four distinct destination photos from Wikimedia Commons,
+Each preparation seeks up to four distinct destination photos from Wikimedia Commons,
 searching up to 200 results per destination.
-One becomes the square daily post; the other three become a musical portrait
-slideshow with gentle zoom, topic text and a call to action. These are archive
+One becomes the square daily post; the others become a musical portrait
+slideshow with gentle zoom, topic text and a call to action. If only one new,
+relevant licensed photo is available, both formats use it, with an animated
+Reel and three timed text scenes. These are archive
 destination photos, not a live report of current conditions. Explicitly labelled
 AI images, maps, drawings and unrelated destinations are filtered out. Ambiguous
 names such as K2 also require geographic context; planetary illustrations and
@@ -52,7 +54,7 @@ Credits identify cropping/animation and link to each source and licence. Full
 provenance is saved in `photos.json`, Reel metadata and the Make variables.
 The 90-entry history tracks photo IDs and original/download hashes to avoid
 recent reuse, even if a new video edit would have a different file hash.
-If too few unused licensed photos are available, preparation fails instead
+If no unused licensed photos are available, preparation fails instead
 of reusing the old clip. The worker first tries other fresh destination/subject
 candidates (up to eight); it fails only when none can supply unused copy and
 licensed photos. This feature needs network access to Wikimedia Commons.

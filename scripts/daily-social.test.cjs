@@ -55,6 +55,19 @@ test("RSS titles are data, not executable markup", () => {
   assert.equal(result[0].title, "Skardu travel & mountain views");
 });
 
+test("daily content can use one new relevant photo while strict requests still fail", async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-photo-fallback-"));
+  try {
+    const fetcher = async (url) => String(url).includes("api.php")
+      ? { ok: true, json: async () => ({ query: { pages: { 1: photoPage(1) } } }) }
+      : new Response(Buffer.from([0xff, 0xd8, 1, 0xff, 0xd9]), { headers: { "content-type": "image/jpeg" } });
+    await assert.rejects(selectPhotos({ topic: "Hunza travel", date: "2026-11-16", directory, fetcher }), /unused licensed/);
+    const photos = await selectPhotos({ topic: "Hunza travel", date: "2026-11-16", directory, minCount: 1, fetcher });
+    assert.equal(photos.length, 1);
+    await assert.rejects(selectPhotos({ topic: "Hunza travel", date: "2026-11-17", directory, minCount: 1, history: [{ photos }], fetcher }), /unused licensed/);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
+
 test("photo search continues when the first page contains no reusable photographs", async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-photo-pages-"));
   const searches = [];

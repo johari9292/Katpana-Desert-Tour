@@ -10,7 +10,7 @@ const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v5";
+const PIPELINE = "live-trends-photos-v6";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -116,7 +116,7 @@ async function prepare(date, dryRun = false) {
     tried.add(key);
     try {
       const generated = generateCopy(option, history, date);
-      const selected = await selectPhotos({ topic: generated.topic, date, directory, history });
+      const selected = await selectPhotos({ topic: generated.topic, date, directory, history, minCount: 1 });
       candidate = option; copy = generated; photos = selected;
       break;
     } catch (error) {
@@ -128,7 +128,7 @@ async function prepare(date, dryRun = false) {
   const photoCaption = `${copy.caption}\n\n${creditsFor([photos[0]])}`;
   const postFile = path.join(directory, "daily-post.json");
   fs.writeFileSync(postFile, JSON.stringify({ title: copy.topic, message: copy.caption, reel_caption: copy.reelCaption, scene_texts: copy.sceneTexts, hashtags: copy.hashtags, excerpt: copy.caption, provenance: candidate }, null, 2));
-  const reel = render({ post: postFile, date, out: directory, photos: photos.slice(1) });
+  const reel = render({ post: postFile, date, out: directory, photos: photos.length > 1 ? photos.slice(1) : photos });
   const ffmpeg = process.env.FFMPEG_PATH || (process.platform === "win32" ? path.resolve(".supabase/package/ffmpeg.exe") : "ffmpeg");
   const photo = path.join(directory, "post.jpg");
   const video = fs.readFileSync(reel.video);
