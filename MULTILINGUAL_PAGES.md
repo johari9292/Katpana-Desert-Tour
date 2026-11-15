@@ -13,6 +13,18 @@ Form values, handlers, IDs, external links and original editorial noindex rules
 remain intact. Each language version has its own canonical and reciprocal
 hreflang links; completed indexable translations also appear in the sitemap.
 
+The translation dictionaries support all 19 non-English languages, including
+full tour itineraries, inclusions and exclusions, FAQs,
+article bodies, destination details, trek information and shared interface text.
+`i18n:test` checks dictionary completeness and renders real tour, article,
+destination and trek pages in every language to detect English body fallbacks.
+
+For local Gemini maintenance, use `npm run i18n:translate:gemini` with the
+project's `GEMINI_API_KEY` and `GEMINI_MODEL` in the ignored local environment
+files. Each completed batch is saved atomically and subsequent runs resume
+missing entries. No API credential is committed or stored in GitHub. The
+public endpoint remains available through `i18n:translate`.
+
 ## Translation maintenance
 
 ```powershell
@@ -37,4 +49,5 @@ machine translations before release, particularly route and booking information.
 
 A missing or incomplete dictionary produces a noindex preview and is excluded
 from the sitemap. Complete the dictionaries before deploying the multilingual
-rollout. English content keeps its existing indexing behavior.
+rollout or releasing new source content. Run extraction and translation again
+when page copy changes. English content keeps its existing indexing behavior.

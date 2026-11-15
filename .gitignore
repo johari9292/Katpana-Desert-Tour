@@ -8,3 +8,4 @@ out/
 .supabase/
 .supabase-cli/
 .vercel
+data/translations/*.tmp

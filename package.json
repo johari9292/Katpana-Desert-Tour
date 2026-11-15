@@ -24,7 +24,8 @@
     "check": "npm run typecheck && npm run check:seo && npm run build",
     "i18n:extract": "node scripts/generate-localized-registry.cjs && node scripts/collect-inner-translations.cjs",
     "i18n:translate": "node scripts/translate-inner-content.cjs",
-    "i18n:test": "node --test scripts/inner-localization.test.cjs"
+    "i18n:translate:gemini": "node scripts/translate-pages-gemini.cjs",
+    "i18n:test": "node --test scripts/inner-localization.test.cjs scripts/translation-coverage.test.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
