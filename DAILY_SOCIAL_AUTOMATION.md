@@ -1,7 +1,7 @@
 # Daily posts and Reels
 
 The production schedule prepares a **different photo post and 12-second musical
-Reel each day**, with the same travel topic and short caption on both.
+Reel each day**, with the same travel topic and separate photo/Reel captions.
 
 ## Schedule
 
@@ -14,9 +14,6 @@ Reel each day**, with the same travel topic and short caption on both.
 [Daily preparation workflow](https://github.com/johari9292/Katpana-Desert-Tour/actions/workflows/daily-social.yml)
 and [Make publishing scenario](https://eu1.make.com/1704156/scenarios/8551535/edit).
 
-The first daily topic prepared on 13 November 2026 is **Askole: winter travel
-planning**, scheduled for **14 November at 09:00 Pakistan time**.
-
 ## Fresh topics and variety
 
 The worker first checks Pakistan's Google Trends RSS for travel-related topics.
@@ -25,11 +22,17 @@ from the last seven days. That fallback is recent travel news inspiration,
 not a claim that a subject ranks in Google Trends.
 
 It excludes unrelated sports/political/crisis topics, previously used source
-URLs, repeated titles/captions and duplicate video files. History is retained
+URLs, syndicated headlines, repeated titles/captions and duplicate video files.
+Within each source type, destinations used less in the last seven preparations
+are preferred. History is retained
 in the workflow cache, with the current prepared topic also recorded in Make.
 Repeated runs for the same prepared date do not overwrite it.
 
-Titles and captions are planning invitations based on the source subject.
+Titles and captions offer topic-specific planning or photography ideas for
+winter, transport, heritage, lakes, trekking, desert and general travel topics.
+Photo posts and Reels have distinct captions. Each uses up to five relevant
+brand, destination, region and subject hashtags. No hashtag or topic selection
+promises viral reach. Three timed text scenes carry the idea through the Reel.
 They do not report unverified current road, weather, price or safety conditions.
 Photo captions and Reel descriptions include photographer, source and licence credits.
 No text, image, video-generation or music API key is needed for this pipeline.
@@ -47,7 +50,9 @@ provenance is saved in `photos.json`, Reel metadata and the Make variables.
 The 90-entry history tracks photo IDs and original/download hashes to avoid
 recent reuse, even if a new video edit would have a different file hash.
 If too few unused licensed photos are available, preparation fails instead
-of reusing the old clip. This feature needs network access to Wikimedia Commons.
+of reusing the old clip. The worker first tries other fresh destination/subject
+candidates (up to eight); it fails only when none can supply unused copy and
+licensed photos. This feature needs network access to Wikimedia Commons.
 
 ## Failure behavior
 

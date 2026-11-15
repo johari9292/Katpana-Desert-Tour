@@ -47,7 +47,7 @@ function resolvePost(options) {
   if (!options.post && !options.topic) {
     const historyFile = ".supabase/social-history.json";
     const saved = fs.existsSync(historyFile) ? JSON.parse(fs.readFileSync(historyFile, "utf8")).find((entry) => entry.date === date) : null;
-    if (saved) return { title: saved.topic, caption: saved.caption, excerpt: saved.caption.split("\n")[0], date, source: "daily-live-topic" };
+    if (saved) return { title: saved.topic, caption: saved.reelCaption || saved.caption, excerpt: saved.caption.split("\n")[0], date, source: "daily-live-topic" };
     return dailyPost(date);
   }
   const payload = options.post ? JSON.parse(fs.readFileSync(options.post, "utf8")) : {};
@@ -58,7 +58,10 @@ function resolvePost(options) {
   const url = clean(payload.article_url || article.url || payload.url, 1000);
   const caption = clean(payload.post_caption || payload.facebook?.message || payload.message, 5000) ||
     [title, excerpt, url, "#KatpanaDesert #Skardu #PakistanTravel"].filter(Boolean).join("\n\n");
-  return { title, excerpt, caption, url, date, source: options.post ? "supplied-post" : "supplied-topic" };
+  const reelCaption = clean(payload.reel_caption, 5000) || caption;
+  const sceneTexts = payload.scene_texts;
+  if (sceneTexts && (!Array.isArray(sceneTexts) || sceneTexts.length !== 3 || sceneTexts.some((text) => typeof text !== "string" || !text.trim() || text.length > 80))) throw new Error("Use three short scene texts.");
+  return { title, excerpt, caption: reelCaption, sceneTexts, url, date, source: options.post ? "supplied-post" : "supplied-topic" };
 }
 
 function briefFor(post, seconds = 12) {
@@ -66,9 +69,9 @@ function briefFor(post, seconds = 12) {
     date: post.date, topic: post.title, source: post.source, seconds,
     aspectRatio: "9:16", caption: post.caption,
     scenePlan: [
-      { from: 0, to: 4, text: post.title },
-      { from: 4, to: seconds - 4, text: "Plan your northern Pakistan journey" },
-      { from: seconds - 4, to: seconds, text: "Message Katpana Desert to plan your trip" },
+      { from: 0, to: 4, text: post.sceneTexts?.[0] || post.title },
+      { from: 4, to: seconds - 4, text: post.sceneTexts?.[1] || "Plan your northern Pakistan journey" },
+      { from: seconds - 4, to: seconds, text: post.sceneTexts?.[2] || "Message Katpana Desert to plan your trip" },
     ],
     generationPrompt: `Create a ${seconds}-second vertical 9:16 travel video for Katpana Desert (Skardu). Topic: ${post.title}. Context from the matching daily post: ${post.excerpt || post.caption.split("\n")[0]}. Use natural camera movement and three coherent shots, with realistic geography and lighting. Use supplied reference footage where available; label invented scenes as an illustration. Do not depict invented current road conditions, access, weather, prices or events as fact. Leave room for captions added in editing. Audio: an original gentle instrumental travel soundtrack with no vocals, recognizable songs or artist imitation.`,
     note: post.source === "daily-evergreen-post"

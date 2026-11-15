@@ -10,7 +10,7 @@
     "reels:publish-test": "node scripts/publish-test-reel.cjs",
     "reels:test": "node --test scripts/reels.test.cjs",
     "social:prepare": "node scripts/daily-social-content.cjs",
-    "social:test": "node --test scripts/reels.test.cjs scripts/daily-social.test.cjs",
+    "social:test": "node --test scripts/reels.test.cjs scripts/daily-social.test.cjs scripts/social-copy.test.cjs",
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
     "prebuild": "node scripts/sync-trending-archive.cjs",
     "build": "next build",

@@ -76,7 +76,9 @@ function render(options) {
   if (!fs.existsSync(font)) throw new Error("Set --font or SOCIAL_FONT_PATH to a TrueType font.");
   fs.copyFileSync(font, path.join(directory, "font.ttf"));
   fs.writeFileSync(path.join(directory, "title.txt"), wrap(post.title));
-  fs.writeFileSync(path.join(directory, "cta.txt"), "Plan your next adventure\nkatpanadesert.com");
+  for (let index = 0; index < brief.scenePlan.length; index++) {
+    fs.writeFileSync(path.join(directory, `scene-${index}.txt`), wrap(brief.scenePlan[index].text));
+  }
   const music = options.music ? path.resolve(options.music) : createMusic(path.join(directory, "original-music.wav"), seconds, seed);
   if (!fs.existsSync(music)) throw new Error("Music file not found.");
   if (music === output) throw new Error("Music input and output must be different files.");
@@ -84,8 +86,7 @@ function render(options) {
     `[0:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280:x=(iw-ow)*${0.15 + (seed % 71) / 100},setsar=1,fps=25`,
     ",drawbox=x=0:y=840:w=iw:h=440:color=black@0.55:t=fill",
     ",drawtext=fontfile=font.ttf:text='KATPANA DESERT':expansion=none:fontcolor=white:fontsize=24:x=48:y=875",
-    `,drawtext=fontfile=font.ttf:textfile=title.txt:expansion=none:fontcolor=white:fontsize=39:line_spacing=12:x=48:y=932:enable='lt(t,${seconds - 4})'`,
-    `,drawtext=fontfile=font.ttf:textfile=cta.txt:expansion=none:fontcolor=white:fontsize=36:line_spacing=18:x=48:y=965:enable='gte(t,${seconds - 4})'`,
+    ...brief.scenePlan.map((scene, index) => `,drawtext=fontfile=font.ttf:textfile=scene-${index}.txt:expansion=none:fontcolor=white:fontsize=39:line_spacing=12:x=48:y=932:enable='gte(t,${scene.from})*lt(t,${scene.to})'`),
     ",format=yuv420p[v];",
     `[1:a]atrim=duration=${seconds},asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=${seconds - 1}:d=1,volume=${options.music ? 0.65 : 2}[a]`,
   ].join("");
