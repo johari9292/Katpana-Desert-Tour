@@ -24,6 +24,9 @@ function photoFromPage(page, destination) {
   if (destination === "K2" && !/\b(mountain|karakoram|baltoro|godwin.austen|baltistan)\b/i.test(description)) return null;
   if (destination === "Rama" && !/\b(astore|gilgit|baltistan|pakistan)\b/i.test(description)) return null;
   if (destination === "Pakistan" && !/\b(skardu|hunza|gilgit|baltistan|karakoram|katpana|deosai|shigar|khaplu|kachura|askole|astore)\b/i.test(description)) return null;
+  if (/\b(elections?|polling|politicians?|parliament|assembly|protests?|rall(?:y|ies)|campaign|president|prime minister|press conference|political part(?:y|ies))\b/i.test(description)) return null;
+  const subject = plain(page.title) + " " + field("ImageDescription");
+  if (!/\b(landscape|scenery|scenic|mountains?|valleys?|lakes?|rivers?|desert|dunes?|fort|palace|architecture|heritage|bridges?|villages?|roads?|highways?|passes|peaks?|glaciers?|forests?|meadows?|plateau|waterfalls?|mosques?|monaster(?:y|ies)|ruins|rocks?|views?|treks?|baltoro|panorama|vista|campsites?)\b/i.test(subject)) return null;
   const license = field("LicenseShortName");
   const licenseUrl = field("LicenseUrl");
   // Accept only simple commercial reuse licences. Unknown and share-alike terms are skipped.

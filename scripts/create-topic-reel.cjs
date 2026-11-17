@@ -1,4 +1,5 @@
 const fs = require("node:fs");
+const { withWebsite } = require("./social-policy.cjs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { createHash } = require("node:crypto");
@@ -105,7 +106,7 @@ function render(options) {
   const metadata = {
     video: output, seconds, width: 720, height: 1280, topic: post.title,
     date: post.date, source: post.source,
-    caption: options.photos?.length ? `${post.caption.split("\n\nPhoto:")[0]}\n\n${creditsFor(options.photos)}` : post.caption,
+    caption: options.photos?.length ? `${withWebsite(post.caption.split("\n\nPhoto:")[0])}\n\n${creditsFor(options.photos)}` : withWebsite(post.caption),
     provenance: { seed, footageSource: options.photos?.length ? "Wikimedia Commons destination photographs" : "operator-supplied", photos: options.photos || [], musicSource: options.music ? "operator-supplied" : "original synthesized instrumental" },
     music: options.music ? "user-supplied" : "original-synthesized",
     footage: source, bytes: fs.statSync(output).size,

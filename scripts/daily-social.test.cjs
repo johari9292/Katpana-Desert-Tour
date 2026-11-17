@@ -34,6 +34,12 @@ test("ambiguous K2 names never admit planet illustrations or military photograph
   assert.equal(photoFromPage({ ...photoPage(13), title: "File:Hunza memorial plaque.jpg" }, "Hunza"), null);
 });
 
+test("political images and nonscenic place-name matches are rejected", () => {
+  assert.equal(photoFromPage({ ...photoPage(1), title: "File:2020 Gilgit-Baltistan Assembly election women.jpg" }, "Baltistan"), null);
+  assert.equal(photoFromPage({ ...photoPage(1), title: "File:Hunza conference.jpg" }, "Hunza"), null);
+  assert.ok(photoFromPage({ ...photoPage(1), title: "File:Baltistan mountain landscape.jpg" }, "Baltistan"));
+});
+
 test("downloads distinct photos and excludes previously used originals", async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-photos-"));
   try {

@@ -8,9 +8,11 @@ const { render } = require("./create-topic-reel.cjs");
 const { selectPhotos, creditsFor } = require("./social-photos.cjs");
 const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social-copy.cjs");
 
+const { singleReelOperations, WEBSITE_URL, instagramCaption } = require("./social-policy.cjs");
+
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v6";
+const PIPELINE = "live-trends-photos-v7";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -129,6 +131,7 @@ async function prepare(date, dryRun = false) {
   const postFile = path.join(directory, "daily-post.json");
   fs.writeFileSync(postFile, JSON.stringify({ title: copy.topic, message: copy.caption, reel_caption: copy.reelCaption, scene_texts: copy.sceneTexts, hashtags: copy.hashtags, excerpt: copy.caption, provenance: candidate }, null, 2));
   const reel = render({ post: postFile, date, out: directory, photos: photos.length > 1 ? photos.slice(1) : photos });
+  if (snapshot.modules.some((module) => module.module === "instagram-business:CreateAReelPost" && !module.disabled)) instagramCaption(reel.caption);
   const ffmpeg = process.env.FFMPEG_PATH || (process.platform === "win32" ? path.resolve(".supabase/package/ffmpeg.exe") : "ffmpeg");
   const photo = path.join(directory, "post.jpg");
   const video = fs.readFileSync(reel.video);
@@ -147,6 +150,7 @@ async function prepare(date, dryRun = false) {
   const variables = [
     { name: "caption", value: photoCaption }, { name: "topic", value: copy.topic },
     { name: "post_caption", value: copy.caption }, { name: "reel_caption", value: copy.reelCaption },
+    { name: "reel_publish_caption", value: reel.caption }, { name: "website_url", value: WEBSITE_URL },
     { name: "source_title", value: candidate.title }, { name: "destination", value: copy.destination },
     { name: "angle", value: copy.angle }, { name: "hashtags", value: copy.hashtags.join(" ") },
     { name: "photo_provenance", value: JSON.stringify(photos) },
@@ -166,7 +170,7 @@ async function prepare(date, dryRun = false) {
       { op: "module_config_set", moduleId: 1, label: "Fresh daily topic and media", config: { parameters: {}, mapper: { variables } } },
       { op: "module_config_set", moduleId: 3, config: { parameters: { __IMTCONN__: 7833051 }, mapper: { page_id: "668690229664491", message: "{{1.caption}}", photos: [{ type: "data", fileName: "daily-travel.jpg", data: '{{toBinary(1.photo_base64; "base64")}}' }] } } },
       { op: "filter_set", moduleId: 3, filter: gate },
-      { op: "module_disabled_set", moduleId: 4, disabled: true },
+      ...singleReelOperations(snapshot.modules),
       { op: "module_config_set", moduleId: 5, label: "Fresh daily Reel", config: { parameters: { __IMTCONN__: 7833051 }, mapper: { page_id: "668690229664491", uploadMethod: "data", fileName: "daily-travel.mp4", data: `{{toBinary("${video.toString("base64")}"; "base64")}}`, title: copy.topic, description: reel.caption } } },
       { op: "filter_set", moduleId: 5, filter: gate },
     ],

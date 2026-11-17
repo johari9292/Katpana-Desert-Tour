@@ -1,3 +1,4 @@
+const { withWebsite } = require("./social-policy.cjs");
 const { createHash } = require("node:crypto");
 const { destinationFor } = require("./social-photos.cjs");
 
@@ -42,7 +43,7 @@ function captionFor(topic, seed = 0, details = {}) {
   const hooks = ["Save this travel idea", "Start your next travel plan here", "Give this idea a place in your itinerary", "A travel thought to keep for later"];
   const questions = ["Who would you explore with?", "What would you add to your itinerary?", "Which detail would you photograph first?", "Would you save a day for this?"];
   const hashtags = hashtagsFor(destination, angle);
-  return `${hooks[seed % hooks.length]}: ${topic}.\n\n${angle.tip}\n${questions[Math.floor(seed / hooks.length) % questions.length]} Message Katpana Desert to plan your trip.\n\n${hashtags.join(" ")}`;
+  return withWebsite(`${hooks[seed % hooks.length]}: ${topic}.\n\n${angle.tip}\n${questions[Math.floor(seed / hooks.length) % questions.length]} Message Katpana Desert to plan your trip.\n\n${hashtags.join(" ")}`);
 }
 
 function validateCopy(copy, history = []) {
@@ -69,7 +70,7 @@ function generateCopy(candidate, history, date) {
     if (history.some((entry) => entry.topic?.toLowerCase() === topic.toLowerCase())) continue;
     const hashtags = hashtagsFor(destination, angle);
     const caption = captionFor(topic, seed + offset, { destination, angle });
-    const reelCaption = `Your next travel story starts here: ${topic}.\n\n${angle.tip}\nSave this reel and message Katpana Desert to plan a journey around your interests.\n\n${hashtags.join(" ")}`;
+    const reelCaption = withWebsite(`Your next travel story starts here: ${topic}.\n\n${angle.tip}\nSave this reel and message Katpana Desert to plan a journey around your interests.\n\n${hashtags.join(" ")}`);
     return validateCopy({ topic, caption, reelCaption, hashtags, destination, angle: angle.name,
       sceneTexts: [`${destination}: ${idea}`, angle.name === "heritage" ? "Look closer. Ask about the local story." : "Plan your stops. Confirm details locally.", "Save this idea\nkatpanadesert.com"] }, history);
   }

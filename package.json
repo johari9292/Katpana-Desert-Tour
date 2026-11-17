@@ -10,7 +10,7 @@
     "reels:publish-test": "node scripts/publish-test-reel.cjs",
     "reels:test": "node --test scripts/reels.test.cjs",
     "social:prepare": "node scripts/daily-social-content.cjs",
-    "social:test": "node --test scripts/reels.test.cjs scripts/daily-social.test.cjs scripts/social-copy.test.cjs",
+    "social:test": "node --test scripts/reels.test.cjs scripts/daily-social.test.cjs scripts/social-copy.test.cjs scripts/social-policy.test.cjs",
     "sync:trending-archive": "node scripts/sync-trending-archive.cjs",
     "prebuild": "node scripts/generate-localized-registry.cjs && node scripts/sync-trending-archive.cjs && node scripts/collect-inner-translations.cjs",
     "build": "next build",
@@ -25,7 +25,9 @@
     "i18n:extract": "node scripts/generate-localized-registry.cjs && node scripts/collect-inner-translations.cjs",
     "i18n:translate": "node scripts/translate-inner-content.cjs",
     "i18n:translate:gemini": "node scripts/translate-pages-gemini.cjs",
-    "i18n:test": "node --test scripts/inner-localization.test.cjs scripts/translation-coverage.test.cjs"
+    "i18n:test": "node --test scripts/inner-localization.test.cjs scripts/translation-coverage.test.cjs",
+    "social:configure": "node scripts/configure-social-publishing.cjs",
+    "social:instagram": "node scripts/configure-social-publishing.cjs --instagram"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",

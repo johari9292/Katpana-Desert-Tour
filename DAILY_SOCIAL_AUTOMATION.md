@@ -7,7 +7,11 @@ Reel each day**, with the same travel topic and separate photo/Reel captions.
 
 - **07:37 Pakistan time:** GitHub Actions fetches fresh travel topics, prepares
   the caption, renders video/music and a square photo, and saves them in Make.
-- **09:00 Pakistan time:** Make publishes the prepared photo and Reel.
+- **09:00 Pakistan time:** Make publishes the prepared photo and one Reel.
+- Only one Facebook Reel route is enabled; the scenario runs sequentially.
+- Every new Facebook Reel is followed by a comment containing the full website
+  link, https://www.katpanadesert.com/. New captions also include that URL.
+  A video overlay is visual text; the clickable destination is the URL next to it.
 - The old repeating Sunday Reel is disabled. The eight-photo catalog is no
   longer used by the production schedule.
 
@@ -35,6 +39,7 @@ brand, destination, region and subject hashtags. No hashtag or topic selection
 promises viral reach. Three timed text scenes carry the idea through the Reel.
 They do not report unverified current road, weather, price or safety conditions.
 Photo captions and Reel descriptions include photographer, source and licence credits.
+Political images and nonscenic place-name matches are excluded from photo selection.
 No text, image, video-generation or music API key is needed for this pipeline.
 
 Each preparation seeks up to four distinct destination photos from Wikimedia Commons,
@@ -92,3 +97,35 @@ restores the daily schedule afterward.
 
 Supabase remains independent of this flow; its paused state does not prevent
 daily topic selection, rendering or Facebook publication.
+
+## Instagram sharing
+
+The same daily video can be shared to Instagram after its Business account is
+linked to the Katpana Desert Facebook Page and authorized in Make. The current
+Facebook-login connector requires a Business account, not a personal/Creator
+account. See https://apps.make.com/instagram-business.
+
+```powershell
+npm.cmd run social:configure
+npm.cmd run social:instagram
+```
+
+The first command maintains the daily schedule and website-link comment. The
+second checks the saved authorization request, resolves the actual linked account,
+then adds a Facebook video lookup and one Instagram Reel module. It does not
+publish immediately. No email/password login is stored or used.
+
+Instagram uses the published Facebook video source URL and the complete credited
+Reel caption. Captions longer than 2,200 characters fail preparation rather than
+losing attribution. The Instagram route requires that caption and a downloadable
+video, and retains the dated publishing gate. Add the website to the Instagram
+profile Links field for a clickable profile destination; caption URL clickability
+depends on the account and features Meta exposes.
+
+Instagram sharing is connected to **@katpanadesert**. The existing daily Reel
+is followed by its website-link comment, a Facebook video lookup and one Instagram
+Reel module. The Instagram caption preserves the full photo credits and includes
+the website URL. It can fall back to the published Facebook video description
+when an older preparation worker does not provide `reel_publish_caption`.
+Captions with insufficient space for the website link are gated before upload.
+The schedule remains once daily at 09:00 Pakistan time.
