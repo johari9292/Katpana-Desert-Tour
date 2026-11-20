@@ -59,10 +59,15 @@ Credits identify cropping/animation and link to each source and licence. Full
 provenance is saved in `photos.json`, Reel metadata and the Make variables.
 The 90-entry history tracks photo IDs and original/download hashes to avoid
 recent reuse, even if a new video edit would have a different file hash.
-If no unused licensed photos are available, preparation fails instead
-of reusing the old clip. The worker first tries other fresh destination/subject
-candidates (up to eight); it fails only when none can supply unused copy and
-licensed photos. This feature needs network access to Wikimedia Commons.
+If no unused licensed photos are available for Katpana, Skardu, Baltistan or
+Pakistan, preparation uses the checked-in CC0 Katpana photograph credited to
+Abdullah Shakoor. It records that fallback in the photo provenance and renders
+a new video with new copy and music; it never replays an old rendered clip.
+For other destinations it tries another topic rather than showing the wrong place.
+When feeds are unavailable or fresh candidates cannot be prepared, evergreen
+Katpana planning ideas keep preparation running using that local photo. Evergreen
+ideas are recorded as `evergreen-travel`, never presented as current news or trends.
+Photo reuse is allowed for this fallback; topic, caption and video checks remain.
 
 ## Failure behavior
 

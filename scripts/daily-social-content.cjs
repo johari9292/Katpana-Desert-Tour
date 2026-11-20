@@ -5,14 +5,14 @@ const { createHash } = require("node:crypto");
 const { callMake } = require("./make-mcp.cjs");
 const { pakistanDate, checkedDate } = require("./reel-topic.cjs");
 const { render } = require("./create-topic-reel.cjs");
-const { selectPhotos, creditsFor } = require("./social-photos.cjs");
+const { selectDailyPhotos, localKatpanaPhoto, creditsFor } = require("./social-photos.cjs");
 const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social-copy.cjs");
 
 const { singleReelOperations, WEBSITE_URL, instagramCaption } = require("./social-policy.cjs");
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v7";
+const PIPELINE = "live-trends-photos-v8";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -73,6 +73,14 @@ function check(result) {
   return result.structuredContent;
 }
 
+function evergreenCandidates(date) {
+  return ["desert photography", "winter travel", "transport planning", "heritage travel", "lake travel", "trekking preparation", "travel discovery"].map((angle) => ({
+    title: `Katpana ${angle}`, context: "Evergreen travel planning inspiration",
+    url: `${WEBSITE_URL}?daily-idea=${date}-${angle.replace(/ /g, "-")}`,
+    kind: "evergreen-travel", publishedAt: "", evergreen: true,
+  }));
+}
+
 async function prepare(date, dryRun = false) {
   date = checkedDate(date || nextDate());
   if (new Date(`${date}T09:00:00+05:00`) <= new Date()) throw new Error("The publishing slot has passed.");
@@ -104,8 +112,7 @@ async function prepare(date, dryRun = false) {
     if (!response.ok) throw new Error(`Feed returned HTTP ${response.status}`);
     return parseFeed(await response.text(), kind);
   }));
-  const candidates = freshCandidates(results.flatMap((result) => result.status === "fulfilled" ? result.value : []), history);
-  if (!candidates.length) throw new Error("No unused, fresh travel topic is available. Publishing will skip stale content.");
+  const candidates = [...freshCandidates(results.flatMap((result) => result.status === "fulfilled" ? result.value : []), history), ...evergreenCandidates(date)];
   const directory = path.resolve(`.supabase/reels/${date}-daily-topic`);
   fs.mkdirSync(directory, { recursive: true });
   let candidate, copy, photos;
@@ -118,15 +125,18 @@ async function prepare(date, dryRun = false) {
     tried.add(key);
     try {
       const generated = generateCopy(option, history, date);
-      const selected = await selectPhotos({ topic: generated.topic, date, directory, history, minCount: 1 });
+      // Evergreen Katpana ideas can use the local licensed photo even during a Commons outage.
+      const selected = option.evergreen ? [localKatpanaPhoto(generated.topic, directory)]
+        : await selectDailyPhotos({ topic: generated.topic, date, directory, history });
       candidate = option; copy = generated; photos = selected;
       break;
     } catch (error) {
       attempts.push(`${subject.destination}: ${error.message}`);
-      if (attempts.length === 8) break;
     }
   }
   if (!copy) throw new Error(`Could not prepare an unused travel topic and photos. ${attempts.join("; ")}`);
+  fs.writeFileSync(path.join(directory, "photos.json"), JSON.stringify(photos, null, 2));
+  if (photos.some((photo) => photo.selection === "licensed-local-fallback")) console.warn("Using the credited CC0 Katpana archive photograph with new copy and a newly rendered Reel.");
   const photoCaption = `${copy.caption}\n\n${creditsFor([photos[0]])}`;
   const postFile = path.join(directory, "daily-post.json");
   fs.writeFileSync(postFile, JSON.stringify({ title: copy.topic, message: copy.caption, reel_caption: copy.reelCaption, scene_texts: copy.sceneTexts, hashtags: copy.hashtags, excerpt: copy.caption, provenance: candidate }, null, 2));
@@ -187,7 +197,7 @@ async function prepare(date, dryRun = false) {
   return { date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, hashtags: copy.hashtags, sourceKind: candidate.kind, seconds: reel.seconds, mediaHash, dryRun, scheduledAt: `${date}T09:00:00+05:00` };
 }
 
-module.exports = { xmlText, parseFeed, sourceKey, freshCandidates, nextDate, captionFor, validateCopy, prepare };
+module.exports = { xmlText, parseFeed, sourceKey, freshCandidates, nextDate, captionFor, validateCopy, evergreenCandidates, prepare };
 if (require.main === module) prepare(process.env.SOCIAL_TARGET_DATE || undefined, process.argv.includes("--dry-run") || process.env.SOCIAL_DRY_RUN === "true")
   .then((result) => console.log(JSON.stringify(result, null, 2)))
   .catch((error) => { console.error(error.message); process.exitCode = 1; });

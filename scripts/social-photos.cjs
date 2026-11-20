@@ -94,4 +94,32 @@ async function selectPhotos({ topic, date, directory, history = [], count = 4, m
   fs.writeFileSync(path.join(directory, "photos.json"), JSON.stringify(selected, null, 2));
   return selected;
 }
-module.exports = { plain, destinationFor, photoFromPage, creditsFor, selectPhotos };
+// The checked-in CC0 source is documented in public/images/places/SOURCES.md.
+// Reuse the photograph, never a previous rendered video or caption.
+function localKatpanaPhoto(topic, directory) {
+  const destination = destinationFor(topic);
+  if (!["Katpana", "Skardu", "Baltistan", "Pakistan"].includes(destination)) return null;
+  const source = path.resolve(__dirname, "../public/images/places/katapana-desert.jpg");
+  const bytes = fs.readFileSync(source);
+  fs.mkdirSync(directory, { recursive: true });
+  const filename = path.resolve(directory, "fallback-katpana.jpg");
+  fs.writeFileSync(filename, bytes);
+  return { id: "local:skardu-katpana-desert", title: "Skardu Katpana Desert", author: "Abdullah Shakoor",
+    license: "CC0 1.0", licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Skardu_Katpana_Desert.jpg",
+    destination: "Katpana", contentHash: createHash("sha256").update(bytes).digest("hex"),
+    path: filename, selection: "licensed-local-fallback" };
+}
+
+async function selectDailyPhotos(options) {
+  try { return await selectPhotos({ ...options, minCount: 1 }); }
+  catch (error) {
+    const photo = localKatpanaPhoto(options.topic, options.directory);
+    if (!photo) throw error;
+    const photos = [{ ...photo, fallbackReason: error.message }];
+    fs.writeFileSync(path.join(options.directory, "photos.json"), JSON.stringify(photos, null, 2));
+    return photos;
+  }
+}
+
+module.exports = { plain, destinationFor, photoFromPage, creditsFor, selectPhotos, selectDailyPhotos, localKatpanaPhoto };

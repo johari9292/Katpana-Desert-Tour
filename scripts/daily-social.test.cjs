@@ -6,6 +6,39 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 
+test("daily preparation falls back to a credited local photo during a Commons outage", async () => {
+  const { selectDailyPhotos } = require("./social-photos.cjs");
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-daily-outage-"));
+  try {
+    const options = { topic: "Pakistan travel planning", date: "2026-11-20", directory,
+      fetcher: async () => { throw new Error("Commons unavailable"); } };
+    const [photo] = await selectDailyPhotos(options);
+    assert.equal(photo.license, "CC0 1.0");
+    assert.equal(photo.author, "Abdullah Shakoor");
+    assert.ok(fs.existsSync(photo.path));
+    assert.match(photo.fallbackReason, /Commons unavailable/);
+    const reused = await selectDailyPhotos({ ...options, history: [{ photos: [photo] }] });
+    assert.equal(reused[0].contentHash, photo.contentHash);
+    await assert.rejects(selectDailyPhotos({ ...options, topic: "Hunza travel" }), /Commons unavailable/);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
+
+test("evergreen topics generate unused copy without claiming a live trend", () => {
+  const { evergreenCandidates } = require("./daily-social-content.cjs");
+  const { generateCopy } = require("./social-copy.cjs");
+  const candidates = evergreenCandidates("2026-11-20");
+  const history = [];
+  for (const candidate of candidates) {
+    assert.equal(candidate.kind, "evergreen-travel");
+    assert.equal(candidate.publishedAt, "");
+    const copy = generateCopy(candidate, history, "2026-11-20");
+    history.push(copy);
+    assert.equal(copy.destination, "Katpana");
+    assert.doesNotMatch(copy.caption, /trending now|live footage/i);
+  }
+  assert.equal(new Set(history.map((entry) => entry.topic)).size, candidates.length);
+});
+
 function photoPage(id, overrides = {}) {
   return { pageid: id, title: `File:Hunza valley ${id}.jpg`, imageinfo: [{ mime: "image/jpeg", width: 2000, height: 1400,
     sha1: `original-${id}`, url: `https://upload.wikimedia.org/test-${id}.jpg`, descriptionurl: `https://commons.wikimedia.org/wiki/File:Hunza_${id}.jpg`,
