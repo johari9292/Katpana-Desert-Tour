@@ -1,6 +1,16 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { WEBSITE_URL, withWebsite, singleReelOperations, instagramCaption } = require("./social-policy.cjs");
+const { WEBSITE_URL, withWebsite, singleReelOperations, instagramCaption, instagramSourceOperations } = require("./social-policy.cjs");
+
+test("Instagram receives a fresh hosted original and skips missing URLs", () => {
+  const module = { id: 8, module: "instagram-business:CreateAReelPost", filter: { name: "Only today's credited Reel with a downloadable video", conditions: [[{ a: "{{7.source}}", o: "exist" }, { a: "{{1.content_date}}", o: "text:equal", b: "today" }]] } };
+  const ops = instagramSourceOperations(module, { mapper: { video_url: "{{7.source}}", caption: "{{1.caption}}" } });
+  assert.equal(ops[0].config.mapper.video_url, "{{1.instagram_video_url}}");
+  assert.equal(ops[0].config.mapper.caption, "{{1.caption}}");
+  assert.ok(ops[1].filter.conditions[0].some((item) => item.a === "{{1.instagram_video_url}}" && item.o === "text:notequal"));
+  assert.ok(ops[1].filter.conditions[0].some((item) => item.a === "{{1.content_date}}"));
+  assert.throws(() => instagramSourceOperations({ ...module, filter: { ...module.filter, conditions: [[]] } }, { mapper: {} }), /changed/);
+});
 
 test("website URLs are included exactly once and do not remove photo credits", () => {
   const original = "Explore Hunza. Photo: Photographer; CC BY 4.0; https://example.com/photo";

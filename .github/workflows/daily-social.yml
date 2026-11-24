@@ -16,7 +16,7 @@ on:
         default: false
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: daily-social-preparation
@@ -46,6 +46,7 @@ jobs:
         env:
           MAKE_MCP_API_KEY: ${{ secrets.MAKE_MCP_API_KEY }}
           MAKE_MCP_URL: ${{ secrets.MAKE_MCP_URL }}
+          GITHUB_TOKEN: ${{ github.token }}
           SOCIAL_TARGET_DATE: ${{ inputs.target_date }}
           SOCIAL_DRY_RUN: ${{ inputs.dry_run }}
         run: node scripts/daily-social-content.cjs
@@ -55,6 +56,13 @@ jobs:
         with:
           path: .supabase/social-history.json
           key: social-history-${{ github.run_id }}
+      - name: Report Instagram hosting failures
+        if: inputs.dry_run != true
+        run: |
+          if [ -f .supabase/instagram-hosting-failed.txt ]; then
+            echo "::error::Instagram video hosting failed; Facebook remains scheduled, Instagram will skip this date."
+            exit 1
+          fi
       - name: Save prepared media and provenance
         if: always()
         uses: actions/upload-artifact@v7

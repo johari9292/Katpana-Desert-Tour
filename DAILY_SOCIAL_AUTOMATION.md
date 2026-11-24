@@ -161,17 +161,24 @@ second checks the saved authorization request, resolves the actual linked accoun
 then adds a Facebook video lookup and one Instagram Reel module. It does not
 publish immediately. No email/password login is stored or used.
 
-Instagram uses the published Facebook video source URL and the complete credited
-Reel caption. Captions longer than 2,200 characters fail preparation rather than
-losing attribution. The Instagram route requires that caption and a downloadable
-video, and retains the dated publishing gate. Add the website to the Instagram
+Instagram uses the original MP4, hosted as a public asset in this repository's
+`instagram-reels` GitHub release, and the complete credited Reel caption. The
+video has no MP4 edit lists and has its index at the front. The daily GitHub
+workflow needs its `contents: write` token permission to create the release and
+upload assets. The public release retains those videos until manually managed.
+If hosting fails, the Facebook post and Reel can still be prepared, while the
+Instagram route skips that date rather than using a stale or Facebook-transcoded
+video. A dry run does not upload an asset. Captions longer than 2,200 characters
+fail preparation rather than losing attribution. The Instagram route requires a
+downloadable video and retains the dated publishing gate. Add the website to the Instagram
 profile Links field for a clickable profile destination; caption URL clickability
 depends on the account and features Meta exposes.
 
 Instagram sharing is connected to **@katpanadesert**. The existing daily Reel
 is followed by its website-link comment, a Facebook video lookup and one Instagram
-Reel module. The Instagram caption preserves the full photo credits and includes
-the website URL. It can fall back to the published Facebook video description
-when an older preparation worker does not provide `reel_publish_caption`.
+Reel module. The video is fetched from the hosted original, not the Facebook
+lookup. The Instagram caption preserves the full photo credits and includes the
+website URL. It can fall back to the Facebook video description when an older
+preparation worker does not provide `reel_publish_caption`.
 Captions with insufficient space for the website link are gated before upload.
 The schedule remains once daily at 09:00 Pakistan time.

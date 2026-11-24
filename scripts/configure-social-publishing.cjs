@@ -1,6 +1,6 @@
 const fs = require("node:fs");
 const { callMake } = require("./make-mcp.cjs");
-const { WEBSITE_URL, withWebsite, singleReelOperations } = require("./social-policy.cjs");
+const { WEBSITE_URL, withWebsite, singleReelOperations, instagramSourceOperations } = require("./social-policy.cjs");
 
 const SCENARIO = 8551535;
 const TEAM = 1704156;
@@ -104,9 +104,9 @@ async function connectInstagram() {
   if (!video) throw new Error("The video lookup module was not saved.");
   await patch(snapshot, [{ op: "module_add", module: instagram.module, version: instagram.version, follows: video.id,
     label: "Share the same daily Reel to Instagram", config: { parameters: { __IMTCONN__: selected.connection }, mapper: {
-      accountId: selected.account.value, video_url: `{{${video.id}.source}}`, caption: `{{ifempty(1.reel_publish_caption; ${video.id}.description)}}\n\n{{if(contains(ifempty(1.reel_publish_caption; ${video.id}.description); "https://www.katpanadesert.com/"); emptystring; "Plan your trip: https://www.katpanadesert.com/")}}`, share_to_feed: true
+      accountId: selected.account.value, video_url: "{{1.instagram_video_url}}", caption: `{{ifempty(1.reel_publish_caption; ${video.id}.description)}}\n\n{{if(contains(ifempty(1.reel_publish_caption; ${video.id}.description); "https://www.katpanadesert.com/"); emptystring; "Plan your trip: https://www.katpanadesert.com/")}}`, share_to_feed: true
     } }, filter: { name: "Only today's credited Reel with a downloadable video", conditions: [[
-      { a: `{{${video.id}.source}}`, o: "exist" }, { a: `{{${video.id}.description}}`, o: "exist" },
+      { a: "{{1.instagram_video_url}}", o: "exist" }, { a: "{{1.instagram_video_url}}", o: "text:notequal", b: "" }, { a: `{{${video.id}.description}}`, o: "exist" },
       { a: `{{length(ifempty(1.reel_publish_caption; ${video.id}.description))}}`, o: "number:less", b: 2100 },
       { a: "{{1.content_date}}", o: "text:equal", b: '{{formatDate(now; "YYYY-MM-DD"; "Asia/Karachi")}}' }
     ]] } }]);
@@ -116,8 +116,27 @@ async function connectInstagram() {
   return { connected: true, account: selected.account.label, activeDailyInstagramReelRoutes: active.length };
 }
 
-module.exports = { configureFacebook, connectInstagram };
+async function configureInstagramSource() {
+  const snapshot = await invoke("scenario_get", { scenarioId: SCENARIO });
+  if (snapshot.modules.some((module) => module.filter?.name === "Single live Reel test")) throw new Error("Wait for the live publishing test to finish before editing the scheduler.");
+  const active = snapshot.modules.filter((module) => module.module === "instagram-business:CreateAReelPost" && !module.disabled);
+  if (active.length !== 1) throw new Error("Inspect the Instagram route count before updating the video source.");
+  const instagram = active[0];
+  const saved = await invoke("scenario_module_get", { scenarioId: SCENARIO, moduleIds: [instagram.id] });
+  const config = saved.modules[0]?.config;
+  if (config?.mapper?.video_url === "{{1.instagram_video_url}}") return { scenarioId: SCENARIO, instagramModuleId: instagram.id, alreadyConfigured: true };
+  const operations = instagramSourceOperations(instagram, config);
+  fs.mkdirSync(".supabase", { recursive: true });
+  fs.writeFileSync(`.supabase/instagram-source-before-${Date.now()}.json`, JSON.stringify({ snapshot, module: saved.modules[0] }, null, 2));
+  await patch(snapshot, operations);
+  const verified = await invoke("scenario_get", { scenarioId: SCENARIO });
+  const finalConfig = await invoke("scenario_module_get", { scenarioId: SCENARIO, moduleIds: [instagram.id] });
+  if (finalConfig.modules[0]?.config?.mapper?.video_url !== "{{1.instagram_video_url}}" || !verified.modules.find((m) => m.id === instagram.id)?.filter?.conditions?.[0]?.some((c) => c.a === "{{1.instagram_video_url}}" && c.o === "text:notequal")) throw new Error("Inspect the saved Instagram source and filter.");
+  return { scenarioId: SCENARIO, instagramModuleId: instagram.id, source: "original hosted MP4", nextScheduledExecution: verified.scenario.nextScheduledExecution };
+}
+
+module.exports = { configureFacebook, connectInstagram, configureInstagramSource };
 if (require.main === module) (async () => {
-  const result = process.argv.includes("--instagram") ? await connectInstagram() : await configureFacebook();
+  const result = process.argv.includes("--instagram-source") ? await configureInstagramSource() : process.argv.includes("--instagram") ? await connectInstagram() : await configureFacebook();
   console.log(JSON.stringify(result, null, 2));
 })().catch((error) => { console.error(error.message); process.exitCode = 1; });

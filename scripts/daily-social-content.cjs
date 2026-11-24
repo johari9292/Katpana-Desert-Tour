@@ -9,12 +9,13 @@ const { selectDailyPhotos, creditsFor } = require("./social-photos.cjs");
 const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social-copy.cjs");
 const { selectMedia } = require("./social-media.cjs");
 const { recordedMusic } = require("./social-recorded-music.cjs");
+const { hostOriginalVideo } = require("./social-hosting.cjs");
 
 const { singleReelOperations, WEBSITE_URL, instagramCaption } = require("./social-policy.cjs");
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v9";
+const PIPELINE = "live-trends-photos-v10";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -161,10 +162,19 @@ async function prepare(date, dryRun = false) {
   const photoBytes = fs.readFileSync(photo);
   const mediaHash = createHash("sha256").update(video).digest("hex");
   if (history.some((entry) => entry.mediaHash === mediaHash)) throw new Error("Rendered video repeats a previous day's file.");
+  let instagramVideoUrl = "";
+  const instagramEnabled = snapshot.modules.some((module) => module.module === "instagram-business:CreateAReelPost" && !module.disabled);
+  if (instagramEnabled && !dryRun) {
+    const marker = ".supabase/instagram-hosting-failed.txt";
+    if (fs.existsSync(marker)) fs.unlinkSync(marker);
+    try { instagramVideoUrl = (await hostOriginalVideo({ file: reel.video, date })).url; }
+    catch (error) { fs.writeFileSync(marker, error.message); console.warn(`Instagram video hosting failed; Instagram will skip this date: ${error.message}`); }
+  }
   const variables = [
     { name: "caption", value: photoCaption }, { name: "topic", value: copy.topic },
     { name: "post_caption", value: copy.caption }, { name: "reel_caption", value: copy.reelCaption },
     { name: "reel_publish_caption", value: reel.caption }, { name: "website_url", value: WEBSITE_URL },
+    { name: "instagram_video_url", value: instagramVideoUrl },
     { name: "source_title", value: candidate.title }, { name: "destination", value: copy.destination },
     { name: "angle", value: copy.angle }, { name: "hashtags", value: copy.hashtags.join(" ") },
     { name: "photo_provenance", value: JSON.stringify(photos) },
@@ -199,7 +209,7 @@ async function prepare(date, dryRun = false) {
     history.push({ date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, sourceUrl: candidate.url, sourceTitle: candidate.title, sourceKind: candidate.kind, destination: copy.destination, angle: copy.angle, mediaHash, photos, media: { videos: media.video?.id, music: media.music?.id } });
     fs.writeFileSync(HISTORY, JSON.stringify(history.slice(-90), null, 2));
   }
-  return { date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, hashtags: copy.hashtags, sourceKind: candidate.kind, seconds: reel.seconds, mediaHash, dryRun, scheduledAt: `${date}T09:00:00+05:00` };
+  return { date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, hashtags: copy.hashtags, sourceKind: candidate.kind, seconds: reel.seconds, mediaHash, instagramVideoHosted: !!instagramVideoUrl, dryRun, scheduledAt: `${date}T09:00:00+05:00` };
 }
 
 module.exports = { xmlText, parseFeed, sourceKey, freshCandidates, nextDate, captionFor, validateCopy, evergreenCandidates, prepare };
