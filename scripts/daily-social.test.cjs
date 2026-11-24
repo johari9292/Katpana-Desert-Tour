@@ -7,6 +7,32 @@ const os = require("node:os");
 const path = require("node:path");
 const { selectMedia } = require("./social-media.cjs");
 const { recordedMusic } = require("./social-recorded-music.cjs");
+const { hostOriginalVideo } = require("./social-hosting.cjs");
+
+test("Instagram hosting uploads once and verifies the public video without credentials", async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-host-"));
+  try {
+    const file = path.join(directory, "reel.mp4"); fs.writeFileSync(file, "test video");
+    let asset, uploads = 0, publicChecks = 0;
+    const fetcher = async (url, options) => {
+      const text = String(url);
+      if (text.includes("/releases/tags/")) return new Response(JSON.stringify({ id: 42, assets: asset ? [asset] : [] }), { status: 200 });
+      if (text.startsWith("https://uploads.github.com/")) {
+        uploads++;
+        const name = new URL(text).searchParams.get("name");
+        assert.equal(options.headers["Content-Type"], "video/mp4");
+        asset = { name, size: 10, state: "uploaded", browser_download_url: `https://github.com/johari9292/Katpana-Desert-Tour/releases/download/instagram-reels/${name}` };
+        return new Response(JSON.stringify(asset), { status: 201 });
+      }
+      assert.equal(options.headers.Authorization, undefined); publicChecks++;
+      return new Response("x", { status: 206 });
+    };
+    const first = await hostOriginalVideo({ file, date: "2026-11-24", token: "test", fetcher });
+    const second = await hostOriginalVideo({ file, date: "2026-11-24", token: "test", fetcher });
+    assert.equal(first.url, second.url); assert.equal(uploads, 1); assert.equal(publicChecks, 2);
+    await assert.rejects(hostOriginalVideo({ file, date: "2026-11-24", token: "", fetcher }), /GITHUB_TOKEN/);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
 
 test("recorded music rotates and retains licence and source credit", async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-track-"));

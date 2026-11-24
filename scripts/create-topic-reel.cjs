@@ -99,7 +99,7 @@ function render(options) {
     "-stream_loop", "-1", "-ss", String(options.musicStart || 0), "-i", music,
     "-filter_complex", filter, "-map", "[v]", "-map", "[a]", "-t", String(seconds),
     "-c:v", "libx264", "-preset", "fast", "-crf", "24", "-maxrate", "270k", "-bufsize", "540k",
-    "-c:a", "aac", "-b:a", "64k", "-ac", "2", "-ar", "44100", "-movflags", "+faststart", output,
+    "-c:a", "aac", "-b:a", "64k", "-ac", "2", "-ar", "44100", "-use_editlist", "0", "-movflags", "+faststart", output,
   ], { cwd: directory, stdio: "inherit" });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`FFmpeg exited with code ${result.status}.`);

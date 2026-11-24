@@ -7,7 +7,7 @@ on:
     paths:
       - .github/workflows/social-preview.yml
 permissions:
-  contents: read
+  contents: write
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -20,6 +20,9 @@ jobs:
       - name: Install renderer
         run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg fonts-dejavu-core
       - name: Create preview without publishing
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SOCIAL_HOST_VIDEO: 'true'
         run: node scripts/create-social-preview.cjs
       - uses: actions/upload-artifact@v7
         if: always()
