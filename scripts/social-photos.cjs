@@ -115,7 +115,8 @@ async function selectDailyPhotos(options) {
   try { return await selectPhotos({ ...options, minCount: 1 }); }
   catch (error) {
     const photo = localKatpanaPhoto(options.topic, options.directory);
-    if (!photo) throw error;
+    const used = new Set((options.history || []).flatMap((entry) => entry.photos || []).flatMap((item) => [item.id, item.contentHash]));
+    if (!photo || used.has(photo.id) || used.has(photo.contentHash)) throw error;
     const photos = [{ ...photo, fallbackReason: error.message }];
     fs.writeFileSync(path.join(options.directory, "photos.json"), JSON.stringify(photos, null, 2));
     return photos;

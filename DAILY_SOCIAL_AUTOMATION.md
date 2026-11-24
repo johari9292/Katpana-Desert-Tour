@@ -60,14 +60,47 @@ provenance is saved in `photos.json`, Reel metadata and the Make variables.
 The 90-entry history tracks photo IDs and original/download hashes to avoid
 recent reuse, even if a new video edit would have a different file hash.
 If no unused licensed photos are available for Katpana, Skardu, Baltistan or
-Pakistan, preparation uses the checked-in CC0 Katpana photograph credited to
-Abdullah Shakoor. It records that fallback in the photo provenance and renders
-a new video with new copy and music; it never replays an old rendered clip.
+Pakistan, preparation can use the checked-in CC0 Katpana photograph credited to
+Abdullah Shakoor if it has not been used in the retained history. It records that
+fallback in the photo provenance and renders a new video with new copy and music.
 For other destinations it tries another topic rather than showing the wrong place.
 When feeds are unavailable or fresh candidates cannot be prepared, evergreen
-Katpana planning ideas keep preparation running using that local photo. Evergreen
-ideas are recorded as `evergreen-travel`, never presented as current news or trends.
-Photo reuse is allowed for this fallback; topic, caption and video checks remain.
+Katpana planning ideas also search Commons for unused photos. Evergreen ideas are
+recorded as `evergreen-travel`, never presented as current news or trends. If no
+unused suitable photo is available, preparation fails instead of repeating the
+local image. History covers up to 90 preparations, not all time.
+
+## Supplied video and music
+
+The default Reel is an animated photo slideshow with synthesized instrumental
+music; it is not generated or filmed footage. To use actual travel footage and
+recordings you are allowed to publish, add `social-media/manifest.json` and the
+referenced files to the environment running the worker. For GitHub Actions,
+the files must be available in the checkout or explicitly provisioned on the
+runner; files only on your computer are not available to the scheduled job.
+For example:
+
+```json
+{
+  "videos": [{ "id": "hunza-1", "file": "hunza.mp4", "destinations": ["Hunza"], "credit": "Footage by ...", "permission": "Permission for Facebook and Instagram business posts" }],
+  "music": [{ "id": "track-1", "file": "track.mp3", "credit": "Track and artist", "permission": "Licensed for Facebook and Instagram business posts" }]
+}
+```
+
+The worker selects footage only for its matching destination and rotates the
+least recently used entries. Footage must be at least 12 seconds; source audio
+is replaced. If there is no matching footage, the photo slideshow is used. If
+there is no supplied track, the original instrumental is used. Credits are
+included in the Reel caption; media IDs are kept in the rotation history. IDs
+must be unique within each list, and file paths must be inside the manifest
+folder. Malformed manifests or missing files stop preparation.
+
+The listed commercial songs are not bundled or licensed by this project.
+Only add recordings when you have the necessary permissions for these uses and
+platforms. Meta's available music and permissions can vary by account and use;
+its Sound Collection is another option. Adding a track to this manifest does
+not itself obtain rights. The workflow does not generate realistic AI video;
+use real cleared clips or supply an exported generated clip with appropriate rights.
 
 ## Failure behavior
 

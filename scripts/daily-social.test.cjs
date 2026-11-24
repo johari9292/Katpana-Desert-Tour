@@ -5,6 +5,23 @@ const { photoFromPage, creditsFor, selectPhotos, destinationFor } = require("./s
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
+const { selectMedia } = require("./social-media.cjs");
+
+test("supplied media rotates by history and matches footage to its destination", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-media-"));
+  try {
+    for (const name of ["hunza.mp4", "skardu.mp4", "one.mp3", "two.mp3"]) fs.writeFileSync(path.join(directory, name), "media");
+    const manifest = path.join(directory, "manifest.json");
+    const entry = (id, file, destinations) => ({ id, file, destinations, credit: id, permission: "cleared for both platforms" });
+    fs.writeFileSync(manifest, JSON.stringify({ videos: [entry("h", "hunza.mp4", ["Hunza"]), entry("s", "skardu.mp4", ["Skardu"])], music: [entry("one", "one.mp3"), entry("two", "two.mp3")] }));
+    const selected = selectMedia({ destination: "Hunza", history: [{ media: { music: "one" } }], manifest });
+    assert.equal(selected.video.id, "h");
+    assert.equal(selected.music.id, "two");
+    assert.equal(selectMedia({ destination: "Katpana", manifest }).video, undefined);
+    fs.writeFileSync(manifest, JSON.stringify({ music: [{ id: "bad", file: "../outside.mp3", credit: "x", permission: "x" }] }));
+    assert.throws(() => selectMedia({ destination: "Hunza", manifest }), /outside/);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
 
 test("daily preparation falls back to a credited local photo during a Commons outage", async () => {
   const { selectDailyPhotos } = require("./social-photos.cjs");
@@ -17,8 +34,7 @@ test("daily preparation falls back to a credited local photo during a Commons ou
     assert.equal(photo.author, "Abdullah Shakoor");
     assert.ok(fs.existsSync(photo.path));
     assert.match(photo.fallbackReason, /Commons unavailable/);
-    const reused = await selectDailyPhotos({ ...options, history: [{ photos: [photo] }] });
-    assert.equal(reused[0].contentHash, photo.contentHash);
+    await assert.rejects(selectDailyPhotos({ ...options, history: [{ photos: [photo] }] }), /Commons unavailable/);
     await assert.rejects(selectDailyPhotos({ ...options, topic: "Hunza travel" }), /Commons unavailable/);
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 });

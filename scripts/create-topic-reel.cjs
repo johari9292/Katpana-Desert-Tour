@@ -106,7 +106,7 @@ function render(options) {
   const metadata = {
     video: output, seconds, width: 720, height: 1280, topic: post.title,
     date: post.date, source: post.source,
-    caption: options.photos?.length ? `${withWebsite(post.caption.split("\n\nPhoto:")[0])}\n\n${creditsFor(options.photos)}` : withWebsite(post.caption),
+    caption: [options.photos?.length ? `${withWebsite(post.caption.split("\n\nPhoto:")[0])}\n\n${creditsFor(options.photos)}` : withWebsite(post.caption), options.videoCredit && `Footage: ${options.videoCredit}`, options.musicCredit && `Music: ${options.musicCredit}`].filter(Boolean).join("\n\n"),
     provenance: { seed, footageSource: options.photos?.length ? "Wikimedia Commons destination photographs" : "operator-supplied", photos: options.photos || [], musicSource: options.music ? "operator-supplied" : "original synthesized instrumental" },
     music: options.music ? "user-supplied" : "original-synthesized",
     footage: source, bytes: fs.statSync(output).size,

@@ -5,14 +5,15 @@ const { createHash } = require("node:crypto");
 const { callMake } = require("./make-mcp.cjs");
 const { pakistanDate, checkedDate } = require("./reel-topic.cjs");
 const { render } = require("./create-topic-reel.cjs");
-const { selectDailyPhotos, localKatpanaPhoto, creditsFor } = require("./social-photos.cjs");
+const { selectDailyPhotos, creditsFor } = require("./social-photos.cjs");
 const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social-copy.cjs");
+const { selectMedia } = require("./social-media.cjs");
 
 const { singleReelOperations, WEBSITE_URL, instagramCaption } = require("./social-policy.cjs");
 
 const HISTORY = ".supabase/social-history.json";
 const SCENARIO = 8551535;
-const PIPELINE = "live-trends-photos-v8";
+const PIPELINE = "live-trends-photos-v9";
 const geography = /\b(skardu|hunza|katpana|deosai|kachura|shigar|khaplu|astore|rama|askole|karakoram|k2|baltistan|gilgit|pakistan)\b/i;
 const travel = /\b(touris\w*|travel\w*|trek\w*|adventure\w*|valley|valleys|mountain\w*|lake\w*|snow\w*|flight\w*|aircraft|air connectivity|desert|heritage|base camp)\b/i;
 const excluded = /\b(killed|dead|death|attack|terror\w*|dispute\w*|protest\w*|cricket|football|bethell|naqvi|law and order|election\w*)\b/i;
@@ -97,7 +98,7 @@ async function prepare(date, dryRun = false) {
   const replacingPending = values.content_date === date && values.pipeline_version !== PIPELINE;
   if (replacingPending) history = history.filter((entry) => entry.date !== date);
   if (!replacingPending && values.pipeline_version?.startsWith("live-trends-") && values.content_date && !history.some((entry) => entry.date === values.content_date)) {
-    history.push({ date: values.content_date, topic: values.topic, caption: values.post_caption || values.caption, reelCaption: values.reel_caption, sourceUrl: values.source_url, sourceTitle: values.source_title, sourceKind: values.source_kind, destination: values.destination, angle: values.angle, mediaHash: values.media_hash, photos: values.photo_provenance ? JSON.parse(values.photo_provenance) : [] });
+    history.push({ date: values.content_date, topic: values.topic, caption: values.post_caption || values.caption, reelCaption: values.reel_caption, sourceUrl: values.source_url, sourceTitle: values.source_title, sourceKind: values.source_kind, destination: values.destination, angle: values.angle, mediaHash: values.media_hash, photos: values.photo_provenance ? JSON.parse(values.photo_provenance) : [], media: values.media_selection ? JSON.parse(values.media_selection) : {} });
   }
   if (values.pipeline_version === PIPELINE && values.content_date === date) {
     fs.writeFileSync(HISTORY, JSON.stringify(history.slice(-90), null, 2));
@@ -125,9 +126,7 @@ async function prepare(date, dryRun = false) {
     tried.add(key);
     try {
       const generated = generateCopy(option, history, date);
-      // Evergreen Katpana ideas can use the local licensed photo even during a Commons outage.
-      const selected = option.evergreen ? [localKatpanaPhoto(generated.topic, directory)]
-        : await selectDailyPhotos({ topic: generated.topic, date, directory, history });
+      const selected = await selectDailyPhotos({ topic: generated.topic, date, directory, history });
       candidate = option; copy = generated; photos = selected;
       break;
     } catch (error) {
@@ -140,7 +139,10 @@ async function prepare(date, dryRun = false) {
   const photoCaption = `${copy.caption}\n\n${creditsFor([photos[0]])}`;
   const postFile = path.join(directory, "daily-post.json");
   fs.writeFileSync(postFile, JSON.stringify({ title: copy.topic, message: copy.caption, reel_caption: copy.reelCaption, scene_texts: copy.sceneTexts, hashtags: copy.hashtags, excerpt: copy.caption, provenance: candidate }, null, 2));
-  const reel = render({ post: postFile, date, out: directory, photos: photos.length > 1 ? photos.slice(1) : photos });
+  const media = selectMedia({ destination: copy.destination, history });
+  const reel = render({ post: postFile, date, out: directory,
+    ...(media.video ? { video: media.video.path, videoCredit: media.video.credit } : { photos: photos.length > 1 ? photos.slice(1) : photos }),
+    ...(media.music ? { music: media.music.path, musicCredit: media.music.credit } : {}) });
   if (snapshot.modules.some((module) => module.module === "instagram-business:CreateAReelPost" && !module.disabled)) instagramCaption(reel.caption);
   const ffmpeg = process.env.FFMPEG_PATH || (process.platform === "win32" ? path.resolve(".supabase/package/ffmpeg.exe") : "ffmpeg");
   const photo = path.join(directory, "post.jpg");
@@ -164,6 +166,7 @@ async function prepare(date, dryRun = false) {
     { name: "source_title", value: candidate.title }, { name: "destination", value: copy.destination },
     { name: "angle", value: copy.angle }, { name: "hashtags", value: copy.hashtags.join(" ") },
     { name: "photo_provenance", value: JSON.stringify(photos) },
+    { name: "media_selection", value: JSON.stringify({ videos: media.video?.id, music: media.music?.id }) },
     { name: "content_date", value: date }, { name: "pipeline_version", value: PIPELINE },
     { name: "photo_base64", value: photoBytes.toString("base64") },
     { name: "source_url", value: candidate.url }, { name: "source_published_at", value: candidate.publishedAt },
@@ -191,7 +194,7 @@ async function prepare(date, dryRun = false) {
     const current = check(await callMake("scenario_get", { scenarioId: SCENARIO }));
     if (current.scenario.lastEdit !== snapshot.scenario.lastEdit) throw new Error("Make was edited during preparation. Retry after inspecting the scenario.");
     check(await callMake("scenario_patch", args));
-    history.push({ date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, sourceUrl: candidate.url, sourceTitle: candidate.title, sourceKind: candidate.kind, destination: copy.destination, angle: copy.angle, mediaHash, photos });
+    history.push({ date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, sourceUrl: candidate.url, sourceTitle: candidate.title, sourceKind: candidate.kind, destination: copy.destination, angle: copy.angle, mediaHash, photos, media: { videos: media.video?.id, music: media.music?.id } });
     fs.writeFileSync(HISTORY, JSON.stringify(history.slice(-90), null, 2));
   }
   return { date, topic: copy.topic, caption: copy.caption, reelCaption: copy.reelCaption, hashtags: copy.hashtags, sourceKind: candidate.kind, seconds: reel.seconds, mediaHash, dryRun, scheduledAt: `${date}T09:00:00+05:00` };
