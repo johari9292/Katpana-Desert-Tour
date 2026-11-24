@@ -1,4 +1,5 @@
 name: Create internet-sourced Reel preview
+# Also verifies the Wikimedia source on a fresh runner.
 on:
   workflow_dispatch:
   push:
