@@ -81,6 +81,8 @@ test("photo selection requires destination, usable dimensions and known commerci
   assert.equal(destinationFor("Hunza: travel planning"), "Hunza");
   assert.throws(() => destinationFor("Unrelated travel"), /destination/);
   assert.equal(photoFromPage(photoPage(1), "Hunza").author, "Test Photographer");
+  assert.ok(photoFromPage(photoPage(1, { thumburl: "https://thumb.wikimedia.org/wikipedia/commons/example.jpg" }), "Hunza"));
+  assert.equal(photoFromPage(photoPage(1, { thumburl: "https://thumb.wikimedia.org.attacker.example/image.jpg" }), "Hunza"), null);
   assert.equal(photoFromPage(photoPage(1), "Skardu"), null);
   assert.equal(photoFromPage(photoPage(1, { width: 200 }), "Hunza"), null);
   assert.equal(photoFromPage(photoPage(1, { extmetadata: { LicenseShortName: { value: "All rights reserved" } } }), "Hunza"), null);

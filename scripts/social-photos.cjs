@@ -35,7 +35,7 @@ function photoFromPage(page, destination) {
   const author = field("Artist");
   if (!author || !info.sha1 || !/^https:\/\/commons\.wikimedia\.org\//.test(info.descriptionurl)) return null;
   const url = info.thumburl || info.url;
-  if (!/^https:\/\/upload\.wikimedia\.org\//.test(url)) return null;
+  if (!/^https:\/\/(?:upload|thumb)\.wikimedia\.org\//.test(url)) return null;
   return { id: `commons:${page.pageid}`, title: plain(page.title).replace(/^File:/, ""), author,
     attribution: field("Attribution") || author, license, licenseUrl, sourceUrl: info.descriptionurl,
     url, originalSha1: info.sha1, destination };
