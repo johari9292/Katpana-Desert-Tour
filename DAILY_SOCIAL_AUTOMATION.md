@@ -2,6 +2,8 @@
 
 The production schedule prepares a **different photo post and 12-second musical
 Reel each day**, with the same travel topic and separate photo/Reel captions.
+The default Reel is an animated slideshow of real destination photos, accompanied
+by a credited recording. It is not AI-generated or live footage.
 
 ## Schedule
 
@@ -65,15 +67,21 @@ Abdullah Shakoor if it has not been used in the retained history. It records tha
 fallback in the photo provenance and renders a new video with new copy and music.
 For other destinations it tries another topic rather than showing the wrong place.
 When feeds are unavailable or fresh candidates cannot be prepared, evergreen
-Katpana planning ideas also search Commons for unused photos. Evergreen ideas are
+ideas rotate across Katpana, Hunza, Skardu, Deosai, Kachura, Shigar, Khaplu,
+Astore and K2, and search Commons for unused photos. Evergreen ideas are
 recorded as `evergreen-travel`, never presented as current news or trends. If no
 unused suitable photo is available, preparation fails instead of repeating the
 local image. History covers up to 90 preparations, not all time.
 
 ## Supplied video and music
 
-The default Reel is an animated photo slideshow with synthesized instrumental
-music; it is not generated or filmed footage. To use actual travel footage and
+By default the worker downloads one of three CC BY 4.0 tracks by Sascha Ende
+from Wikimedia Commons, rotates by recent use, and includes the title, creator,
+licence, source and excerpt notice in the Reel caption. If none can be downloaded
+or their licence metadata no longer matches, preparation fails rather than
+silently publishing without the recorded music.
+
+To use actual travel footage and
 recordings you are allowed to publish, add `social-media/manifest.json` and the
 referenced files to the environment running the worker. For GitHub Actions,
 the files must be available in the checkout or explicitly provisioned on the
@@ -90,7 +98,7 @@ For example:
 The worker selects footage only for its matching destination and rotates the
 least recently used entries. Footage must be at least 12 seconds; source audio
 is replaced. If there is no matching footage, the photo slideshow is used. If
-there is no supplied track, the original instrumental is used. Credits are
+there is no supplied track, the credited Commons recording is used. Credits are
 included in the Reel caption; media IDs are kept in the rotation history. IDs
 must be unique within each list, and file paths must be inside the manifest
 folder. Malformed manifests or missing files stop preparation.

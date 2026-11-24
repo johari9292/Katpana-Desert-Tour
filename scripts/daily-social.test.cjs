@@ -6,6 +6,21 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { selectMedia } = require("./social-media.cjs");
+const { recordedMusic } = require("./social-recorded-music.cjs");
+
+test("recorded music rotates and retains licence and source credit", async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-track-"));
+  try {
+    const fetcher = async (url) => String(url).includes("api.php")
+      ? { ok: true, json: async () => ({ query: { pages: { 1: { imageinfo: [{ url: "https://upload.wikimedia.org/test.mp3", descriptionurl: "https://commons.wikimedia.org/wiki/File:Test.mp3", size: 3, extmetadata: { LicenseShortName: { value: "CC BY 4.0" }, LicenseUrl: { value: "https://creativecommons.org/licenses/by/4.0/" } } }] } } } }) }
+      : new Response(Buffer.from("abc"), { headers: { "content-type": "audio/mpeg" } });
+    const track = await recordedMusic({ directory, history: [{ media: { music: "sascha-big-adventure" } }], fetcher });
+    assert.equal(track.id, "sascha-tropical-house");
+    assert.equal(fs.readFileSync(track.path, "utf8"), "abc");
+    assert.match(track.credit, /Sascha Ende.*CC BY 4.0.*excerpt.*commons\.wikimedia/);
+    await assert.rejects(recordedMusic({ directory, fetcher: async () => ({ ok: false, status: 503 }) }), /Could not obtain/);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
 
 test("supplied media rotates by history and matches footage to its destination", () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "katpana-media-"));
@@ -49,10 +64,11 @@ test("evergreen topics generate unused copy without claiming a live trend", () =
     assert.equal(candidate.publishedAt, "");
     const copy = generateCopy(candidate, history, "2026-11-20");
     history.push(copy);
-    assert.equal(copy.destination, "Katpana");
+    assert.ok(["Katpana", "Hunza", "Skardu", "Deosai", "Kachura", "Shigar", "Khaplu", "Astore", "K2"].includes(copy.destination));
     assert.doesNotMatch(copy.caption, /trending now|live footage/i);
   }
   assert.equal(new Set(history.map((entry) => entry.topic)).size, candidates.length);
+  assert.ok(new Set(history.map((entry) => entry.destination)).size >= 8);
 });
 
 function photoPage(id, overrides = {}) {

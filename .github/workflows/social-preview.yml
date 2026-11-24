@@ -1,0 +1,33 @@
+name: Create internet-sourced Reel preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/social-preview.yml
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Install renderer
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Create preview without publishing
+        run: node scripts/create-social-preview.cjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: internet-reel-preview
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            .supabase/reels/internet-preview/reel.mp4
+            .supabase/reels/internet-preview/reel.json
+            .supabase/reels/internet-preview/photos.json

@@ -96,7 +96,7 @@ function render(options) {
   ].join("");
   const result = spawnSync(ffmpeg, [
     "-y", "-hide_banner", "-loglevel", "error", "-ss", String(((seed % 1000) / 1000) * Math.max(0, available - seconds)), "-i", source,
-    "-stream_loop", "-1", "-i", music,
+    "-stream_loop", "-1", "-ss", String(options.musicStart || 0), "-i", music,
     "-filter_complex", filter, "-map", "[v]", "-map", "[a]", "-t", String(seconds),
     "-c:v", "libx264", "-preset", "fast", "-crf", "24", "-maxrate", "270k", "-bufsize", "540k",
     "-c:a", "aac", "-b:a", "64k", "-ac", "2", "-ar", "44100", "-movflags", "+faststart", output,

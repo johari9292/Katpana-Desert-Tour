@@ -8,6 +8,7 @@ const { render } = require("./create-topic-reel.cjs");
 const { selectDailyPhotos, creditsFor } = require("./social-photos.cjs");
 const { subjectFor, captionFor, validateCopy, generateCopy } = require("./social-copy.cjs");
 const { selectMedia } = require("./social-media.cjs");
+const { recordedMusic } = require("./social-recorded-music.cjs");
 
 const { singleReelOperations, WEBSITE_URL, instagramCaption } = require("./social-policy.cjs");
 
@@ -75,9 +76,9 @@ function check(result) {
 }
 
 function evergreenCandidates(date) {
-  return ["desert photography", "winter travel", "transport planning", "heritage travel", "lake travel", "trekking preparation", "travel discovery"].map((angle) => ({
-    title: `Katpana ${angle}`, context: "Evergreen travel planning inspiration",
-    url: `${WEBSITE_URL}?daily-idea=${date}-${angle.replace(/ /g, "-")}`,
+  return ["Katpana desert", "Hunza valley", "Skardu mountain views", "Deosai plains", "Kachura lake", "Shigar fort", "Khaplu palace", "Astore valley", "K2 trekking"].map((idea) => ({
+    title: idea, context: "Evergreen travel planning inspiration",
+    url: `${WEBSITE_URL}?daily-idea=${date}-${idea.toLowerCase().replace(/ /g, "-")}`,
     kind: "evergreen-travel", publishedAt: "", evergreen: true,
   }));
 }
@@ -113,7 +114,7 @@ async function prepare(date, dryRun = false) {
     if (!response.ok) throw new Error(`Feed returned HTTP ${response.status}`);
     return parseFeed(await response.text(), kind);
   }));
-  const candidates = [...freshCandidates(results.flatMap((result) => result.status === "fulfilled" ? result.value : []), history), ...evergreenCandidates(date)];
+  const candidates = [...freshCandidates(results.flatMap((result) => result.status === "fulfilled" ? result.value : []), history), ...evergreenCandidates(date).sort((a, b) => recentUse(a, history) - recentUse(b, history))];
   const directory = path.resolve(`.supabase/reels/${date}-daily-topic`);
   fs.mkdirSync(directory, { recursive: true });
   let candidate, copy, photos;
@@ -140,9 +141,10 @@ async function prepare(date, dryRun = false) {
   const postFile = path.join(directory, "daily-post.json");
   fs.writeFileSync(postFile, JSON.stringify({ title: copy.topic, message: copy.caption, reel_caption: copy.reelCaption, scene_texts: copy.sceneTexts, hashtags: copy.hashtags, excerpt: copy.caption, provenance: candidate }, null, 2));
   const media = selectMedia({ destination: copy.destination, history });
+  if (!media.music) media.music = await recordedMusic({ directory, history });
   const reel = render({ post: postFile, date, out: directory,
     ...(media.video ? { video: media.video.path, videoCredit: media.video.credit } : { photos: photos.length > 1 ? photos.slice(1) : photos }),
-    ...(media.music ? { music: media.music.path, musicCredit: media.music.credit } : {}) });
+    ...(media.music ? { music: media.music.path, musicCredit: media.music.credit, musicStart: media.music.start } : {}) });
   if (snapshot.modules.some((module) => module.module === "instagram-business:CreateAReelPost" && !module.disabled)) instagramCaption(reel.caption);
   const ffmpeg = process.env.FFMPEG_PATH || (process.platform === "win32" ? path.resolve(".supabase/package/ffmpeg.exe") : "ffmpeg");
   const photo = path.join(directory, "post.jpg");
